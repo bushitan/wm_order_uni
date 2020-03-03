@@ -2,25 +2,25 @@
 	<view class="">
 		<!--状态栏区域-->
 	<!-- 	<view class="fixed">
-			<cu-custom :isBack="true" bgColor="bg-red text-white">
+			<cu-custom :isBack="true" bgColor="bg-yellow text-white">
 				<block slot="backText" @click="back()">返回</block>
 				<block slot="content">我的订单</block>
 			</cu-custom>
 		</view> -->
 		<scroll-view scroll-x class="bg-white nav">
 		    <view class='flex text-center'>
-		        <view :class="['cu-item flex-sub ' , item.id==TabCur?'text-red cur':'' ]" v-for="(item,index) in SortMenu" @click="tabSelect(item.id)">
+		        <view :class="['cu-item flex-start' , item.id==TabCur?'text-yellow cur':'' ]" v-for="(item,index) in SortMenu" @click="tabSelect(item.id)">
 		            {{item.name}}
 		        </view>
 		    </view>
 		</scroll-view>
 		
-		<view class="cu-card padding-lr margin-top" @click="toDetail">
+		<view class="cu-card padding-lr margin-top" @click="toDetail(order.id)" v-for="(order,key) in list">
 		    <view class=" bg-white pg-radius  shadow shadow-warp">
 		        <view class="cu-bar  solid-bottom ">
 		            <view class="action">
-		                <text class="cuIcon-title text-red "></text>                
-		                <text class="text-black text-sm">Strong（康普店）</text>      
+		                <text class="cuIcon-title text-yellow "></text>                
+		                <text class="text-black text-sm">{{order.pickup_address}}</text>      
 		            </view>
 		            <view class="action">
 						<!-- <text class="text-gray  text-sm">全部</text> -->
@@ -28,33 +28,19 @@
 		            </view>
 		        </view>
 				<view class="cu-list menu ">
-					<view class="cu-item margin-tb-sm">
+					<view class="cu-item margin-tb-sm" v-for="(item,j) in order.order_items">
 						<view class="action">
-							<image src='/static/images/strong/swiper.jpg' 
+							<image :src='item.product.images[0]' 
 								class="cu-avatar radius lg  bg-gray margin-right-sm " 
 								style="width:60px;height:60px"
 								></image>
 						</view>
 						<view class="content">
-							<view class="text-black   text">挂耳包</view>
-							<view class="text-gray   text-sm">(加冰)</view>
+							<view class="text-black   text">{{item.product.name}}</view>
+							<view class="text-gray   text-sm">{{item.product.attr_desc}}</view>
 						</view>
 						<view class="action">
-							<view class="text-gray   text-sm">x1</view>
-						</view>
-					</view>
-					<view class="cu-item margin-tb-sm">
-						<view class="action">
-							<image src='/static/images/strong/swiper.jpg' 
-								class="cu-avatar radius lg  bg-gray margin-right-sm " 
-								style="width:60px;height:60px"
-								></image>
-						</view>
-						<view class="content">
-							<view class="text-black   text">挂耳包</view>
-						</view>
-						<view class="action">
-							<view class="text-gray   text-sm">x1</view>
+							<view class="text-gray   text-sm">x{{item.quantity}}</view>
 						</view>
 					</view>
 				</view>
@@ -65,14 +51,14 @@
 						
 						<text class="text-gray  text-sm margin-right-xs">合计</text>						
 						<text class=" text-xl text-black text-bold text-price"></text>
-						<text class=" text-xl text-black text-bold">0</text>
+						<text class=" text-xl text-black text-bold">{{order.order_total}}</text>
 				    </view>
 				</view>					
 		    </view>
 		</view>
 		
 		<view class=" padding-xs flex  align-center margin-top justify-center">
-			<text class="text-center  text-gray">暂无更多订单</text>		
+			<text class="text-center  text-gray">{{ isMore?"加载中..":"暂无更多订单"}}</text>		
 		</view>
 		<view class="pg-space-xxl"></view>
 
@@ -88,32 +74,66 @@
 				
 				TabCur: 0,
 				scrollLeft:0,
-				SortMenu: [{id:0,name:"全部订单"},{id:1,name:"待付款"},{id:2,name:"待发货"},{id:3,name:"待收货"},{id:4,name:"已完成"}]
+				SortMenu: [{id:0,name:"全部订单"},{id:1,name:"退款"}],
 				
+				isRefund:false, // 加载全部订单
+				page : 1,
+				limit : 10,
+				lock : false,
+				isMore:true,
+				list:[],
 			}
 		},
-		onLoad(){},
+		onReachBottom(){
+			if(this.$data.isMore)
+				this.getOrderList() 
+		},
+		onLoad(){
+			this.onInit()			
+		},
 		
 		methods:{
+			
+			onInit(){
+				this.db.listInit(this)
+				this.getOrderList() //获取订单
+			},
+			
+			async getOrderList(){
+				var data = {
+					Page:this.$data.page,
+					Limit:this.$data.limit,
+				}
+				if(this.$data.isRefund) 
+					data.Status = this.db.PAYMENT_STATUS_REFUND
+											
+				var res = await this.db.orderGetList(data)			
+				this.db.listUpdate(this , res)
+			},
+			
 			/**
 			 * @method 点击选项卡
 			 */
 			tabSelect(id) {
-				// console.log(e)
-				// console.log(e.currentTarget.dataset.id);
+				console.log(id)
+				var isRefund = false
+				if( id == 1 ) isRefund = true
 				this.setData({
 					TabCur:id,
-					scrollLeft: (id-1)*60
+					scrollLeft: (id-1)*60,
+					isRefund:isRefund,
 				})
+				this.onInit() // 重新请求				
 			},
+			
 			back(){
 				uni.navigateBack({
 					
 				})
 			},
-			toDetail(){
+			toDetail(id){
 				uni.navigateTo({
-					url:'/pages/order/detail'
+					url:'/pages/order/detail?orderID=' + id
 				})
 			}
 		}

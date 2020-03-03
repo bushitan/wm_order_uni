@@ -1,0 +1,291 @@
+
+{
+  "code": 0,
+  "msg": "产品获取成功",
+  "data": {
+    "id": 2,
+    "name": "Digital Storm VANQUISH 3 Custom Performance PC",
+    "price": 1259,
+    "cost": 0,
+    "tags": [
+      "computer",
+      "cool"
+    ],
+    "shortDescription": "Digital Storm Vanquish 3 Desktop PC",
+    "fullDescription": "&lt;p&gt;Blow the doors off today’s most demanding games with maximum detail, speed, and power for an immersive gaming experience without breaking the bank.&lt;/p&gt;&lt;p&gt;Stay ahead of the competition, VANQUISH 3 is fully equipped to easily handle future upgrades, keeping your system on the cutting edge for years to come.&lt;/p&gt;&lt;p&gt;Each system is put through an extensive stress test, ensuring you experience zero bottlenecks and get the maximum performance from your hardware.&lt;/p&gt;",
+    "imgs": [
+      {
+        "id": 3,
+        "picture_id": 22,
+        "position": 1,
+        "src": "https://wm.51zfgx.com/images/thumbs/0000022_digital-storm-vanquish-3-custom-performance-pc.jpeg"
+      }
+    ],
+    "attributes": []
+  }
+}
+
+{
+  "code": 0,
+  "msg": "产品获取成功",
+  "data": {
+    "id": 1,
+    "name": "Build your own computer",
+    "price": 1200,
+    "cost": 0,
+    "tags": [
+      "awesome",
+      "computer"
+    ],
+    "shortDescription": "Build it",
+    "fullDescription": "&lt;p&gt;Fight back against cluttered workspaces with the stylish IBM zBC12 All-in-One desktop PC, featuring powerful computing resources and a stunning 20.1-inch widescreen display with stunning XBRITE-HiColor LCD technology. The black IBM zBC12 has a built-in microphone and MOTION EYE camera with face-tracking technology that allows for easy communication with friends and family. And it has a built-in DVD burner and Sony&#39;s Movie Store software so you can create a digital entertainment library for personal viewing at your convenience. Easy to setup and even easier to use, this JS-series All-in-One includes an elegantly designed keyboard and a USB mouse.&lt;/p&gt;",
+    "imgs": [
+      {
+        "id": 1,
+        "picture_id": 20,
+        "position": 1,
+        "src": "https://wm.51zfgx.com/images/thumbs/0000020_build-your-own-computer.jpeg"
+      },
+      {
+        "id": 2,
+        "picture_id": 21,
+        "position": 2,
+        "src": "https://wm.51zfgx.com/images/thumbs/0000021_build-your-own-computer.jpeg"
+      }
+    ],
+    "attributes": [
+      {
+        "productAttributeID": 1,
+        "productAttributeName": "Processor",
+        "isRequired": true,
+        "displayOrder": 0,
+        "attributeValues": [
+          {
+            "typeID": 0,
+            "associatedProductID": 0,
+            "name": "2.2 GHz Intel Pentium Dual-Core E2200",
+            "colorSquaresRgb": null,
+            "imageSquaresImage": null,
+            "priceAdjustment": 0,
+            "weightAdjustment": 0,
+            "cost": 0,
+            "quantity": 0,
+            "is_pre_selected": false,
+            "display_order": 1,
+            "product_image_id": null,
+            "type": "Simple",
+            "id": 1
+          },
+          {
+            "typeID": 0,
+            "associatedProductID": 0,
+            "name": "2.5 GHz Intel Pentium Dual-Core E2200",
+            "colorSquaresRgb": null,
+            "imageSquaresImage": null,
+            "priceAdjustment": 15,
+            "weightAdjustment": 0,
+            "cost": 0,
+            "quantity": 0,
+            "is_pre_selected": true,
+            "display_order": 2,
+            "product_image_id": null,
+            "type": "Simple",
+            "id": 2
+          }
+        ]
+      },
+      {
+        "productAttributeID": 2,
+        "productAttributeName": "RAM",
+        "isRequired": true,
+        "displayOrder": 0,
+        "attributeValues": [
+          {
+            "typeID": 0,
+            "associatedProductID": 0,
+            "name": "2 GB",
+            "colorSquaresRgb": null,
+            "imageSquaresImage": null,
+            "priceAdjustment": 0,
+            "weightAdjustment": 0,
+            "cost": 0,
+            "quantity": 0,
+            "is_pre_selected": false,
+            "display_order": 1,
+            "product_image_id": null,
+            "type": "Simple",
+            "id": 3
+          },
+          {
+            "typeID": 0,
+            "associatedProductID": 0,
+            "name": "4GB",
+            "colorSquaresRgb": null,
+            "imageSquaresImage": null,
+            "priceAdjustment": 20,
+            "weightAdjustment": 0,
+            "cost": 0,
+            "quantity": 0,
+            "is_pre_selected": false,
+            "display_order": 2,
+            "product_image_id": null,
+            "type": "Simple",
+            "id": 4
+          },
+          {
+            "typeID": 0,
+            "associatedProductID": 0,
+            "name": "8GB",
+            "colorSquaresRgb": null,
+            "imageSquaresImage": null,
+            "priceAdjustment": 60,
+            "weightAdjustment": 0,
+            "cost": 0,
+            "quantity": 0,
+            "is_pre_selected": false,
+            "display_order": 3,
+            "product_image_id": null,
+            "type": "Simple",
+            "id": 5
+          }
+        ]
+      },
+      {
+        "productAttributeID": 3,
+        "productAttributeName": "HDD",
+        "isRequired": true,
+        "displayOrder": 0,
+        "attributeValues": [
+          {
+            "typeID": 0,
+            "associatedProductID": 0,
+            "name": "320 GB",
+            "colorSquaresRgb": null,
+            "imageSquaresImage": null,
+            "priceAdjustment": 0,
+            "weightAdjustment": 0,
+            "cost": 0,
+            "quantity": 0,
+            "is_pre_selected": false,
+            "display_order": 1,
+            "product_image_id": null,
+            "type": "Simple",
+            "id": 6
+          },
+          {
+            "typeID": 0,
+            "associatedProductID": 0,
+            "name": "400 GB",
+            "colorSquaresRgb": null,
+            "imageSquaresImage": null,
+            "priceAdjustment": 100,
+            "weightAdjustment": 0,
+            "cost": 0,
+            "quantity": 0,
+            "is_pre_selected": false,
+            "display_order": 2,
+            "product_image_id": null,
+            "type": "Simple",
+            "id": 7
+          }
+        ]
+      },
+      {
+        "productAttributeID": 4,
+        "productAttributeName": "OS",
+        "isRequired": true,
+        "displayOrder": 0,
+        "attributeValues": [
+          {
+            "typeID": 0,
+            "associatedProductID": 0,
+            "name": "Vista Home",
+            "colorSquaresRgb": null,
+            "imageSquaresImage": null,
+            "priceAdjustment": 50,
+            "weightAdjustment": 0,
+            "cost": 0,
+            "quantity": 0,
+            "is_pre_selected": true,
+            "display_order": 1,
+            "product_image_id": null,
+            "type": "Simple",
+            "id": 8
+          },
+          {
+            "typeID": 0,
+            "associatedProductID": 0,
+            "name": "Vista Premium",
+            "colorSquaresRgb": null,
+            "imageSquaresImage": null,
+            "priceAdjustment": 60,
+            "weightAdjustment": 0,
+            "cost": 0,
+            "quantity": 0,
+            "is_pre_selected": false,
+            "display_order": 2,
+            "product_image_id": null,
+            "type": "Simple",
+            "id": 9
+          }
+        ]
+      },
+      {
+        "productAttributeID": 5,
+        "productAttributeName": "Software",
+        "isRequired": false,
+        "displayOrder": 0,
+        "attributeValues": [
+          {
+            "typeID": 0,
+            "associatedProductID": 0,
+            "name": "Microsoft Office",
+            "colorSquaresRgb": null,
+            "imageSquaresImage": null,
+            "priceAdjustment": 50,
+            "weightAdjustment": 0,
+            "cost": 0,
+            "quantity": 0,
+            "is_pre_selected": true,
+            "display_order": 1,
+            "product_image_id": null,
+            "type": "Simple",
+            "id": 10
+          },
+          {
+            "typeID": 0,
+            "associatedProductID": 0,
+            "name": "Acrobat Reader",
+            "colorSquaresRgb": null,
+            "imageSquaresImage": null,
+            "priceAdjustment": 10,
+            "weightAdjustment": 0,
+            "cost": 0,
+            "quantity": 0,
+            "is_pre_selected": false,
+            "display_order": 2,
+            "product_image_id": null,
+            "type": "Simple",
+            "id": 11
+          },
+          {
+            "typeID": 0,
+            "associatedProductID": 0,
+            "name": "Total Commander",
+            "colorSquaresRgb": null,
+            "imageSquaresImage": null,
+            "priceAdjustment": 5,
+            "weightAdjustment": 0,
+            "cost": 0,
+            "quantity": 0,
+            "is_pre_selected": false,
+            "display_order": 2,
+            "product_image_id": null,
+            "type": "Simple",
+            "id": 12
+          }
+        ]
+      }
+    ]
+  }
+}

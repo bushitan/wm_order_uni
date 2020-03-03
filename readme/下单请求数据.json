@@ -1,0 +1,29 @@
+//注意
+
+{
+  "OrderId": 0,//新建订单 默认为零
+  "PickUpInStore": false,//是否店内获取
+  "PaymentMethodSystemName": "Payments.WeixinPay",//支付方式 当前默认微信 硬编码
+  "ShippingMethod": "ground", //送货方式 当前默认 硬编码
+  "ShipAddress": "广西电影制片厂（1栋2单元2104）", //送货地址
+  "RecivePhone":"15777889458",//收货人电话
+  "ReciveName":"丰fXS",//
+  "ReciveFaxNum":"",//邮编
+  "OrderItems": [
+    {
+      "ProductId": 4,//产品Id
+      "Quantity":1,//购买数量
+      "Attributes": [ //产品属性
+        {
+          "Id": 16,
+          "Value": "40"
+        }
+      ],
+      "Address": "广西南宁",//分货运输地址
+      "OrderItemNotes": "测试订单"//订单项描述
+    }
+  ],
+  "AppId": "5099f520489646d28ce9df352237c059",
+  "Session": "5IRWgui7bOjkYGlrvi766K9mKd2tRwIgC4WzmK+7X+CZp7kSGSmJSIqltssQ/OrB9p2lDvRpvUin0yjie7GJ7mZb5PXUZTTlx8w737wzdRzwrePHmYWLj4bUvFUrzWCjB6YaLiWte5+/W7YZrm6CzseU4jAvZ3vckhY+T+qfdrCrtig+LpW4XNwmw3sWuotpQehImOyje4aK2zIQ/8UF6PoM/EgItRoOGfplfX0FuESN4z+Fd6vjxAcxHrhuzJ6RLOCiL+0gTCka+kRdZERzxXl262keOsnn1X6CvwZfFKeFckWkF4NYPw1ES5ELF0q2+aiznxXSXzUzatU5xirc1XcySPMCSzLbjd+8DTaWs4l11GTOXxqxIQTecC857+rCBHOjFB3lI8g=", 
+  "OrderNote":"测试订单"//订单描述
+}

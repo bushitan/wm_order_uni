@@ -40,5 +40,16 @@ class son extends fahter{
 		})
 	}
 	
+	/**
+	 * @method 3 获取该店铺的菜单
+	 * @param 
+		id
+		fields
+	 */
+	productMenu(data) {
+		return new Promise((resolve, reject) => {
+			this.base({url: this.HOST_URL +  "api/category/products/",data: data,}).then(res => {resolve(res.data)}).catch(res => reject(res))
+		})
+	}
 }
 module.exports = son

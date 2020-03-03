@@ -21,15 +21,16 @@
 		</view> -->
 	
 		
-		<view class="cu-card padding-lr margin-top" @click="toDetail">
+		<view class="cu-card padding-lr margin-top" @click="toDetail"  v-for="(order,key) in list">
 			<view class=" bg-white pg-radius  shadow shadow-warp">
 				<view class="cu-bar  solid-bottom ">
 					<view class="action">
-						<text class="cuIcon-title text-red "></text>                
-						<text class="text-black text-sm">当前订单</text>      
+						<text class="cuIcon-title text-yellow "></text>                
+						<text class="text-black text-sm">下单时间（{{order.paid_dateutc}}）</text>      
 					</view>
 					<view class="action">
-						<view class="pg-arrow-sm"></view>
+						<view class="text-yellow text-bold">制作中</view>
+						<view class="pg-arrow"></view>
 					</view>
 				</view>
 				<view class="cu-list menu ">
@@ -38,7 +39,7 @@
 							<view class="text-gray text-sm">下单门店</view>
 						</view>
 						<view class="action">
-							<view class=" text-sm ">Strong（康普店）</view>
+							<view class=" text-sm ">{{order.pickup_address}}</view>
 						</view>
 					</view>
 					<view class="cu-item margin-tb-sm">
@@ -46,7 +47,7 @@
 							<view class="text-gray text-sm">配送方式</view>
 						</view>
 						<view class="action">
-							<view class=" text-sm ">门店自取</view>
+							<view class=" text-sm ">{{order.pick_up_in_store?"自取":"外卖"}}</view>
 						</view>
 					</view>				
 					<view class="cu-item ">
@@ -54,33 +55,19 @@
 							<view class="text-gray text-sm">订单产品</view>
 						</view>
 					</view>
-					<view class="cu-item margin-tb-sm">
+					<view class="cu-item margin-tb-sm" v-for="(item,key) in order.order_items">
 						<view class="action">
-							<image src='/static/images/strong/swiper.jpg' 
+							<image :src='item.product.images[0]' 
 								class="cu-avatar radius lg  bg-gray margin-right-sm " 
 								style="width:60px;height:60px"
 								></image>
 						</view>
 						<view class="content">
-							<view class="text-black   text">挂耳包</view>
-							<view class="text-gray   text-sm">(加冰)</view>
+							<view class="text-black   text">{{item.product.name}}</view>
+							<view class="text-gray   text-sm">{{item.attr_desc}}</view>
 						</view>
 						<view class="action">
-							<view class="text-gray   text-sm">x1</view>
-						</view>
-					</view>
-					<view class="cu-item margin-tb-sm">
-						<view class="action">
-							<image src='/static/images/strong/swiper.jpg' 
-								class="cu-avatar radius lg  bg-gray margin-right-sm " 
-								style="width:60px;height:60px"
-								></image>
-						</view>
-						<view class="content">
-							<view class="text-black   text">挂耳包</view>
-						</view>
-						<view class="action">
-							<view class="text-gray   text-sm">x1</view>
+							<view class="text-gray   text-sm">x{{item.quantity}}</view>
 						</view>
 					</view>
 				</view>
@@ -91,11 +78,11 @@
 					</view>
 				</view>					
 			</view>
-			<view class=" padding-xs flex  align-center margin-top justify-center">
-				<text class="text-center  text-gray text-sm" >正在制作，请耐心等待</text>		
-			</view>
-			<view class="pg-space-xxl"></view>
 		</view>
+		<view class=" padding-xs flex  align-center margin-top justify-center">
+			<text class="text-center  text-gray text-sm" >正在制作，请耐心等待</text>		
+		</view>
+		<view class="pg-space-xxl"></view>
 	
 		
 	</view>
@@ -111,15 +98,40 @@
 				
 				TabCur: 0,
 				scrollLeft:0,
-				SortMenu: [{id:0,name:"全部订单"},{id:1,name:"待付款"},{id:2,name:"待发货"},{id:3,name:"待收货"},{id:4,name:"已完成"}]
+				// SortMenu: [{id:0,name:"全部订单"},{id:1,name:"待付款"},{id:2,name:"待发货"},{id:3,name:"待收货"},{id:4,name:"已完成"}],
+				
+				list:[],
 				
 			}
 		},
 		onLoad(){
-			console.log(this.CustomBar)
+			this.onInit()			
 		},
 		
 		methods:{
+			onInit(){
+				this.getOrderList() //获取订单
+			},
+			
+			
+			async getOrderList(){
+				var data = {
+					Page:this.$data.page,
+					Limit:this.$data.limit,
+					Status:this.db.ORDER_STATUS_PROCESSING,
+				}											
+				var res = await this.db.orderGetList(data)			
+				// this.db.listUpdate(this , res)
+				this.setData({
+					list:res.data
+				})
+			},
+			
+			
+			
+			
+			
+			
 			toMenu(){
 				uni.switchTab({
 					url:"/pages/order/menu"

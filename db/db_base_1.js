@@ -7,6 +7,19 @@ class dbBase{
 	KEY_TOKEN = "token"
 	KEY_SESSION = "Session"
 	
+	PAYMENT_STATUS_PENDING = 10 // 待支付
+	PAYMENT_STATUS_AUTHORIZED = 20 // 待支付
+	PAYMENT_STATUS_PAID = 30 // 已经支付
+	PAYMENT_STATUS_REFUND = 40 // 退款
+	PAYMENT_STATUS_CANCEL = 50 // 取消支付
+	
+	ORDER_STATUS_PENDING = 10 // 订单待处理
+	ORDER_STATUS_PROCESSING = 20 // 订单处理中
+	ORDER_STATUS_COMPLETE = 30 // 订单已完成
+	ORDER_STATUS_CANCEL = 40 // 订单已取消
+	
+	
+	
 	APP_ID = "5099f520489646d28ce9df352237c059"
 	
 	// URL = "http://221.7.253.6:9019/Api/Task/TaskHandler.ashx?"
@@ -81,8 +94,8 @@ class dbBase{
 					data[i] = ""
 			}					
             // data["Session"] = wx.getStorageSync(this.KEY_SESSION)
-			data["Session"] = "5IRWgui7bOhSrOKtUHtIF3N/Y7M1ILZgzBEF18+8mmf/AEpFZioD+Mppww5sqj7DBFFuDVEOeWQFvndtbTwTr042KkAPyMUxv5Wnbfbj9VFPch3DIl+gFMBGA/h/T4QqLFhjk9HiUEEht8lNcwD/vz5lmgxAk//ReJ6sUR2LlO57YeWxAnqeRhxybWvNJmmaErN+h1TH1m+qbJF6AVKIfcX/WhqFfKen8ALJLyloEcFYOdfaU2Swdupb/SAzSjJwurVU3trZowy01YeWVX8dC5ju9gjNBddea1+RRhZt6fEJx0JLjP6J06Jnwgsv2SNjAqzBr62kkNaj2VmYV1udfEIMFtnIoVU3ufPNcUMKOmbAWhZbk2H6Cbl+WJKlety46CeWkgg+OFo="
-			 
+			data["Session"] = "5IRWgui7bOjkYGlrvi766K9mKd2tRwIgC4WzmK+7X+CZp7kSGSmJSIqltssQ/OrB9p2lDvRpvUin0yjie7GJ7mZb5PXUZTTlx8w737wzdRzwrePHmYWLj4bUvFUrzWCjB6YaLiWte5+/W7YZrm6CzseU4jAvZ3vckhY+T+qfdrCrtig+LpW4XNwmw3sWuotpQehImOyje4aK2zIQ/8UF6PoM/EgItRoOGfplfX0FuESN4z+Fd6vjxAcxHrhuzJ6RLOCiL+0gTCka+kRdZERzxXl262keOsnn1X6CvwZfFKeFckWkF4NYPw1ES5ELF0q2+aiznxXSXzUzatU5xirc1XcySPMCSzLbjd+8DTaWs4l11GTOXxqxIQTecC857+rCBHOjFB3lI8g="
+			data["AppId"] = this.APP_ID
 		
 
 			// debugger

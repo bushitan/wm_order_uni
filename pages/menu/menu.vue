@@ -16,46 +16,47 @@
 		
 		<view class="VerticalBox">
 			<scroll-view class="VerticalNav nav" scroll-y scroll-with-animation :scroll-top="verticalNavTop" style="height:calc(100vh - 375upx - 50px)">
-				<view class="cu-item" :class="index==tabCur?'text-yellow text-bold  bg-white cur':''" v-for="(item,index) in list" :key="index" @tap="TabSelect"
+				<view class="cu-item" :class="index==tabCur?'text-yellow text-bold  bg-white cur':''" v-for="(category,index) in list" :key="index" @tap="TabSelect"
 				 :data-id="index">
-					{{item.name}}
+					{{category.category.cate_name}}
 				</view>
+				<view class="pg-space-xxl"></view>
+				<view class="pg-space-xxl"></view>				
 			</scroll-view>
 			<scroll-view class="VerticalMain" scroll-y scroll-with-animation style="height:calc(100vh - 375upx - 50px)"
 			 :scroll-into-view="'main-'+mainCur" @scroll="VerticalMain">
-				<view class="padding-top padding-lr" v-for="(item,index) in list" :key="index" :id="'main-'+index">
+				<view class="padding-top padding-lr" v-for="(category,index) in list" :key="index" :id="'main-'+index">
 					<view class="cu-bar  bg-white">
 						<view class="action">
-							<text class="cuIcon-title text-blue"></text> {{item.name}}</view>
+							<text class="cuIcon-title text-blue"></text>{{category.category.cate_name}}</view>
 					</view>
 					
 					<view class="cu-list menu ">
-						<view class="cu-item " style=" align-items: flex-start"  v-for="(item,key) in [1,2,3,4,5]">
+						<view class="cu-item " style=" align-items: flex-start"  v-for="(item,itemIndex) in category.products"  v-bind:key="itemIndex">
 							<view class="">
-								<image :src='userInfo.logo' 
+								<image :src='item.imgs[0].src' 
 									class="cu-avatar radius lg  bg-gray margin-right-sm " 
 									style="width:60px;height:60px"
 									></image>
 							</view>							
 							<view class="action basis-xl padding-bottom" >
 								<view class="">
-									<text class=" text-black text-bold text-df">哥伦比亚（挂耳）</text>
+									<text class=" text-black text-bold text-df">{{item.name}}</text>
 								</view>
 								<view class="margin-top-xs">
-									<text class="bg-gray radius  text-xs margin-right-sm 	" style="padding:2px 3px;margin-top: 20px;">巧克力</text>
-									<text class="bg-gray radius  text-xs margin-right-sm  " style="padding:2px 3px;margin-top: 20px;">巧克力</text>
-									<text class="bg-gray radius  text-xs margin-right-sm  " style="padding:2px 3px;margin-top: 20px;">巧克力</text>						
+									<text class="bg-gray radius  text-xs margin-right-sm "  v-for="(tag,tagIndex) in item.tags" v-bind:key="tagIndex"
+									style="padding:2px 3px;margin-top: 20px;">{{tag}}</text>				
 								</view>
 								<view class="text-gray text-xs margin-top-xs">
 									月销售234
 								</view>
 								<view class="margin-top-xs flex justify-between align-center">
 									<view class="text-red text-lg">
-										<text class="text-price"></text>666
+										<text class="text-price"></text>{{item.price}}
 									</view>
 									<view style="position:relative">
-										<button class="cu-btn round bg-yellow text-white sm" @click="openDetail()">选规格</button>
-										<view class="cu-tag badge">99+</view>										
+										<button class="cu-btn round bg-yellow text-white sm" @click="openDetail(index,itemIndex)">选规格</button>
+										<view class="cu-tag badge" v-if="item.num">{{item.num}}</view>										
 									</view>
 								</view>
 							</view>							
@@ -70,7 +71,7 @@
 		
 		
 		
-		<view class="bg-white cu-list menu-avatar" style="position: fixed; bottom:0px; left: 0; right: 0;">
+		<view class="bg-white cu-list menu-avatar" style="position: fixed; bottom:50px; left: 0; right: 0;">
 			<view class="cu-item" >
 				<view class="cu-avatar round lg " @click="openBill()"> 
 					<view  style="position:relative">
@@ -79,13 +80,13 @@
 							style="background-color:#ffffff"
 							></image>
 							
-						<view class="cu-tag badge">3</view>
+						<view class="cu-tag badge">{{totalQuantity}}</view>
 					</view>
 				</view>
 				<view class="content">
 					<view class="text-grey">
 						<view class="text-bold text-xl text-red">
-							<text class="text-price "></text>666
+							<text class="text-price "></text>{{totalPrice}}
 						</view>
 					</view>
 					<!-- <view class="text-gray text-sm flex">
@@ -111,10 +112,11 @@
 			
 			
 		<!-- 详情选项 -->
-		<view :class="['cu-modal', showDetail?'show':'']" >
-			<view class="cu-dialog" :style="' position: absolute;top:'+ (CustomBar ) +'px;bottom:15px;left: 15px;right: 15px;'">
+		<view :class="['cu-modal', showChoice?'show':'']" >
+			<!-- <view class="cu-dialog" :style="' position: absolute;top:'+ (CustomBar ) +'px;bottom:15px;left: 15px;right: 15px;'"> -->
+			<view class="cu-dialog" :style="' position: absolute;top:30px;bottom:30px;left: 15px;right: 15px;'">
 				<view class="cu-bar bg-white justify-end">
-				  <view class="content text-bold">咖啡</view>
+				  <view class="content text-bold">{{currentItem.name}}</view>
 				  <view class="action" @click="closeShow()">
 						<text class="cuIcon-close text-red"></text>
 				  </view>
@@ -127,45 +129,50 @@
 					scroll-y scroll-with-animation 
 					:style="'width: 100%;height: calc(100vh - 50px - 100px - 30px - ' + CustomBar + 'px)'">
 					<view class="">
-						<image src="/static/images/strong/swiper.jpg" class="block " style="width: 100%;"  mode="widthFix"></image>
+						<image :src="currentItem.imgs[0].src" class="block " style="width: 100%;"  mode="widthFix"></image>
 					</view>
 					<view class="padding-lr margin-top">
 						<view class="flex flex-start">
-							<text class="bg-gray radius  text-xs margin-right-sm padding-xs" >巧克力</text>
-							<text class="bg-gray radius  text-xs margin-right-sm  padding-xs " >巧克力</text>							
+							<text class="bg-gray radius  text-xs margin-right-sm padding-xs"
+								v-for="(tag , tagIndex ) in currentItem.tags" v-bind:key="tagIndex">{{tag}}</text>						
 						</view>
 						<view class="flex flex-start margin-top-sm">
-							<text class="text-gray radius  text-sm  text-left" >500ml的果肉，包含ml的果肉，包含ml的果肉，包含ml的果肉，包含ml的果肉，包含ml的果肉，包含ml的果肉，包含ml的果肉，包含</text>					
+							<text class="text-gray radius  text-sm  text-left" >{{currentItem.fullDescription}}</text>					
 						</view>
 					</view>
-					<view class="padding-lr margin-top ">
+					<view class="padding-lr margin-top " v-for="(att , attIndex) in currentItem.attributes" v-bind:key="attIndex">
 						<view class="flex flex-start margin-top-sm">
-							<text class="text-gray radius  text-sm  text-left" >口味 </text>					
+							<text class="text-gray radius  text-sm  text-left" >{{att.productAttributeName}} </text>					
 						</view>
-						<view class="flex flex-start margin-top-sm flex-wrap">
-							<text  class="cu-btn  radius bg-yellow text-white   text-sm  text-center margin-right-sm" @click="chooseCategory()">口味 </text>		
-							<text  class="cu-btn text-gray radius  text-sm  text-center margin-right-sm" >口味 </text>		
-							<text  class="cu-btn text-gray radius  text-sm  text-center margin-right-sm" >口味 </text>		
-							<text  class="cu-btn text-gray radius  text-sm  text-center margin-right-sm" >口味 </text>					
+						<view class="flex flex-start  flex-wrap margin-top-sm">	
+												<!-- {{att.attributeValues[0]}}
+												
+												{{currentItem}} -->
+							  <!-- class="cu-btn radius text-sm text-center margin-right-sm margin-bottom-sm"  -->
+							<button :class="['cu-btn radius text-sm text-center margin-right-sm margin-bottom-sm' , value.isSelect?'bg-yellow text-white' :'line-gray']" 
+							v-for="(value,valueIndex) in att.attributeValues" v-bind:key="valueIndex"
+							@click="clickAtt(attIndex,valueIndex)">{{value.name}},{{value.isSelect}}</button>						
 						</view>
 					</view>
 					<view class="pg-space-xxl"></view>
 				</scroll-view>
 				<view class="bg-white" style="position: absolute ;bottom: 0; left: 0;right: 0;">
-					<view class="padding-lr padding-tb-sm  bg-gray">
+					<!-- <view class="padding-lr padding-tb-sm  bg-gray">
 						<view class="flex flex-start text-sm align-center">		
 							<text class="text-gray ">已选规格：</text>已经选择规格						
 						</view>					
-					</view>
+					</view> -->
 					
 					<view class="padding ">
 						<view class="flex justify-between align-center text-xxl">						
 							<view class="text-red ">
-								<text class="text-price"></text>666
+								<text class="text-price"></text>{{ order[key] ? order[key].Quantity * order[key].price : 0}}
 							</view>				
 							<view class="flex justify-between align-center">
-								<button class="cu-btn  round  bg-gray sm "  @click="cutItem()">-</button>
-								<text class="padding-lr-sm">1</text>
+								<button class="cu-btn  round  bg-gray sm "  
+									:hidden="order[key]? false : true"
+									@click="cutItem()">-</button>
+								<text class="padding-lr-sm">{{order[key]? order[key].Quantity : 0 }}</text>
 								<button class="cu-btn  round bg-yellow text-white sm" @click="addItem()">+</button>
 							</view>						
 						</view>
@@ -177,8 +184,8 @@
 			</view>
 		</view>
 
-
-		<view :class="['cu-modal', showBill?'show':'']" >
+		
+		<view :class="['cu-modal padding-tb-xl', showOrder?'show':'']" >
 			<view class="cu-dialog" style=" position: relative;">
 				<view class="cu-bar bg-white justify-end">
 				  <view class="content text-bold">当前订单</view>
@@ -188,42 +195,36 @@
 				</view>
 				
 				<view class="cu-list menu bg-white">
-					<view class="cu-item margin-tb-sm">
+					<view class="cu-item margin-tb-sm" v-for="(item , key) in order" v-bind:key="key">
 						<view class="action">
-							<image src='/static/images/strong/swiper.jpg' 
+							<image :src='item.cover' 
 								class="cu-avatar radius lg  bg-gray margin-right-sm " 
 								style="width:60px;height:60px"
 								></image>
 						</view>
 						<view class="content ">
-							<view class="text-black text-left">挂耳包</view>
-							<view class="text-gray  text-sm text-left">(加冰)</view>
+							<view class="text-black text-left">{{item.name}}</view>
+							<view class="text-gray  text-sm text-left">{{item.attDes}}</view>
+							<view class="flex justify-between">
+								<view class="text-gray text-sm">
+								 <text class="text-price"></text>
+								 <text class="text-red">{{item.Quantity * item.price}}</text>
+								 
+								</view>
+								<view class="text-gray   text-sm">									
+									<button class="cu-btn  round  bg-gray sm" @click="cutOrder()">-</button>
+									{{item.Quantity}}								
+									<button class="cu-btn  round bg-yellow text-white sm" @click="addOrder()">+</button>								
+								</view>
+							</view>
 						</view>
-						<view class="action">
-							<view class="text-gray   text-sm">x1</view>
-						</view>
-					</view>
-					<view class="cu-item margin-tb-sm">
-						<view class="action">
-							<image src='/static/images/strong/swiper.jpg' 
-								class="cu-avatar radius lg  bg-gray margin-right-sm " 
-								style="width:60px;height:60px"
-								></image>
-						</view>
-						<view class="content ">
-							<view class="text-black text-left">挂耳包</view>
-							<view class="text-gray  text-sm text-left">(加冰)</view>
-						</view>
-						<view class="action">
-							<view class="text-gray   text-sm">x1</view>
-						</view>
-					</view>
+					</view>					
 				</view>
 						
 				<view class="cu-bar bg-white justify-end">
 					<view class="action">
-						<button class="cu-btn line-green text-green" @click="closeShow()">取消</button>
-						<button class="cu-btn bg-green margin-left" @click="closeShow()">确定</button>
+						<button class="cu-btn line-yellow round " @click="closeShow()">取消</button>
+						<button class="cu-btn bg-yellow round margin-left" @click="closeShow()">确定</button>
 					</view>
 				</view>
 			</view>
@@ -243,8 +244,38 @@
 				verticalNavTop: 0,
 				load: true,
 				
-				showDetail:false, //展示详情
-				showBill:false, // 展示账单
+				showChoice:false, //展示详情
+				showOrder:false, // 展示账单
+				
+				// 当前选择的蟾皮								
+				currentItem:{
+					imgs:[
+						{src:""},
+					],
+					tags:[],
+					attributes:[
+						{
+							isSelect:false,
+							productAttributeName:"",
+							attributeValues:[],
+						},
+					],
+				},				
+				
+				categoryIndex:0,  // 当前选择的目录
+				itemIndex:0, // 当前选择产品标志位
+				attIndex:0, //属性标志位
+				valueIndex:0,// 值标志位
+				
+				key:"", //订单对应的 标签序列号
+				order:{
+					// '0_0_0_0':{Quantity:0}
+				}, //订单数据
+				totalPrice:0,
+				totalQuantity:0,
+				
+				
+				
 				
 				userInfo: {
 					id: '202232',
@@ -256,7 +287,7 @@
 				},
 			};
 		},
-		onLoad() {
+		async onLoad() {
 			uni.showLoading({
 				title: '加载中...',
 				mask: true
@@ -267,21 +298,63 @@
 			// 	list[i].name = String.fromCharCode(65 + i);
 			// 	list[i].id = i;
 			// }
+			this.onInit()
 			
-			let list = [
-				{name:"热销",id:0},
-				{name:"下午茶",id:1	},
-				{name:"拿铁",id:2},
-				{name:"美式",id:3},
-			]
 			
-			this.list = list;
-			this.listCur = list[0];
+			// 测试
+			
+			
+			// var productID = 1xt-xs margin-right-sm padding-xs" v-for="(tag , ta
+			// var res = await this.db.productGetDetail({ID : productID})
+			// console.log(res)
+			
+			
 		},
 		onReady() {
 			uni.hideLoading()
 		},
 		methods: {
+			
+			async onInit(){
+				// var res = await this.db.productGetList()
+				// var res = await this.db.categoryGetList()
+				var res = await this.db.productMenu()
+				console.log(res)
+				
+				var temp = res.data
+				// debugger
+				for(var i=0; i<temp.length ;i++)
+					temp[i].id = i
+				// this.list = temp
+				// this.listCur = temp[0];
+				console.log(temp)
+				this.setData({
+					list:temp
+				})
+				 
+				// let list = [
+				// 	{
+				// 		name:"热销",id:0,
+				// 		order_items:[1,],
+				// 	},
+				// 	{
+				// 		name:"下午茶",id:1	,						
+				// 		order_items:[1,2],
+				// 	},
+				// 	{name:"拿铁",id:2},
+				// 	{name:"美式",id:3},
+				// ]
+				
+				// this.list = list;
+				// // this.listCur = list[0];
+				// var a 
+				// wx.login({
+				// 	success(res){
+				// 		// console.log(res)
+				// 		a = res
+				// 	},
+				// })
+			},
 			
 			
 			TabSelect(e) {
@@ -298,6 +371,8 @@
 				if (this.load) {
 					for (let i = 0; i < this.list.length; i++) {
 						let view = uni.createSelectorQuery().select("#main-" + this.list[i].id);
+						console.log(this.list[i])
+						
 						view.fields({
 							size: true
 						}, data => {
@@ -322,47 +397,187 @@
 			/*************模态框**************/
 			
 			// 展示产品详情
-			openDetail(){
+			async openDetail(categoryIndex,itemIndex){						
+				var currentItem = this.$data.list[categoryIndex].products[itemIndex] 
+				// console.log(currentItem)
+				// 初始化订单数据							
 				this.setData({
-					showDetail:true,
-				})				
-			},
-			// 确定订单
-			confirmDetail(){
+					showChoice:true,
+					categoryIndex:categoryIndex,
+					itemIndex:itemIndex,
+					currentItem:currentItem
+				})						
+				this.initSelect()  // 点击窗口后，初始化选择框	
+				this.setKey() // 初始化key
 				
-				this.setData({
-					showDetail:false,
-				})		
 			},
 			
+			// 确定订单
+			confirmDetail(){ this.setData({showChoice:false,}) },			
 			// 展示订单
-			openBill(){
-				this.setData({
-					showBill:true,
-				})
-			},
+			openBill(){ this.setData({showOrder:true,}) },
 			// 关闭模态框
-			closeShow(){
-				this.setData({
-					showDetail:false,
-					showBill:false,
-				})
-			},
+			closeShow(){ this.setData({showChoice:false,showOrder:false,}) },
 			
 			/***********详情操作*********/
-			chooseCategory(e){
-				console.log("选择分类")
+			
+			// 切换SKU
+			clickAtt(attIndex,valueIndex){
+				var categoryIndex = this.$data.categoryIndex
+				var itemIndex = this.$data.itemIndex		
+				var currentItem = this.$data.currentItem								
+				for(var i=0; i<currentItem.attributes[attIndex].attributeValues.length ; i++){ //将已经选择的置false
+					currentItem.attributes[attIndex].attributeValues[i].isSelect = false
+				}
+				currentItem.attributes[attIndex].attributeValues[valueIndex].isSelect = true // 选择SKU
+				this.$data.currentItem = {}
+				this.$data.currentItem = currentItem // 更新当前SKU信息
+				this.$data.attIndex = attIndex		// 更新属性位置	
+				this.$data.valueIndex = valueIndex	// 更新值位置			
+				this.setKey() //设置当前key为SKU的序列号
 			},
 			// 增加数量
 			addItem(){
 				console.log("+")
-				
+				this.updateOrder(true)
+				this.updateMenu(true)
+				this.updateTotal()
 			},
 			// 减少数量
 			cutItem(){
 				console.log("-")
-				
+				this.updateOrder(false)
+				this.updateMenu(false)
+				this.updateTotal()				
 			},
+			
+			// 订单内的增删
+			addOrder(){				
+				this.addItem()	
+			},
+			cutOrder(){				
+				this.cutItem()	
+				if(Object.keys(this.$data.order ).length == 0)
+					this.closeShow()
+				// console.log(this.$data.order.length)
+			},
+			
+			/////////////////公共工具///////////////
+			// 初始化选择框
+			initSelect(){
+				var currentItem = this.$data.currentItem		
+				// 初始化订单数据
+				for(var i=0; i<currentItem.attributes.length ; i++){
+					for(var j=0; j<currentItem.attributes[i].attributeValues.length ; j++){						
+						if(j == 0)
+							currentItem.attributes[i].attributeValues[j].isSelect = true
+						else	
+							currentItem.attributes[i].attributeValues[j].isSelect = false
+					}
+				}
+			},						
+			// 设置key
+			setKey(){
+				var key =  this.$data.categoryIndex + "_" + this.$data.itemIndex + "_"
+				var currentItem = this.$data.currentItem
+				for(var i=0; i<currentItem.attributes.length ; i++){
+					for(var j=0; j<currentItem.attributes[i].attributeValues.length ; j++){
+						if(currentItem.attributes[i].attributeValues[j].isSelect == true){
+							key = key + i + "_" + j + "_" 
+						}
+					}
+				}
+				this.$data.key = key				
+			},
+			
+			// 更新已选择订单order
+			updateOrder(isAdd){				
+				var order = this.$data.order
+				var currentItem = this.$data.list[this.$data.categoryIndex].products[this.$data.itemIndex] // 当前
+				var Attributes = []	//上传属性列表		
+				var attDes="" // 属性描述
+				for(var i=0; i<currentItem.attributes.length ; i++){
+					for(var j=0; j<currentItem.attributes[i].attributeValues.length ; j++){
+						if(currentItem.attributes[i].attributeValues[j].isSelect == true){
+							Attributes.push({
+								"Id": currentItem.attributes[i].productAttributeID,
+								"Value": currentItem.attributes[i].attributeValues[j].id								
+							})
+							attDes = attDes + currentItem.attributes[i].attributeValues[j].name + "  "
+						}
+					}
+				}				
+				var key = this.$data.key
+				if( order.hasOwnProperty(key) == false){
+					order[key] = {
+						// 下单需要参数
+						ProductId:currentItem.id,
+						Quantity: 1,
+						Attributes:Attributes,
+						// 展示需要参数
+						cover:currentItem.imgs[0].src,
+						name:currentItem.name,
+						price:currentItem.price,
+						attDes:attDes,
+					}
+				} else {
+					if(isAdd)
+						order[key].Quantity += 1 
+					else{
+						order[key].Quantity -= 1 		
+						order[key].Quantity < 0 ? 0 :order[key].Quantity
+					}
+						
+				}
+				
+				// 删除key下的数据
+				if(order[key].Quantity <= 0)
+					delete order[key]
+				this.$data.order = []
+				this.$data.order = order
+				
+				
+				// console.log(key,Attributes,attDes)
+				
+				// order[key] = OrderItems
+			},
+			
+			// 更新menu，选项卡的数量
+			updateMenu(isAdd){
+				var list = this.$data.list
+				// debugger
+				if( list[this.$data.categoryIndex].products[this.$data.itemIndex].hasOwnProperty("num") == false)
+					list[this.$data.categoryIndex].products[this.$data.itemIndex].num = 0
+					
+				if(isAdd)
+					list[this.$data.categoryIndex].products[this.$data.itemIndex].num += 1 
+				else{
+					
+					list[this.$data.categoryIndex].products[this.$data.itemIndex].num -= 1 
+					list[this.$data.categoryIndex].products[this.$data.itemIndex].num < 0 ? 0 :list[this.$data.categoryIndex].products[this.$data.itemIndex].num
+				}
+								
+				this.$data.list = [] 
+				this.$data.list = list
+			},
+			
+			updateTotal(){
+				var totalPrice = 0
+				var totalQuantity = 0
+				var order = this.$data.order
+				for(var i in order){
+					totalPrice += order[i].Quantity * order[i].price
+					totalQuantity += order[i].Quantity
+				}
+				console.log(totalPrice,totalQuantity)
+				this.setData({
+					totalPrice:totalPrice,
+					totalQuantity:totalQuantity,
+				})
+			},
+			
+			
+			
 			
 			/******路由******/
 			toPay(){
