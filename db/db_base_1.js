@@ -1,3 +1,5 @@
+
+var step = 0
 class dbBase{	
 	/**
 	 * @statics 静态变量
@@ -97,11 +99,23 @@ class dbBase{
 			data["Session"] = "5IRWgui7bOjkYGlrvi766K9mKd2tRwIgC4WzmK+7X+CZp7kSGSmJSIqltssQ/OrB9p2lDvRpvUin0yjie7GJ7mZb5PXUZTTlx8w737wzdRzwrePHmYWLj4bUvFUrzWCjB6YaLiWte5+/W7YZrm6CzseU4jAvZ3vckhY+T+qfdrCrtig+LpW4XNwmw3sWuotpQehImOyje4aK2zIQ/8UF6PoM/EgItRoOGfplfX0FuESN4z+Fd6vjxAcxHrhuzJ6RLOCiL+0gTCka+kRdZERzxXl262keOsnn1X6CvwZfFKeFckWkF4NYPw1ES5ELF0q2+aiznxXSXzUzatU5xirc1XcySPMCSzLbjd+8DTaWs4l11GTOXxqxIQTecC857+rCBHOjFB3lI8g="
 			data["AppId"] = this.APP_ID
 		
-
+		
+		// uni.request({
+		// 	url:this.HOST_URL,
+		// 	method:"POST",
+		// 	data:{
+		// 		logmsg:options.url 
+		// 	}
+		// })
+			var that = this
 			// debugger
 			// console.log(uni.getStorageSync("token"))
+			
+			var url = options.url + "?sn=" + step
+			step++
+			
             uni.request({
-                url: options.url,
+                url: url,
                 method: options.method || "POST",
                 header: {
                     'content-type': 'application/x-www-form-urlencoded' ,// 默认值
@@ -113,12 +127,21 @@ class dbBase{
                     resolve(res)
                 },
                 fail(res) {
-                    console.log(res)
+                    console.log(url)
+					
+					uni.request({
+						url:that.HOST_URL + "api/log/addlog/",
+						method:"POST",
+						data:{
+							logmsg:url + res
+						}
+					})
                     reject(res)
                 },
             })
         })
     }
+	
 	
 }
 module.exports = dbBase

@@ -49,6 +49,47 @@ class son extends fahter{
 			this.base({url: this.HOST_URL +  "api/getdetail/",data: data,}).then(res => {resolve(res.data)}).catch(res => reject(res))
 		})
 	}
+	
+	
+	/**
+	 * @method 3 添加客户收货地址
+	 * @param 
+	 */
+	customerAddShipAddr(data) {
+		return new Promise((resolve, reject) => {
+			this.base({url: this.HOST_URL +  "api/customer/addshipaddr/",data: data,}).then(res => {resolve(res.data)}).catch(res => reject(res))
+		})
+	}
+	
+	/**
+	 * @method 4 更新客户收货地址
+	 * @param 
+	 */
+	customerUpdateShipAddr(data) {
+		return new Promise((resolve, reject) => {
+			this.base({url: this.HOST_URL +  "api/customer/updateshipaddr/",data: data,}).then(res => {resolve(res.data)}).catch(res => reject(res))
+		})
+	}
+	
+	/**
+	 * @method 5 获取客户收货地址
+	 * @param 
+	 */
+	customerShipAddrs(data) {
+		return new Promise((resolve, reject) => {
+			this.base({url: this.HOST_URL +  "api/customer/shipaddrs/",data: data,}).then(res => {resolve(res.data)}).catch(res => reject(res))
+		})
+	}
+	/**
+	 * @method 6 导入地址数据
+	 * @param 
+	 */
+	customerParseAddrs(data) {
+		return new Promise((resolve, reject) => {
+			this.base({url: this.HOST_URL +  "api/parse/addr/",data: data,}).then(res => {resolve(res.data)}).catch(res => reject(res))
+		})
+	}
+	
 
 }
 module.exports = son

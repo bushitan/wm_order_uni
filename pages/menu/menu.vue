@@ -6,24 +6,34 @@
 				<block slot="content">垂直导航</block>
 			</cu-custom>
 		</view> -->
-		<swiper class="screen-swiper round-dot" :indicator-dots="true" :circular="true" :autoplay="true" interval="5000"
+		<swiper class="screen-swiper round-dot bg-white" :indicator-dots="true" :circular="true" :autoplay="true" interval="5000"
 		 duration="500">
-			<swiper-item v-for="(item,index) in 4" :key="index">
-				<image src="/static/images/strong/swiper.jpg" mode="aspectFill"></image>
+			<swiper-item class="swiper-height" v-for="(item,index) in swiperList" :key="index">
+				<image :src="item.url" mode="aspectFill"></image>
 			</swiper-item>
 		</swiper>
+	<!-- 	<swiper class="screen-swiper card-swiper round-dot}}" indicator-dots="true" circular="true" autoplay="true" interval="5000" duration="500" bindchange="cardSwiper" indicator-color="#8799a3" indicator-active-color="#0081ff">
+			  <swiper-item v-for="(item,idnex) in swiperList" bind:key="index" :class="cardCur==index?'cur':''">
+				<view class="swiper-item">
+				  <image :src="item.url" mode="aspectFill" :if="item.type=='image'"></image>
+				  <video :src="item.url" autoplay loop muted show-play-btn="false" controls="false" objectFit="cover" v-if="item.type=='video'"></video>
+				</view>
+			  </swiper-item>
+		</swiper> -->
 		
 		
 		<view class="VerticalBox">
 			<scroll-view class="VerticalNav nav" scroll-y scroll-with-animation :scroll-top="verticalNavTop" style="height:calc(100vh - 375upx - 50px)">
-				<view class="cu-item" :class="index==tabCur?'text-yellow text-bold  bg-white cur':''" v-for="(category,index) in list" :key="index" @tap="TabSelect"
-				 :data-id="index">
+				<view class="cu-item" 
+				:class="index==tabCur?'text-yellow text-bold  bg-white cur flex align-center ':''" 
+				v-for="(category,index) in list" :key="index" @tap="TabSelect" :data-id="index"
+				style="white-space: nowrap;    overflow: hidden;    text-overflow: ellipsis;">
 					{{category.category.cate_name}}
 				</view>
 				<view class="pg-space-xxl"></view>
 				<view class="pg-space-xxl"></view>				
 			</scroll-view>
-			<scroll-view class="VerticalMain" scroll-y scroll-with-animation style="height:calc(100vh - 375upx - 50px)"
+			<scroll-view class="VerticalMain" scroll-y scroll-with-animation style="height:calc(100vh - 375upx - 0px)"
 			 :scroll-into-view="'main-'+mainCur" @scroll="VerticalMain">
 				<view class="padding-top padding-lr" v-for="(category,index) in list" :key="index" :id="'main-'+index">
 					<view class="cu-bar  bg-white">
@@ -34,9 +44,10 @@
 					<view class="cu-list menu ">
 						<view class="cu-item " style=" align-items: flex-start"  v-for="(item,itemIndex) in category.products"  v-bind:key="itemIndex">
 							<view class="">
-								<image :src='item.imgs[0].src' 
+								<image :src='item.imgs? item.imgs[0] ? item.imgs[0].src : "" :"" '
 									class="cu-avatar radius lg  bg-gray margin-right-sm " 
 									style="width:60px;height:60px"
+									mode="aspectFill"
 									></image>
 							</view>							
 							<view class="action basis-xl padding-bottom" >
@@ -47,9 +58,16 @@
 									<text class="bg-gray radius  text-xs margin-right-sm "  v-for="(tag,tagIndex) in item.tags" v-bind:key="tagIndex"
 									style="padding:2px 3px;margin-top: 20px;">{{tag}}</text>				
 								</view>
-								<view class="text-gray text-xs margin-top-xs">
+								<!-- <view class="text-gray text-xs margin-top-xs">
 									月销售234
+								</view> -->								
+								<!-- <view class="flex flex-start margin-top-sm">
+									<text class="text-gray radius  text-sm  text-left" >{{item.shortDescription}}</text>					
+								</view> -->
+								<view class="margin-top-xs" v-if="item.shortDescription? true :false " >
+									<text class="bg-gray radius  text-xs margin-right-sm " style="padding:2px 3px;">{{item.shortDescription}}</text>				
 								</view>
+								
 								<view class="margin-top-xs flex justify-between align-center">
 									<view class="text-red text-lg">
 										<text class="text-price"></text>{{item.price}}
@@ -71,12 +89,12 @@
 		
 		
 		
-		<view class="bg-white cu-list menu-avatar" style="position: fixed; bottom:50px; left: 0; right: 0;">
+		<view class="bg-white cu-list menu-avatar" style="position: fixed; bottom:50px; left: 0; right: 0;" v-if="Object.keys(order).length>0">
 			<view class="cu-item" >
 				<view class="cu-avatar round lg " @click="openBill()"> 
 					<view  style="position:relative">
-						<image src='/static/images/icon/my.png'
-							class="cu-avatar  lg  " 
+						<image  src='/static/images/strong/logo.jpg'
+							class="cu-avatar  lg round " 
 							style="background-color:#ffffff"
 							></image>
 							
@@ -101,7 +119,7 @@
 					 		class="cu-avatar radius lg  bg-gray margin-right-sm" 
 					 		style="width: 23px;height: 23px;"
 					 		></image>
-					 	顺风专送 | 支持自取
+					 	顺丰专送 | 支持自取
 					  </view>
 				</view>
 				<view class="">
@@ -113,8 +131,7 @@
 			
 		<!-- 详情选项 -->
 		<view :class="['cu-modal', showChoice?'show':'']" >
-			<!-- <view class="cu-dialog" :style="' position: absolute;top:'+ (CustomBar ) +'px;bottom:15px;left: 15px;right: 15px;'"> -->
-			<view class="cu-dialog" :style="' position: absolute;top:30px;bottom:30px;left: 15px;right: 15px;'">
+			<view class="cu-dialog" :style="' position: absolute;top:'+ (CustomBar ) +'px;bottom:15px;left: 15px;right: 15px;'">
 				<view class="cu-bar bg-white justify-end">
 				  <view class="content text-bold">{{currentItem.name}}</view>
 				  <view class="action" @click="closeShow()">
@@ -128,8 +145,8 @@
 				<scroll-view 
 					scroll-y scroll-with-animation 
 					:style="'width: 100%;height: calc(100vh - 50px - 100px - 30px - ' + CustomBar + 'px)'">
-					<view class="">
-						<image :src="currentItem.imgs[0].src" class="block " style="width: 100%;"  mode="widthFix"></image>
+					<view class="" >
+						<image :src=' currentItem.imgs? currentItem.imgs[0] ? currentItem.imgs[0].src : "" :"" ' class="block " style="width: 100%;"  mode="widthFix"></image>
 					</view>
 					<view class="padding-lr margin-top">
 						<view class="flex flex-start">
@@ -137,7 +154,7 @@
 								v-for="(tag , tagIndex ) in currentItem.tags" v-bind:key="tagIndex">{{tag}}</text>						
 						</view>
 						<view class="flex flex-start margin-top-sm">
-							<text class="text-gray radius  text-sm  text-left" >{{currentItem.fullDescription}}</text>					
+							<text class="text-gray radius  text-sm  text-left" >{{currentItem.shortDescription}}</text>					
 						</view>
 					</view>
 					<view class="padding-lr margin-top " v-for="(att , attIndex) in currentItem.attributes" v-bind:key="attIndex">
@@ -151,33 +168,39 @@
 							  <!-- class="cu-btn radius text-sm text-center margin-right-sm margin-bottom-sm"  -->
 							<button :class="['cu-btn radius text-sm text-center margin-right-sm margin-bottom-sm' , value.isSelect?'bg-yellow text-white' :'line-gray']" 
 							v-for="(value,valueIndex) in att.attributeValues" v-bind:key="valueIndex"
-							@click="clickAtt(attIndex,valueIndex)">{{value.name}},{{value.isSelect}}</button>						
+							@click="clickAtt(attIndex,valueIndex)">{{value.name}}</button>						
 						</view>
 					</view>
 					<view class="pg-space-xxl"></view>
 				</scroll-view>
 				<view class="bg-white" style="position: absolute ;bottom: 0; left: 0;right: 0;">
-					<!-- <view class="padding-lr padding-tb-sm  bg-gray">
+					<view class="padding-lr padding-tb-sm  bg-white solid-bottom" :hidden="order[key]?order[key].attDes == ''? true:false : true">
 						<view class="flex flex-start text-sm align-center">		
-							<text class="text-gray ">已选规格：</text>已经选择规格						
+							<text class="text-gray ">已选规格：</text>{{order[key]?  order[key].attDes:""}}						
 						</view>					
-					</view> -->
+					</view>
 					
 					<view class="padding ">
 						<view class="flex justify-between align-center text-xxl">						
 							<view class="text-red ">
-								<text class="text-price"></text>{{ order[key] ? order[key].Quantity * order[key].price : 0}}
+								<text class="text-price"></text>{{currentItem.price}}
 							</view>				
 							<view class="flex justify-between align-center">
-								<button class="cu-btn  round  bg-gray sm "  
+								<!-- <button class="cu-btn  round  bg-gray sm "  
 									:hidden="order[key]? false : true"
-									@click="cutItem()">-</button>
-								<text class="padding-lr-sm">{{order[key]? order[key].Quantity : 0 }}</text>
-								<button class="cu-btn  round bg-yellow text-white sm" @click="addItem()">+</button>
+									@click="cutItem()">
+								</button> -->
+								
+								<image src="/static/images/icon/cut.png"  class="pg-icon" @click="cutItem()" 	:hidden="order[key]? false : true"></image>								
+								<text class="padding-lr-sm">{{order[key]? order[key].Quantity : 0 }}</text>								
+								<image src="/static/images/icon/add.png"  class="pg-icon" @click="addItem()"></image>
+								<!-- <button class="cu-btn text-bold round bg-yellow text-white text-lg pg-btn-icon"  @click="addItem()">
+									+
+								</button> -->
 							</view>						
 						</view>
 						<view class="margin-top-sm">
-							<button class="cu-btn block round bg-yellow text-white lg" @click="confirmDetail()">选择</button>
+							<button class="cu-btn block round bg-yellow text-white lg" @click="confirmDetail()">确定</button>
 						</view>
 					</view>
 				</view>
@@ -197,24 +220,28 @@
 				<view class="cu-list menu bg-white">
 					<view class="cu-item margin-tb-sm" v-for="(item , key) in order" v-bind:key="key">
 						<view class="action">
-							<image :src='item.cover' 
+							<image :src='item?item.cover:""' 
 								class="cu-avatar radius lg  bg-gray margin-right-sm " 
 								style="width:60px;height:60px"
+								mode="aspectFill"
 								></image>
 						</view>
 						<view class="content ">
 							<view class="text-black text-left">{{item.name}}</view>
 							<view class="text-gray  text-sm text-left">{{item.attDes}}</view>
 							<view class="flex justify-between">
-								<view class="text-gray text-sm">
-								 <text class="text-price"></text>
-								 <text class="text-red">{{item.Quantity * item.price}}</text>
-								 
+								<view class="text-gray ">
+									 <text class="text-price"></text>
+									 <text class="text-red">{{item.total}}</text>
 								</view>
-								<view class="text-gray   text-sm">									
-									<button class="cu-btn  round  bg-gray sm" @click="cutOrder()">-</button>
-									{{item.Quantity}}								
-									<button class="cu-btn  round bg-yellow text-white sm" @click="addOrder()">+</button>								
+								<view class="text-gray  flex justify-between align-center">									
+									<!-- <button class="cu-btn  round  bg-gray sm" @click="cutOrder(item.categoryIndex,item.itemIndex,item.attIndex,item.valueIndex)">-</button> -->
+									<image src="/static/images/icon/cut.png"  class="pg-icon" @click="cutOrder(item.categoryIndex,item.itemIndex,item.attIndex,item.valueIndex)"></image>
+									<!-- {{item.Quantity}}	 -->
+									<text class="padding-lr-xs ">{{order[key]? order[key].Quantity : 0 }}</text>								
+									<!-- <button class="cu-btn  round bg-yellow text-white sm" @click="addOrder(item.categoryIndex,item.itemIndex,item.attIndex,item.valueIndex)">+</button>								 -->
+									<image src="/static/images/icon/add.png"  class="pg-icon" @click="addOrder(item.categoryIndex,item.itemIndex,item.attIndex,item.valueIndex)"></image>
+								
 								</view>
 							</view>
 						</view>
@@ -224,7 +251,7 @@
 				<view class="cu-bar bg-white justify-end">
 					<view class="action">
 						<button class="cu-btn line-yellow round " @click="closeShow()">取消</button>
-						<button class="cu-btn bg-yellow round margin-left" @click="closeShow()">确定</button>
+						<button class="cu-btn bg-yellow text-white round margin-left" @click="closeShow()">确定</button>
 					</view>
 				</view>
 			</view>
@@ -238,6 +265,28 @@
 		data() {
 			return {
 				CustomBar:this.CustomBar,
+				SpaceBottom:50,
+							
+				cardCur: 0,
+				swiperList:[
+					{
+					  id: 0,
+					  type: 'image',
+					  url: "/static/images/strong/swiper1.jpg",
+					},
+					{
+					  id: 0,
+					  type: 'image',
+					  url: "/static/images/strong/swiper2.jpg",
+					},
+					{
+					  id: 0,
+					  type: 'image',
+					  url: "/static/images/strong/swiper3.jpg",
+					},
+				],
+				
+				
 				list: [],
 				tabCur: 0,
 				mainCur: 0,
@@ -277,14 +326,14 @@
 				
 				
 				
-				userInfo: {
-					id: '202232',
-					name: '',
-					logo:"http://192.168.200.103:8083/wm_order_uni/static/images/strong/swiper.jpg",
-					allScoreNum: 1,
-					allPrizeNum: 1,
-					allStoreNum: 1,
-				},
+				// userInfo: {
+				// 	id: '202232',
+				// 	name: '',
+				// 	logo:"http://192.168.200.103:8083/wm_order_uni/static/images/strong/swiper.jpg",
+				// 	allScoreNum: 1,
+				// 	allPrizeNum: 1,
+				// 	allStoreNum: 1,
+				// },
 			};
 		},
 		async onLoad() {
@@ -308,18 +357,35 @@
 			// var res = await this.db.productGetDetail({ID : productID})
 			// console.log(res)
 			
+			var that = this 
+			setInterval(function(){that.test()},500)
+			
 			
 		},
 		onReady() {
 			uni.hideLoading()
 		},
 		methods: {
-			
+			async test(){
+				
+				var res = await this.db.productMenu()
+				if(res.hasOwnProperty("msg") == false){
+					console.log(  new Date() )
+					uni.request({
+						url:this.db.HOST_URL + "api/log/addlog/",
+						method:"POST",
+						data:{
+							logmsg:'error:'
+						}
+					})
+				}
+				// console.log(res)
+			},
 			async onInit(){
 				// var res = await this.db.productGetList()
 				// var res = await this.db.categoryGetList()
 				var res = await this.db.productMenu()
-				console.log(res)
+				// console.log(res)
 				
 				var temp = res.data
 				// debugger
@@ -398,17 +464,19 @@
 			
 			// 展示产品详情
 			async openDetail(categoryIndex,itemIndex){						
-				var currentItem = this.$data.list[categoryIndex].products[itemIndex] 
+				// var currentItem = this.$data.list[categoryIndex].products[itemIndex] 
 				// console.log(currentItem)
 				// 初始化订单数据							
 				this.setData({
 					showChoice:true,
 					categoryIndex:categoryIndex,
 					itemIndex:itemIndex,
-					currentItem:currentItem
-				})						
+					// currentItem:currentItem
+				})				
+						
+				this.updateCurrentItem()
 				this.initSelect()  // 点击窗口后，初始化选择框	
-				this.setKey() // 初始化key
+				this.updateKey() // 初始化key
 				
 			},
 			
@@ -434,28 +502,49 @@
 				this.$data.currentItem = currentItem // 更新当前SKU信息
 				this.$data.attIndex = attIndex		// 更新属性位置	
 				this.$data.valueIndex = valueIndex	// 更新值位置			
-				this.setKey() //设置当前key为SKU的序列号
+				this.updateKey() //设置当前key为SKU的序列号
 			},
 			// 增加数量
 			addItem(){
 				console.log("+")
+				this.updateCurrentItem()
+				this.updateKey()
 				this.updateOrder(true)
 				this.updateMenu(true)
 				this.updateTotal()
+				
+				uni.setStorageSync("order", this.$data.order)
 			},
 			// 减少数量
 			cutItem(){
 				console.log("-")
+				this.updateCurrentItem()
+				this.updateKey()
 				this.updateOrder(false)
 				this.updateMenu(false)
-				this.updateTotal()				
+				this.updateTotal()
+				
+				uni.setStorageSync("order", this.$data.order)				
 			},
 			
 			// 订单内的增删
-			addOrder(){				
+			addOrder(categoryIndex,itemIndex,attIndex,valueIndex){
+				this.setData({
+					categoryIndex: categoryIndex,  // 当前选择的目录
+					itemIndex:itemIndex, // 当前选择产品标志位
+					attIndex:attIndex, //属性标志位
+					valueIndex:valueIndex,
+				})
 				this.addItem()	
+				
 			},
-			cutOrder(){				
+			cutOrder(categoryIndex,itemIndex,attIndex,valueIndex){		
+				this.setData({
+					categoryIndex: categoryIndex,  // 当前选择的目录
+					itemIndex:itemIndex, // 当前选择产品标志位
+					attIndex:attIndex, //属性标志位
+					valueIndex:valueIndex,
+				})
 				this.cutItem()	
 				if(Object.keys(this.$data.order ).length == 0)
 					this.closeShow()
@@ -475,9 +564,13 @@
 							currentItem.attributes[i].attributeValues[j].isSelect = false
 					}
 				}
-			},						
+			},			
+			// 设置当前订单
+			updateCurrentItem(){
+				this.setData({ currentItem : this.$data.list[this.$data.categoryIndex].products[this.$data.itemIndex] , })
+			},
 			// 设置key
-			setKey(){
+			updateKey(){
 				var key =  this.$data.categoryIndex + "_" + this.$data.itemIndex + "_"
 				var currentItem = this.$data.currentItem
 				for(var i=0; i<currentItem.attributes.length ; i++){
@@ -493,7 +586,8 @@
 			// 更新已选择订单order
 			updateOrder(isAdd){				
 				var order = this.$data.order
-				var currentItem = this.$data.list[this.$data.categoryIndex].products[this.$data.itemIndex] // 当前
+				// var currentItem = this.$data.list[this.$data.categoryIndex].products[this.$data.itemIndex] // 当前
+				var currentItem = this.$data.currentItem
 				var Attributes = []	//上传属性列表		
 				var attDes="" // 属性描述
 				for(var i=0; i<currentItem.attributes.length ; i++){
@@ -503,10 +597,11 @@
 								"Id": currentItem.attributes[i].productAttributeID,
 								"Value": currentItem.attributes[i].attributeValues[j].id								
 							})
-							attDes = attDes + currentItem.attributes[i].attributeValues[j].name + "  "
+							attDes = attDes + currentItem.attributes[i].attributeValues[j].name + "、"
 						}
 					}
-				}				
+				}	
+				attDes = attDes.substr(0, attDes.length - 1);  // 删除最后一个字符
 				var key = this.$data.key
 				if( order.hasOwnProperty(key) == false){
 					order[key] = {
@@ -515,10 +610,17 @@
 						Quantity: 1,
 						Attributes:Attributes,
 						// 展示需要参数
-						cover:currentItem.imgs[0].src,
+						cover:currentItem.imgs? currentItem.imgs[0] ? currentItem.imgs[0].src : "" :"" ,
 						name:currentItem.name,
 						price:currentItem.price,
+						total:parseFloat(currentItem.price).toFixed(2),
 						attDes:attDes,
+						// 订单位置标记
+						categoryIndex: this.$data.categoryIndex,  // 当前选择的目录
+						itemIndex:this.$data.itemIndex, // 当前选择产品标志位
+						attIndex:this.$data.attIndex, //属性标志位
+						valueIndex:this.$data.valueIndex,// 值标志位
+						
 					}
 				} else {
 					if(isAdd)
@@ -527,7 +629,7 @@
 						order[key].Quantity -= 1 		
 						order[key].Quantity < 0 ? 0 :order[key].Quantity
 					}
-						
+					order[key].total = parseFloat( order[key].Quantity * order[key].price ).toFixed(2)
 				}
 				
 				// 删除key下的数据
@@ -571,8 +673,8 @@
 				}
 				console.log(totalPrice,totalQuantity)
 				this.setData({
-					totalPrice:totalPrice,
-					totalQuantity:totalQuantity,
+					totalPrice:parseFloat(totalPrice).toFixed(2), 
+					totalQuantity: parseInt( totalQuantity ),
 				})
 			},
 			
@@ -596,6 +698,13 @@
 	/* background-color: var(--ghostWhite); */
 		/* background-color: #fafafa; */
 	}
+	.screen-swiper , .screen-swiper swiper-item,.screen-swiper image{
+		
+	}
+	.swiper-height{
+		height: 250rpx;
+	}
+	
 	.fixed {
 		position: fixed;
 		z-index: 99;

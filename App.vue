@@ -60,8 +60,13 @@
 	.pg-icon{
 		width: 50rpx;
 		height: 50rpx;
-		/* display: inline-block; */
 	}
+	/* .pg-icon{
+		width: 50rpx;
+		height: 50rpx;
+	} */
+	
+	
 	.pg-image-block{width: 100%;display: block;}
 	
 	.pg-space { height: 10px; }
@@ -99,9 +104,21 @@
 		
 	}
 	
+	
+	.pg-btn-icon{
+		padding:0 !important;;
+		width:23px !important;
+		height: 23px !important;;
+		border-radius: 50% !important;;
+	}
+	
+	
 	.bg-cur{
 		background-color: #fcf7e9 !important;
 	}
+	
+	
+	
 	
 	.cu-item::after{
 		border: none !important;

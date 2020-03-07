@@ -6,22 +6,22 @@ class son extends fahter{
 		super()
 	}
 	
-	/**
-	 * @method 1  获取具体订单项
-	 * @param 
-	 * 		orderId
-			Limit
-			Page
-			SinceId
-			Fields
-			AppId
-			Session
-	 */
-	orderItemGet(data) {
-		return new Promise((resolve, reject) => {
-			this.base({url: this.HOST_URL +  "api/orders/getitems/",data: data,method:"GET"}).then(res => {resolve(res.data)}).catch(res => reject(res))
-		})
-	}
+	// /**
+	//  * @method 1  获取具体订单项
+	//  * @param 
+	//  * 		orderId
+	// 		Limit
+	// 		Page
+	// 		SinceId
+	// 		Fields
+	// 		AppId
+	// 		Session
+	//  */
+	// orderItemGet(data) {
+	// 	return new Promise((resolve, reject) => {
+	// 		this.base({url: this.HOST_URL +  "api/orders/getitems/",data: data,method:"GET"}).then(res => {resolve(res.data)}).catch(res => reject(res))
+	// 	})
+	// }
 	/**
 	 * @method 2  获取订单项数
 	 * @param 

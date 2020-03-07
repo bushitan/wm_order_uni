@@ -22,10 +22,10 @@
 		
 		<view class="cu-card padding-lr margin-top">
 		    <view class=" pg-radius  shadow shadow-warp bg-white">
-				<image  src="../../static/images/strong/banner.jpg" mode="widthFix" class="pg-image-block"></image>
+				<image  src="/static/images/strong/swiper1.jpg" mode="widthFix" class="pg-image-block"></image>
 		    </view>
 		</view>
-		
+	<!-- 	
 		<view class="cu-card padding-lr margin-top ">
 		    <view class=" pg-radius  shadow shadow-warp bg-white">
 		        <view class="cu-bar  solid-bottom ">
@@ -36,11 +36,10 @@
 		            <view class="action">
 						<text class="text-grey  text-sm" @click="openMini">查看</text>
 						<button class="text-grey  text-sm" open-type="openSetting">打开setting</button>
-						<!-- <view class="pg-arrow"></view> -->
 		            </view>
 		        </view>
 		    </view>
-		</view>
+		</view> -->
 		
 		<view class="cu-card padding-lr margin-top ">
 		    <view class=" pg-radius  shadow shadow-warp bg-white">
@@ -79,7 +78,7 @@
 						<view class="pg-arrow"></view>
 				   </view>
 				</view>
-				<view class="cu-bar  solid-bottom " @click="toAddress()" >
+				<!-- <view class="cu-bar  solid-bottom " @click="toAddress()" >
 					<view class="action">
 						<text class="cuIcon-title text-yellow text-sm"></text> 
 						<text class="text-sm">我的地址</text> 	
@@ -87,7 +86,7 @@
 					<view class="action ">
 						<view class="pg-arrow"></view>
 				   </view>
-				</view>
+				</view> -->
 				<view class="cu-bar  solid-bottom " @click="toOrder()" >
 					<view class="action">
 						<text class="cuIcon-title text-yellow text-sm"></text> 

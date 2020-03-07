@@ -1,11 +1,11 @@
 <template>
 	<view class="">	
 		<!--状态栏区域-->			
-		<view class="text-xl text-bold flex flex-start align-center padding">			
-			<text>{{order.order_status}} | </text>
-			<text>{{order.shipping_status}} | </text>
-			<text>{{order.payment_status}}</text>
-			<view class="pg-arrow"></view>
+		<view class="text-xl text-bold flex justify-between align-center padding">
+            <view>
+                <text>订单ID：{{order.id}}</text>
+            </view>				
+            <button class="cu-btn round line-yellow" @click="clickCancle">取消订单</button>
 		</view>
 		
 <!-- 		<view class="cu-card padding-lr ">
@@ -28,7 +28,7 @@
 			</view>
 		</view> -->
 		
-		<view class="cu-card padding-lr margin-top">
+		<view class="cu-card padding-lr ">
 			<view class=" bg-white pg-radius  shadow shadow-warp">
 				<view class="cu-bar  solid-bottom ">
 					<view class="action">
@@ -51,7 +51,13 @@
 						<view class="content">
 							<view class="text-black   text">{{item.product.name}}</view>
 							<view class="text-gray   text-sm">{{item.attr_desc}}</view>
-							<view class="text-gray   text-sm">x{{item.quantity}}</view>
+							<view class="text-gray   text-sm">数量：{{item.quantity}}</view>
+							<view class="text-gray   text-sm">
+								单价：<text class="text-price"></text>{{item.product.price}}
+							</view>
+							<view class="text-gray  text-sm">
+								包装费：<text class="text-price"></text>{{item.product.price}} 
+							</view>
 						</view>
 						<view class="action">
 							<text class="text-price"></text>{{item.product.price}}
@@ -77,12 +83,12 @@
 				</view>
 				
 				<view class="cu-list menu ">
-					<view class="cu-item ">
+					<!-- <view class="cu-item ">
 						<view class="action">包装费</view>
 						<view class="action">
 							<text class="text-price"></text>4
 						</view>
-					</view>
+					</view> -->
 					<view class="cu-item ">
 						<view class="action">配送费</view>
 						<view class="action">
@@ -211,10 +217,10 @@
 					</view>
 					<view class="cu-item ">
 						<view class="content">
-							<text class="text-gray text-sm">用餐人数</text>
+							<text class="text-gray text-sm">备注信息</text>
 						</view>
 						<view class="action ">
-							<view class="text-black text-sm">2人</view>
+							<view class="text-black text-sm">{{order.checkout_attribute_description}}</view>
 						</view>
 					</view>
 				</view>				
@@ -223,7 +229,7 @@
 		
 		
 		<view class=" padding-xs flex  align-center margin-top justify-center">
-			<text class="text-center  text-gray">{{order?"信息加载完毕":"信息加载中"}}</text>		
+			<text class="text-center  text-gray text-sm">{{order?"信息加载完毕":"信息加载中"}}</text>		
 		</view>
 		<view class="pg-space-xxl"></view>		
 		
@@ -418,6 +424,10 @@
 				uni.navigateBack({
 					
 				})
+			},
+			// 取消订单
+			clickCancle(){
+				console.log("取消订单")
 			},
 		}
 	}

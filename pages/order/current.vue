@@ -1,7 +1,9 @@
 <template>
 	<view class="">
 		<!-- <view class="box" :style="'height:'+ CustomBar +'px;'"></view> -->
-		<!-- <view class="padding prepare"  :style="'top:' +CustomBar +'px;'" >
+		<!-- <view class="padding prepare"  :style="'top:' +CustomBar +'px;'"> -->
+			
+		<view class="padding prepare"   v-if="list.length==0">			
 			<view class="bg-white pg-radius flex justify-center align-center"  style="height: 100%;">
 				<view class="text-center">
 					<view class="">
@@ -18,72 +20,75 @@
 					</view>					
 				</view>				
 			</view>
-		</view> -->
+		</view>
 	
-		
-		<view class="cu-card padding-lr margin-top" @click="toDetail"  v-for="(order,key) in list">
-			<view class=" bg-white pg-radius  shadow shadow-warp">
-				<view class="cu-bar  solid-bottom ">
-					<view class="action">
-						<text class="cuIcon-title text-yellow "></text>                
-						<text class="text-black text-sm">下单时间（{{order.paid_dateutc}}）</text>      
+		<view class="" v-else>
+				
+			<view class="cu-card padding-lr margin-top" @click="toDetail"  v-for="(order,key) in list">
+				<view class=" bg-white pg-radius  shadow shadow-warp">
+					<view class="cu-bar  solid-bottom ">
+						<view class="action">
+							<text class="cuIcon-title text-yellow "></text>                
+							<text class="text-black text-sm">下单时间（{{order.paid_dateutc}}）</text>      
+						</view>
+						<view class="action">
+							<view class="text-yellow text-bold">制作中</view>
+							<view class="pg-arrow"></view>
+						</view>
 					</view>
-					<view class="action">
-						<view class="text-yellow text-bold">制作中</view>
-						<view class="pg-arrow"></view>
+					<view class="cu-list menu ">
+						<view class="cu-item margin-tb-sm">
+							<view class="action">
+								<view class="text-gray text-sm">下单门店</view>
+							</view>
+							<view class="action">
+								<view class=" text-sm ">{{order.pickup_address}}</view>
+							</view>
+						</view>
+						<view class="cu-item margin-tb-sm">
+							<view class="action">
+								<view class="text-gray text-sm">配送方式</view>
+							</view>
+							<view class="action">
+								<view class=" text-sm ">{{order.pick_up_in_store?"自取":"外卖"}}</view>
+							</view>
+						</view>				
+						<view class="cu-item ">
+							<view class="action">
+								<view class="text-gray text-sm">订单产品</view>
+							</view>
+						</view>
+						<view class="cu-item margin-tb-sm" v-for="(item,key) in order.order_items">
+							<view class="action">
+								<image :src='item.product.images[0]' 
+									class="cu-avatar radius lg  bg-gray margin-right-sm " 
+									style="width:60px;height:60px"
+									></image>
+							</view>
+							<view class="content">
+								<view class="text-black   text">{{item.product.name}}</view>
+								<view class="text-gray   text-sm">{{item.attr_desc}}</view>
+							</view>
+							<view class="action">
+								<view class="text-gray   text-sm">x{{item.quantity}}</view>
+							</view>
+						</view>
 					</view>
+					<view class="cu-bar  solid-bottom ">
+						<view class="action"></view>
+						<view class="action">						
+							<text class="text-black ">共3件商品</text>
+						</view>
+					</view>					
 				</view>
-				<view class="cu-list menu ">
-					<view class="cu-item margin-tb-sm">
-						<view class="action">
-							<view class="text-gray text-sm">下单门店</view>
-						</view>
-						<view class="action">
-							<view class=" text-sm ">{{order.pickup_address}}</view>
-						</view>
-					</view>
-					<view class="cu-item margin-tb-sm">
-						<view class="action">
-							<view class="text-gray text-sm">配送方式</view>
-						</view>
-						<view class="action">
-							<view class=" text-sm ">{{order.pick_up_in_store?"自取":"外卖"}}</view>
-						</view>
-					</view>				
-					<view class="cu-item ">
-						<view class="action">
-							<view class="text-gray text-sm">订单产品</view>
-						</view>
-					</view>
-					<view class="cu-item margin-tb-sm" v-for="(item,key) in order.order_items">
-						<view class="action">
-							<image :src='item.product.images[0]' 
-								class="cu-avatar radius lg  bg-gray margin-right-sm " 
-								style="width:60px;height:60px"
-								></image>
-						</view>
-						<view class="content">
-							<view class="text-black   text">{{item.product.name}}</view>
-							<view class="text-gray   text-sm">{{item.attr_desc}}</view>
-						</view>
-						<view class="action">
-							<view class="text-gray   text-sm">x{{item.quantity}}</view>
-						</view>
-					</view>
-				</view>
-				<view class="cu-bar  solid-bottom ">
-					<view class="action"></view>
-					<view class="action">						
-						<text class="text-black ">共3件商品</text>
-					</view>
-				</view>					
+				
 			</view>
+			<view class=" padding-xs flex  align-center margin-top justify-center">
+				<text class="text-center  text-gray text-sm" >正在制作，请耐心等待</text>		
+			</view>
+			<view class="pg-space-xxl"></view>
+		
 		</view>
-		<view class=" padding-xs flex  align-center margin-top justify-center">
-			<text class="text-center  text-gray text-sm" >正在制作，请耐心等待</text>		
-		</view>
-		<view class="pg-space-xxl"></view>
-	
 		
 	</view>
 </template>
@@ -156,6 +161,7 @@
 	}
 	.prepare{
 		position: absolute;
+		top:0;
 		bottom: 0;
 		left: 0;
 		right: 0;
