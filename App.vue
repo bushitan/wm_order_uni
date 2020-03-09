@@ -126,11 +126,11 @@
 	
 	
 	.switch-mode::after {
-		content: "堂食";
+		content: "店";
 	}
 	
 	.switch-mode::before {
-		content: "外带";
+		content: "外";
 	}
 	
 	.switch-mode .wx-switch-input {

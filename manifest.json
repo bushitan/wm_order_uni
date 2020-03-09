@@ -1,5 +1,5 @@
 {
-    "name" : "外卖点单商城",
+    "name" : "StrongCoffee",
     "appid" : "__UNI__F2F0538",
     "description" : "",
     "versionName" : "1.0.0",
@@ -57,7 +57,7 @@
     "quickapp" : {},
     /* 小程序特有相关 */
     "mp-weixin" : {
-        "appid" : "wx73297ed6fd049076",
+        "appid" : "wx97e90498901fb752",
         "setting" : {
             "urlCheck" : false,
             "es6" : true,
@@ -65,7 +65,7 @@
             "minified" : true
         },
         "usingComponents" : true,
-		"navigateToMiniProgramAppIdList":["wxd19bbe9cb3b293b6"], 
+        "navigateToMiniProgramAppIdList" : [ "wxd19bbe9cb3b293b6" ],
         "permission" : {}
     },
     "mp-alipay" : {

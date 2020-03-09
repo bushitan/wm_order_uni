@@ -23,7 +23,7 @@
 		
 		
 		<view class="VerticalBox">
-			<scroll-view class="VerticalNav nav" scroll-y scroll-with-animation :scroll-top="verticalNavTop" style="height:calc(100vh - 375upx - 50px)">
+			<scroll-view class="VerticalNav nav" scroll-y scroll-with-animation :scroll-top="verticalNavTop" :style="'height:calc(100vh - 375upx - '+ SpaceBottom +'px)'">
 				<view class="cu-item" 
 				:class="index==tabCur?'text-yellow text-bold  bg-white cur flex align-center ':''" 
 				v-for="(category,index) in list" :key="index" @tap="TabSelect" :data-id="index"
@@ -89,13 +89,14 @@
 		
 		
 		
-		<view class="bg-white cu-list menu-avatar" style="position: fixed; bottom:50px; left: 0; right: 0;" v-if="Object.keys(order).length>0">
+		<view class="bg-white cu-list menu-avatar" :style="'position: fixed; bottom:'+ SpaceBottom +'px; left: 0; right: 0;'" v-if="Object.keys(order).length>0">
 			<view class="cu-item" >
 				<view class="cu-avatar round lg " @click="openBill()"> 
 					<view  style="position:relative">
 						<image  src='/static/images/strong/logo.jpg'
 							class="cu-avatar  lg round " 
 							style="background-color:#ffffff"
+							mode="aspectFill"
 							></image>
 							
 						<view class="cu-tag badge">{{totalQuantity}}</view>
@@ -265,7 +266,7 @@
 		data() {
 			return {
 				CustomBar:this.CustomBar,
-				SpaceBottom:50,
+				SpaceBottom:0,
 							
 				cardCur: 0,
 				swiperList:[
@@ -358,7 +359,7 @@
 			// console.log(res)
 			
 			var that = this 
-			setInterval(function(){that.test()},500)
+			// setInterval(function(){that.test()},500)
 			
 			
 		},

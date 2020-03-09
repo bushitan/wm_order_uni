@@ -25,7 +25,7 @@
 				<image  src="/static/images/strong/swiper1.jpg" mode="widthFix" class="pg-image-block"></image>
 		    </view>
 		</view>
-	<!-- 	
+		
 		<view class="cu-card padding-lr margin-top ">
 		    <view class=" pg-radius  shadow shadow-warp bg-white">
 		        <view class="cu-bar  solid-bottom ">
@@ -39,7 +39,7 @@
 		            </view>
 		        </view>
 		    </view>
-		</view> -->
+		</view>
 		
 		<view class="cu-card padding-lr margin-top ">
 		    <view class=" pg-radius  shadow shadow-warp bg-white">

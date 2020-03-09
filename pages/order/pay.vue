@@ -16,9 +16,9 @@
 				<view class="cu-form-group">
 					<view class="text-sm">配送方式</view>
 					<view class=" text-right basis-lg">
-						<text class="margin-right-sm text-bold">{{pickUpInStore?"到店取餐":"外卖"}}</text>
+						<text class="margin-right-sm text-bold">{{pickUpInStore?"到店自餐":"外卖"}}</text>
 						
-						<switch class="switch-mode radius sm" :checked="!pickUpInStore"
+						<switch class="switch-mode radius sm" :checked="pickUpInStore"
 						@change="changePick"></switch>		
 						<!-- <switch class="switch-mode radius sm" :checked="order.PickUpInStore"
 						@change="changePick"></switch> -->
@@ -41,7 +41,7 @@
 				</view>					
 				<view class="cu-form-group  text-right text-sm">
 					<view class=" text-sm">订单备注：</view>
-					<input placeholder="请输入备注信息" name="OrderNote" class="text-sm text-bold" @input="inputOrderNote"></input>
+					<input placeholder="请输入口味、糖量等备注信息" name="OrderNote" class="text-sm text-bold" @input="inputOrderNote"></input>
 				</view>
 		    </view>
 		</view>
@@ -65,6 +65,7 @@
 							<image :src='item.cover' 
 								class="cu-avatar radius lg  bg-gray margin-right-sm " 
 								style="width:60px;height:60px"
+								mode="aspectFill"
 								></image>
 						</view>
 						<view class="content">
