@@ -1,7 +1,7 @@
 <template>
 	<view >
 		<view class="">
-			<image src="../../static/images/strong/swiper.jpg" mode="widthFix" style="width: 100%; display: block;"></image>
+			<image src="../../static/images/strong/share.jpg" mode="widthFix" style="width: 100%; display: block;"></image>
 		</view>
 		<view class="cu-card padding-lr padding-bottom">
 		    <view class=" pg-radius-bottom  shadow shadow-warp">				   

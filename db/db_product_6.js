@@ -48,7 +48,7 @@ class son extends fahter{
 	 */
 	productMenu(data) {
 		return new Promise((resolve, reject) => {
-			this.base({url: this.HOST_URL +  "api/category/products/",data: data,}).then(res => {resolve(res.data)}).catch(res => reject(res))
+			this.base({url: this.HOST_URL +  "api/category/products",data: data,}).then(res => {resolve(res.data)}).catch(res => reject(res))
 		})
 	}
 }

@@ -6,10 +6,10 @@
 				<block slot="content">垂直导航</block>
 			</cu-custom>
 		</view> -->
-		<swiper class="screen-swiper round-dot bg-white" :indicator-dots="true" :circular="true" :autoplay="true" interval="5000"
+		<swiper class="screen-swiper square-dot  bg-white" :indicator-dots="true" :circular="false" :autoplay="true" interval="5000"
 		 duration="500">
 			<swiper-item class="swiper-height" v-for="(item,index) in swiperList" :key="index">
-				<image :src="item.url" mode="aspectFill"></image>
+				<image :src="item" mode="aspectFill"></image>
 			</swiper-item>
 		</swiper>
 	<!-- 	<swiper class="screen-swiper card-swiper round-dot}}" indicator-dots="true" circular="true" autoplay="true" interval="5000" duration="500" bindchange="cardSwiper" indicator-color="#8799a3" indicator-active-color="#0081ff">
@@ -394,11 +394,17 @@
 					temp[i].id = i
 				// this.list = temp
 				// this.listCur = temp[0];
-				console.log(temp)
+				// console.log(temp)
 				this.setData({
 					list:temp
 				})
 				 
+				 
+				var res = await this.db.storeBanner()
+				console.log(res)
+				this.setData({
+					swiperList:res.data
+				})
 				// let list = [
 				// 	{
 				// 		name:"热销",id:0,

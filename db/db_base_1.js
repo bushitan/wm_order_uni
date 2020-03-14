@@ -143,6 +143,49 @@ class dbBase{
     }
 	
 	
+	
+	// 校验地址设置
+	checkAuthorUserLocation(){
+		return new Promise((resolve, reject) => {
+			if(uni.hasOwnProperty("authorize") == false)
+				resolve(false)
+			uni.authorize({
+				scope: "scope.userLocation",
+				success(res) {
+					resolve(true)
+					console.log(res)
+				},
+				fail(res) {
+					resolve(false)
+					console.log(res)
+				},
+			})
+		})
+	}
+	// 获取用户当前的位置
+	getLocation() {
+		return new Promise((resolve,reject) => {
+			var that = this
+			uni.getLocation({
+				type: 'gcj02',
+				success(res) {
+					var obj = {}
+					obj.latitude = res.latitude
+					obj.longitude = res.longitude
+					obj.speed = res.speed
+					obj.accuracy = res.accuracy
+					obj.altitude = res.altitude
+					obj.horizontalAccuracy = res.horizontalAccuracy
+					resolve(obj)
+				},
+				fail(res) {
+					resolve(false)
+					console.log("地址未授权")
+				}
+			})
+		})
+
+	}
 }
 module.exports = dbBase
 

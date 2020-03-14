@@ -13,7 +13,12 @@
 			<view class="title padding-lr padding-bottom  text-gray sm bg-white">{{item.cityName}}{{item.address}}</view>
 		</view>
 		<view class="padding">
-			<button class="block bg-blue text-white round" @click="add()">新增</button>
+			<!-- <button class="block bg-blue text-white round" @click="add()">新增</button> -->
+			<view class="pg-flex-center  margin-top">
+		        <button class="cu-btn block round bg-red  text-white lg" @click="addAddress()" v-if="isAuthorLocaiton">增加地址</button>
+		        <button class="cu-btn block  round bg-red  text-white lg" bindtap="openSetting" wx:else>授权打开地址</button> 
+		    </view>
+
 		</view>
 		<!-- id: 131
 		email: "281256755@qq.com"
@@ -47,13 +52,24 @@
 					<button class="cu-btn round ">识别</button>
 				</view> -->
 				<form  @submit="formSubmit">
-					<view class="cu-form-group  text-left">
+					<!-- <view class="cu-form-group  text-left">
 						<view class="title">城市：</view>
 						<input placeholder="请输入城市名称" name="cityName" ></input>
-					</view>
+					</view> -->
 					<view class="cu-form-group  text-left">
 						<view class="title">地址：</view>
-						<input placeholder="请输入地址" name="address"></input>
+						<input placeholder="请输入地址" name="address" :value="address" disabled="true"></input>
+					</view>
+					<view class="cu-form-group  text-left">
+						<view class="title">经度：</view>
+						<input name="longitude" :value="currentLongitude" disabled="true"></input>
+						
+						<!-- <text class="" :value="currentLongitude" name="longitude">{{currentLongitude}}</text> -->
+					</view>
+					<view class="cu-form-group  text-left">
+						<view class="title">纬度：</view>
+						<input name="lantitude" :value="currentLantitude" disabled="true"></input>
+						<!-- <text class="" :value="currentLantitude" name="longitude">{{currentLantitude}}</text> -->
 					</view>
 					
 					<view class="cu-form-group  text-left">
@@ -102,6 +118,11 @@
 			return{
 				showEdt:false,
 				list:[],
+				
+				isAuthorLocaiton:false,
+				address:"",
+				currentLongitude:0,
+				currentLantitude:0,
 			}
 		},
 		onLoad(){
@@ -116,29 +137,59 @@
 				var res = await this.db.customerShipAddrs()
 				console.log(res)
 				this.setData({
-					list:res.data
+					list:res.data,
+					isAuthorLocaiton: await this.db.checkAuthorUserLocation()
 				})
 			},
 			select(index){
 				var currentAdd = this.$data.list[index]
 				var prePage = getCurrentPages()[ getCurrentPages().length - 2] 
-				var order = prePage.$data.order
-				// debugger
-				prePage.setData({
-					ReciveAddress : currentAdd.address,
-					ReciveName : currentAdd.name,
-					RecivePhone : currentAdd.phoneNumber,
-					ReciveCityName : currentAdd.cityName,
-				})
+				
+				prePage.$vm.setUserAddress(currentAdd)
+				// // debugger
+				// var order = prePage.data.order
+				// // debugger
+				// prePage.setData({
+				// 	ReciveAddress : currentAdd.address,
+				// 	ReciveName : currentAdd.name,
+				// 	RecivePhone : currentAdd.phoneNumber,
+				// 	ReciveCityName : currentAdd.cityName,
+				// })
 				// if(prePage.hasOwnProperty("getSFPreOrder"))
-				prePage.getSFPreOrder()
+				// prePage.getSFPreOrder()
 				uni.navigateBack({})
 			},
 			
 			
-			add(){
-				
+			add(){				
 				this.show()
+			},
+		
+			// 增加地址
+			async addAddress(){
+				
+				var location = this.db.getLocation()
+				var that = this
+				wx.chooseLocation({
+					latitude: location.latitude,
+					longitude: location.longitude,
+					success(res){
+						console.log(res)
+						that.setData({
+							address:res.address,
+							currentLongitude:res.longitude,
+							currentLantitude:res.latitude,
+						})	
+						that.show()
+						// var addressList = that.data.addressList
+						// addressList.push({
+						// 	latitude: res.latitude, 
+						// 	longitude: res.longitude,
+						// })                
+						// that.setData({addressList: addressList})
+						
+					},
+				})
 			},
 			
 			// 删除地址
@@ -154,10 +205,12 @@
 				// console.log(e)
 				
 				var  info = {
-					address:formData.address,
-					name:formData.name,
-					phoneNumber:formData.phoneNumber,
-					cityName:formData.cityName,
+					Address:formData.address,
+					Name:formData.name,
+					PhoneNumber:formData.phoneNumber,
+					CityName:"南宁",
+					Longitude:formData.longitude,
+					Lantitude:formData.lantitude,
 				}
 				// TODO  上传地址
 				var res = await this.db.customerAddShipAddr(info)

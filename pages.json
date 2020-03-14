@@ -1,6 +1,5 @@
 {
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
-		
 		{
 			"path": "pages/menu/menu",
 			"style": {
@@ -89,20 +88,6 @@
 		"navigationBarTitleText": "丰丰点单商城",
 		"navigationBarBackgroundColor": "#ffffff",
 		"backgroundColor": "#F8F8F8"  //,"navigationStyle": "custom"
-	},
-	"subpackages": [
-	    {
-	      "root": "packageA",
-	      "pages": [
-	        "pages/home/home"
-	      ],
-	      "plugins": {
-	        "live-player-plugin": {         
-				"version": "1.0.0", // 填写该直播组件最新版本号，微信开发者工具调试时可获取最新版本号
-	          	"provider": "wx2b03c6e691cd7370" // 必须填该直播组件appid，该示例值即为直播组件appid
-	        }
-	      }
-	    }
-	  ]
+	}
 
 }

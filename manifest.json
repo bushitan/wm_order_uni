@@ -59,14 +59,18 @@
     "mp-weixin" : {
         "appid" : "wx97e90498901fb752",
         "setting" : {
-            "urlCheck" : false,
+            "urlCheck" : true,
             "es6" : true,
             "postcss" : true,
             "minified" : true
         },
         "usingComponents" : true,
         "navigateToMiniProgramAppIdList" : [ "wxd19bbe9cb3b293b6" ],
-        "permission" : {}
+        "permission" : {
+            "scope.userLocation" : {
+                "desc" : "你的位置信息将用于门店外卖范围的效果展示"
+            }
+        }
     },
     "mp-alipay" : {
         "usingComponents" : true

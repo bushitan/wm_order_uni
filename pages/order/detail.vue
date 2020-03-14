@@ -12,7 +12,7 @@
 			<view class=" bg-white pg-radius  shadow shadow-warp">
 				<view class="cu-bar  solid-bottom ">
 					<view class="action">
-						<text class="cuIcon-title text-red "></text>                
+						<text class="cuIcon-title text-yellow "></text>                
 						<text class="text-black text-sm">配送地图</text>      
 					</view>
 					<view class="action">
@@ -32,7 +32,7 @@
 			<view class=" bg-white pg-radius  shadow shadow-warp">
 				<view class="cu-bar  solid-bottom ">
 					<view class="action">
-						<text class="cuIcon-title text-red "></text>                
+						<text class="cuIcon-title text-yellow "></text>                
 						<text class="text-black text-sm">{{order.pickup_address}}</text>      
 					</view>
 					<view class="action">
@@ -56,7 +56,7 @@
 								单价：<text class="text-price"></text>{{item.product.price}}
 							</view>
 							<view class="text-gray  text-sm">
-								包装费：<text class="text-price"></text>{{item.product.price}} 
+								包装费：<text class="text-price"></text>{{order.wm_cost}} 
 							</view>
 						</view>
 						<view class="action">
@@ -92,7 +92,7 @@
 					<view class="cu-item ">
 						<view class="action">配送费</view>
 						<view class="action">
-							<text class="text-price"></text>0
+							<text class="text-price"></text>{{order.customer_take_ship_fee}}
 						</view>
 					</view>
 				</view>
@@ -100,8 +100,8 @@
 					<view class="action"></view>
 					<view class="action">						
 						<text class="text-gray  text-sm ">已优惠</text>						
-						<text class="text-price text-sm text-red "></text>
-						<text class="  text-sm text-red margin-right">{{order.order_discount}}</text>
+						<text class="text-price text-sm text-yellow "></text>
+						<text class="  text-sm text-yellow margin-right">{{order.order_discount}}</text>
 						
 						<text class="text-gray  text-sm margin-right-xs">合计</text>						
 						<text class=" text-xl text-black text-bold text-price"></text>
@@ -116,7 +116,7 @@
 			<view class=" bg-white pg-radius  shadow shadow-warp">
 				<view class="cu-bar  solid-bottom ">
 					<view class="action">
-						<text class="cuIcon-title text-red "></text>                
+						<text class="cuIcon-title text-yellow "></text>                
 						<text class="text-black text-sm">配送信息</text>      
 					</view>
 					<view class="action">
@@ -186,7 +186,7 @@
 			<view class=" bg-white pg-radius  shadow shadow-warp">
 				<view class="cu-bar  solid-bottom ">
 					<view class="action">
-						<text class="cuIcon-title text-red "></text>                
+						<text class="cuIcon-title text-yellow "></text>                
 						<text class="text-black text-sm">订单信息</text>      
 					</view>
 				</view>
@@ -220,7 +220,7 @@
 							<text class="text-gray text-sm">备注信息</text>
 						</view>
 						<view class="action ">
-							<view class="text-black text-sm">{{order.checkout_attribute_description}}</view>
+							<view class="text-black text-sm">{{order.OrderNote}}</view>
 						</view>
 					</view>
 				</view>				
@@ -314,10 +314,10 @@
 						</view>
 					</view>
 					<view class="order-price-log-zj">
-						<text>实际消费积分</text> <text class="text-price canui-text-right text-red">252.00</text>
+						<text>实际消费积分</text> <text class="text-price canui-text-right text-yellow">252.00</text>
 					</view>
 					<view class="order-price-log-zj">
-						<text>实付手续费</text> <text class="text-price canui-text-right text-red">5.00</text>
+						<text>实付手续费</text> <text class="text-price canui-text-right text-yellow">5.00</text>
 					</view>
 				</view>
 			

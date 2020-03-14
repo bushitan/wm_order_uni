@@ -90,6 +90,16 @@ class son extends fahter{
 		})
 	}
 	
+	
+	/**
+	 * @method 7 更新数据
+	 * @param 
+	 */
+	customerUpdate(data) {
+		return new Promise((resolve, reject) => {
+			this.base({url: this.HOST_URL +  "api/customer/update/",data: data,}).then(res => {resolve(res.data)}).catch(res => reject(res))
+		})
+	}
 
 }
 module.exports = son

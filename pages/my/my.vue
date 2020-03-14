@@ -7,11 +7,13 @@
 		<view class="cu-list menu padding-tb ">
 			<view class="cu-item " style="background-color: transparent;">
 				<view class="action">
-					<image :src='userInfo.logo' 
+					<image :src='userInfo.avatarUrl' 
 						class="cu-avatar round  bg-gray margin-right" 
 						style="width: 72px;height: 72px;"></image>
-					<text class="text-brown text-bold text-df" v-if="userInfo.name">{{userInfo.name}}</text>
-					<button class="cu-btn round text-brown text-bold text-df" v-else>登陆</button>
+					<!-- <text class="text-black bg-yellow text-bold text-df" v-if="userInfo.name">{{userInfo.name}}</text> -->
+					<button class="cu-btn round text-white bg-yellow text-bold text-df"  open-type="getUserInfo" @getuserinfo="getuserinfo" >
+						{{userInfo ?　userInfo.nickName ? userInfo.nickName:'没有名字' :'登陆'}}
+					</button>
 				</view>
 				<!-- <view class="action">
 					<button class="cu-btn round text-yellow text-bold" catchtap="deleteEmployee" > 删除</button>
@@ -35,13 +37,13 @@
 		            </view>
 		            <view class="action">
 						<text class="text-grey  text-sm" @click="openMini">查看</text>
-						<button class="text-grey  text-sm" open-type="openSetting">打开setting</button>
+						<!-- <button class="text-grey  text-sm" open-type="openSetting">打开setting</button> -->
 		            </view>
 		        </view>
 		    </view>
 		</view>
 		
-		<view class="cu-card padding-lr margin-top ">
+	<!-- 	<view class="cu-card padding-lr margin-top ">
 		    <view class=" pg-radius  shadow shadow-warp bg-white">
 		        <view class="cu-bar  solid-bottom ">
 		            <view class="action">
@@ -64,7 +66,7 @@
 					</view>
 				</view>
 		    </view>
-		</view>
+		</view> -->
 		
 		<view class="cu-card padding-lr margin-top ">
 		    <view class=" pg-radius  shadow shadow-warp bg-white">				
@@ -124,20 +126,44 @@
 		
 				store:{},
 				userInfo: {
-					id: '202232',
-					name: '',
-					logo:"http://192.168.200.103:8083/wm_order_uni/static/images/strong/swiper.jpg",
-					allScoreNum: 1,
-					allPrizeNum: 1,
-					allStoreNum: 1,
+					// id: '202232',
+					// name: '',
+					// logo:"http://192.168.200.103:8083/wm_order_uni/static/images/strong/swiper.jpg",
+					// allScoreNum: 1,
+					// allPrizeNum: 1,
+					// allStoreNum: 1,
+					
+					// avatarUrl: "https://wx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTLhpCNoXf1fPWsNViacVuZfZaDmINO9LLQ53sokGNZShic3hNBSwiaKIMlLlJfx4vxyOX0SoCk9SBJicw/132"
+					// city: ""
+					// country: "Ireland"
+					// gender: 1
+					// language: "zh_CN"
+					// nickName: "this.丰丰 (¦(¦3[]"
+					// province: "Wicklow"
 				},
 
 			}
 		},
 		onLoad() {
-
+			this.onInit()
 		},
 		methods: {
+			async onInit(){
+				
+			},
+			
+			//登录
+			getuserinfo(e){
+				console.log(e.detail.userInfo)
+				// var res = await this.db.customerUpdate()
+				this.setData({
+					userInfo:e.detail.userInfo
+				})
+				uni.showToast({
+					title:"更新成功"
+				})
+			},
+			
 			toMenu(){
 				uni.navigateTo({
 					url:"/pages/order/menu"
