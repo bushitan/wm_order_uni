@@ -9,38 +9,49 @@
 		                <text class="text-black text-sm">下单门店</text>      
 		            </view>
 		            <view class="action">			
-						<text class="text-bold ">{{ShipName}}</text>
+						<text class="text-bold ">{{ShopName}}</text>
 						<view class="pg-arrow"></view>
 		            </view>
 		        </view>
-				<view class="cu-form-group">
+				<view class=" cu-form-group"  @click="selectShopTake()">
 					<view class="text-sm">配送方式</view>
-					<view class=" text-right basis-lg">
-						<text class="margin-right-sm text-bold">{{pickUpInStore?"到店自取":"外卖"}}</text>
-						
+					
+					<view class="text-right basis-xl">			
+						<text class="text-bold ">{{ShopTakeName}}</text>
+					</view>
+					<view class="pg-arrow"></view>
+					<!-- <view class=" text-right basis-lg">
+						<text class="margin-right-sm text-bold">{{pickUpInStore?"到店自取":"外卖"}}</text>						
 						<switch class="switch-mode radius sm" :checked="pickUpInStore"
 						@change="changePick"></switch>		
-						<!-- <switch class="switch-mode radius sm" :checked="order.PickUpInStore"
-						@change="changePick"></switch> -->
-					</view>
+						
+						<button :class="cu-btn round line-yellow sm">外卖</button>
+					</view> -->
 				</view>	
-				<view class="cu-form-group" @click="toAddress">
+				
+					
+				<view class="cu-form-group" @click="toAddress" v-if="ShopTakeValue == SHOP_TAKE_WM" >
 					<view class="text-sm">{{pickUpInStore?"预留电话":"联系方式"}}</view>
 					<view class=" text-right basis-xl text-bold">						
-						<view class=" ">{{ReciveName}} {{RecivePhone}} </view>
+						<view class=" ">{{currentAddress.name}} {{currentAddress.phoneNumber}} </view>
 					</view>
 					<view class="pg-arrow"></view>
 				</view>		
-				<view class="cu-form-group" :hidden="pickUpInStore" @click="toAddress">
+				<view class="cu-form-group"  @click="toAddress" v-if="ShopTakeValue == SHOP_TAKE_WM" >
 					<view class="text-sm">收货地址</view>
 					<view class=" text-right basis-xl text-bold">						
-						<view class="">{{ReciveAddress}}</view>
-
+						<view class="">{{currentAddress.address}}</view>
+				
 					</view>
 					<view class="pg-arrow"></view>
 				</view>	
-			
-				<view class="cu-form-group" v-if="pickUpInStore">
+				<!-- <view class="cu-form-group" v-else>
+					<view class="text-sm ">配送时间</view>
+					<view class=" text-right basis-xl text-bold">
+						<view class=" ">立即送出 </view>
+					</view>
+				</view> -->			
+				<view class="cu-form-group"  v-if="ShopTakeValue == SHOP_TAKE_ZQ" >
 					<view class="text-sm">取单时间</view>
 					<picker mode="time" :value="PickTime" :start="PickStartTime" end="21:01" @change="TimeChange">
 						<view class="picker">
@@ -48,12 +59,11 @@
 						</view>
 					</picker>
 				</view>
-				<view class="cu-form-group" v-else>
-					<view class="text-sm ">配送时间</view>
-					<view class=" text-right basis-xl text-bold">
-						<view class=" ">立即送出 </view>
-					</view>
-				</view>
+				
+			
+				
+				
+				
 				<view class="cu-form-group  text-right text-sm">
 					<view class=" text-sm">订单备注</view>
 					<input placeholder="请输入口味等" name="OrderNote" class="text-sm " @input="inputOrderNote"></input>
@@ -134,7 +144,7 @@
 				</view>					
 		    </view>
 		</view>
-		
+		<!-- <button type="primary" @click="pay">付款</button> -->
 		
 		<!-- 
 		<view class=" padding-xs flex  align-center margin-top justify-center">
@@ -171,44 +181,7 @@
 	</view>
 </template>
 
-<script>
-	var order = {
-			"OrderId": 0,//新建订单 默认为零
-			"ShipID":1,
-			"ShipName":"",
-			"PickUpInStore": false,//是否店内获取
-			"PaymentMethodSystemName": "Payments.WeixinPay",//支付方式 当前默认微信 硬编码
-			"ShippingMethod": "ground", //送货方式 当前默认 硬编码
-			"ShipAddress": "", //送货地址
-			"RecivePhone":"",//收货人电话
-			"ReciveName":"",//
-			"ReciveFaxNum":"",//邮编
-			
-			Prize:1180,
-			
-			"OrderItems": [
-				{
-					SKU_SN:"4_16",
-					Name:"挂耳包",
-					AttrDesc:"5袋装",
-					Images:["https://wm.51zfgx.com/images/thumbs/0000020_build-your-own-computer.jpeg"],
-					
-					"ProductId": 4,//产品Id
-					"Quantity":1,//购买数量
-					"Attributes": [ //产品属性
-						{
-							"Id": 16,
-							"Value": "40"
-						}
-					  ],
-					"Address": "广西南宁",//分货运输地址
-					"OrderItemNotes": "测试订单"//订单项描述
-				}
-			],
-			"AppId": "5099f520489646d28ce9df352237c059",
-			"Session": "5IRWgui7bOjkYGlrvi766K9mKd2tRwIgC4WzmK+7X+CZp7kSGSmJSIqltssQ/OrB9p2lDvRpvUin0yjie7GJ7mZb5PXUZTTlx8w737wzdRzwrePHmYWLj4bUvFUrzWCjB6YaLiWte5+/W7YZrm6CzseU4jAvZ3vckhY+T+qfdrCrtig+LpW4XNwmw3sWuotpQehImOyje4aK2zIQ/8UF6PoM/EgItRoOGfplfX0FuESN4z+Fd6vjxAcxHrhuzJ6RLOCiL+0gTCka+kRdZERzxXl262keOsnn1X6CvwZfFKeFckWkF4NYPw1ES5ELF0q2+aiznxXSXzUzatU5xirc1XcySPMCSzLbjd+8DTaWs4l11GTOXxqxIQTecC857+rCBHOjFB3lI8g=", 
-			"OrderNote":"测试订单"//订单描述
-		}
+<script>	
 	export default {
 		data(){
 			
@@ -216,22 +189,34 @@
 			var hour = date.getHours();
 			hour = hour < 10? "0" + hour : hour;
 			var minute = date.getMinutes();
+			minute = minute < 10? "0" + minute : minute;
 			var currentTime = hour + ':'+minute
 			return {				
 				StatusBar:this.StatusBar,
 				CustomBar : this.CustomBar,
 				TabbarBot:this.TabbarBot,
 				
+				
 				storeList:[], // 店铺列表
 				order:{},					
-				ShipID:"",
-				ShipName:"",
+				ShopId:"",
+				ShopName:"",
 				ShipAddress:'',
 				pickUpInStore:true,
-				ReciveName:'',
-				RecivePhone:'',
-				ReciveAddress:'',
-				ReciveCityName:'',
+				
+				//点单方式
+				SHOP_TAKE_WM :this.db.SHOP_TAKE_WM, //1
+				SHOP_TAKE_ZQ :this.db.SHOP_TAKE_ZQ, //2
+				SHOP_TAKE_TS :this.db.SHOP_TAKE_TS, //4
+				ShopTakeList:[],
+				ShopTakeValue:this.db.SHOP_TAKE_WM,
+				ShopTakeName:'外卖',
+				
+				currentAddress:{}, // 当前地址
+				// ReciveName:'',
+				// RecivePhone:'',
+				// ReciveAddress:'',
+				// ReciveCityName:'',
 				
 				PickTime:currentTime, // 选择时间
 				PickStartTime:currentTime,				
@@ -248,18 +233,20 @@
 				totalPost:12, // 配送费
 			}
 		},
-		onLoad(){
+		onLoad(options){
 			this.onInit()
 		},
 		
 		methods:{
 			async onInit(){
-					console.log(order)
+					// console.log(order)
 				this.getOrder() // 获取已经选择的订单
-				this.getShipList() // 获取门店列表
+				this.getShopList() // 获取门店列表
+				this.getShopTakeType() // 获取门店点单方式
 				this.getCoupon() // 获取优惠券
 				this.getSFPreOrder() // 预取顺风费用
 				this.getTotal() //	计算总价
+				this.getDefaultAddress()
 			},
 			
 			// 1 获取已经选择的订单
@@ -277,28 +264,104 @@
 				})			
 			},
 			// 2 获取门店列表
-			async getShipList(){				
+			async getShopList(){				
 				//获取配送门店
 				var res = await this.db.storeGetList()
 				var storeList = res.data.stores	
+				if(storeList.length == 0 ) // 没有门店
+					return
+				
+				// 获取门店列表			
+				var ShopId = storeList[0].id
+				var ShopName = storeList[0].name
+				var ShopId = uni.getStorageSync(this.db.KEY_SHOP_ID) || "" 				
+				for(var i =0 ; i<storeList.length ; i++){
+					if(ShopId == storeList[i].id){						
+						ShopId = storeList[i].id
+						ShopName = storeList[i].name 
+					}
+				}		
 				this.setData({
 					storeList:storeList,
-					ShipID : storeList[0].id,
-					ShipName : storeList[0].company_name,
+					ShopId : ShopId,
+					ShopName : ShopName,
 				})
-				console.log(this.$data.poi)
+							
 			},
+			
+			// 获取门店的点单方式
+			async getShopTakeType(){
+				// 获取配送方式
+				var res = await this.db.storeCurrent({
+					ShopId:this.$data.ShopId
+				})
+				var value = 7
+				var ShopTakeList = []
+				switch(value){
+					case 1 : ShopTakeList = [{"name":"外卖",value:1}] ;break;
+					case 2 : ShopTakeList = [{"name":"到店自取",value:2}] ;break;
+					case 4 : ShopTakeList = [{"name":"堂食",value:4}] ;break;
+					case 3 : ShopTakeList = [{"name":"外卖",value:1},{"name":"到店自取",value:2}] ;break;
+					case 5 : ShopTakeList = [{"name":"外卖",value:1},{"name":"堂食",value:4}] ;break;
+					case 6 : ShopTakeList = [{"name":"到店自取",value:2},{"name":"堂食",value:4}] ;break;
+					case 7 : ShopTakeList = [{"name":"外卖",value:1},{"name":"到店自取",value:2},{"name":"堂食",value:4}] ;break;
+				}
+				
+				//如果桌面点单方式扫码已经确定
+				var　ShopTakeValue = ShopTakeList[0].value
+				var　ShopTakeName = ShopTakeList[0].name
+				var ShopTakeTypeValue = uni.getStorageSync(this.db.KEY_SHOP_TAKE_TYPE)
+				if(ShopTakeTypeValue != ""){   
+					for(var i =0 ; i<ShopTakeList.length ; i++){
+						if(ShopTakeTypeValue == ShopTakeList[i].value){
+							ShopTakeValue = ShopTakeList[i].value
+							ShopTakeName = ShopTakeList[i].name 
+						}
+					}
+				}				
+				this.setData({	
+					ShopTakeList:ShopTakeList,
+					ShopTakeValue:ShopTakeValue,
+					ShopTakeName:ShopTakeName,
+				})					
+			},
+						
+			// 3  设置默认地址
+			async getDefaultAddress(){
+				var res = await this.db.customerShipAddrs()
+				// debugger
+				if(res.data.length > 0){
+					this.setData({
+						currentAddress: res.data[0]
+					})
+				}
+				
+			},
+			
+			
+			
 			
 			// 3 设置用户地址
 			setUserAddress(currentAddress){
 				console.log(currentAddress)
 				this.setData({
-					ReciveAddress : currentAddress.address,
-					ReciveName : currentAddress.name,
-					RecivePhone : currentAddress.phoneNumber,
-					ReciveCityName : currentAddress.cityName,
+					currentAddress:currentAddress
 				})
-				
+				// this.setData({
+				// 	ReciveAddress : currentAddress.address,
+				// 	ReciveName : currentAddress.name,
+				// 	RecivePhone : currentAddress.phoneNumber,
+				// 	ReciveCityName : currentAddress.cityName,
+				// })	
+							
+				// 			Latitude: "22.4577"
+				// 			Longitude: "108.248"
+				// 			address: "广西南宁青秀区 盛天国际"
+				// 			cityCode: ""
+				// 			cityName: "南宁"
+				// 			company: "广西索骏科技有限责任公司"
+				// 			email: "281256755@qq.com"
+				// 			faxNumber: "07713212955"
 			},
 			// 4 订单时间选择
 			TimeChange(e) {
@@ -306,7 +369,7 @@
 			    this.setData({
 					PickTime: e.detail.value
 			    })
-			  },
+			},
 			
 			// 3 获取优惠券
 			async getCoupon(){
@@ -314,11 +377,11 @@
 			},
 			// 4 预取顺风费用
 			async getSFPreOrder(){
-				var res = await this.db.sfPreCreateOrder()
-				this.setData({
-					SF:res.data
-				})
-				console.log(res.data)
+				// var res = await this.db.sfPreCreateOrder()
+				// this.setData({
+				// 	SF:res.data
+				// })
+				// console.log(res.data)
 			},
 			
 			// 5 计算总价
@@ -336,23 +399,41 @@
 			async selectStore(){
 				var storeList = this.$data.storeList
 				var itemList = []
-				for (var i=0; i<storeList.length ; i++){
-					itemList.push(storeList[i].company_name)
+				for (var i=0; i<5 ; i++){
+				// for (var i=0; i<storeList.length ; i++){
+					itemList.push(storeList[i].name)
 				}
 				var that = this
-				// var poi = this.$data.poi
 				uni.showActionSheet({
 					itemList:itemList,
 					success(res){
-						console.log(res.tapIndex)
 						that.setData({
-							ShipID : storeList[res.tapIndex].id,
-							ShipName : storeList[res.tapIndex].company_name,
+							ShopId : storeList[res.tapIndex].id,
+							ShopName : storeList[res.tapIndex].name,
 						})
-						// console.log(that.$data.poi)
+						that.getShopTakeType() // 更新点单方式
+					},
+				})
+			},			
+			// 选择点单方式
+			selectShopTake(){
+				var ShopTakeList = this.$data.ShopTakeList
+				var itemList = []
+				
+				for (var i=0; i<ShopTakeList.length ; i++)
+					itemList.push(ShopTakeList[i].name)
+				var that = this
+				uni.showActionSheet({
+					itemList:itemList,
+					success(res){
+						that.setData({
+							ShopTakeValue : ShopTakeList[res.tapIndex].value,
+							ShopTakeName : ShopTakeList[res.tapIndex].name,
+						})
 					},
 				})
 			},
+			
 			// 是否堂食
 			changePick(){
 				this.setData({
@@ -382,6 +463,7 @@
 				uni.navigateBack({})
 			},
 			
+			
 			/**
 			 * @method 下单
 			 */
@@ -389,81 +471,43 @@
 				// if (this.check() == false)
 				// 	return 
 				
-				
+				console.log(this.$data.currentAddress.id)
 				var data =
 				{
-				  "OrderId": 0,//新建订单 默认为零
+				  "OrderId": 0,//新建订单 默认为零I"
+				  "PickUpInStore": false,// true堂食 || false到店自取 
+				  "ShippingMethod": 1, // 1顺丰　|| 2到店自取
 				  // "PickUpInStore": this.$data.pickUpInStore,//是否店内获取
-				  "PickUpInStore": false,//是否店内获取
+				  "AddressId":this.$data.currentAddress.id,
+				  "ReceiverPhone":'2263648574',
 				  "PaymentMethodSystemName": "Payments.WeixinPay",//支付方式 当前默认微信 硬编码
-				  "ShippingMethod": 1, //送货方式 当前默认 硬编码
-				  "ShipAddress": this.$data.ShipAddress, //送货地址
+				  
+				  // "ShipAddress": this.$data.ShipAddress, //送货地址
 				  "RecivePhone": this.$data.RecivePhone,//收货人电话
 				  "ReciveName": this.$data.ReciveName,//
-				  // "ShipAddress": "广西南宁市友爱北路26号", //送货地址
-				  // "RecivePhone": "15277126678",//收货人电话
-				  // "ReciveName": "韦丰",//
-				  // "ReciveFaxNum":"",//邮编
 				  "OrderItems": this.$data.order,
-				  // [
-				  //   {
-				  //     "ProductId": 4,//产品Id
-				  //     "Quantity":1,//购买数量
-				  //     "Attributes": [ //产品属性
-				  //       {
-				  //         "Id": 16,
-				  //         "Value": "40"
-				  //       }
-				  //     ],
-				  //     "Address": "广西南宁",//分货运输地址
-				  //     "OrderItemNotes": "测试订单"//订单项描述
-				  //   }
-				  // ],
-				  // "AppId": "5099f520489646d28ce9df352237c059",
-				  // "Session": "5IRWgui7bOjkYGlrvi766K9mKd2tRwIgC4WzmK+7X+CZp7kSGSmJSIqltssQ/OrB9p2lDvRpvUin0yjie7GJ7mZb5PXUZTTlx8w737wzdRzwrePHmYWLj4bUvFUrzWCjB6YaLiWte5+/W7YZrm6CzseU4jAvZ3vckhY+T+qfdrCrtig+LpW4XNwmw3sWuotpQehImOyje4aK2zIQ/8UF6PoM/EgItRoOGfplfX0FuESN4z+Fd6vjxAcxHrhuzJ6RLOCiL+0gTCka+kRdZERzxXl262keOsnn1X6CvwZfFKeFckWkF4NYPw1ES5ELF0q2+aiznxXSXzUzatU5xirc1XcySPMCSzLbjd+8DTaWs4l11GTOXxqxIQTecC857+rCBHOjFB3lI8g=", 
-				  "OrderNote":this.$data.OrderNote//订单描述
+				  "OrderNote":this.$data.OrderNote,//订单描述
+				  
+				  "ShopId":1,
+				  // "StoreId":1,
+				  "CustomerTakeType":1,
+				  // "AppId":"5099f520489646d28ce9df352237c059" ,// 门店点Appid，不是小程序ID
+				  
 				}
 				
-				
-				// order placement: ["Cart is empty"]
-				
-				// var data = {
-				// 	  "OrderId": 0,//新建订单 默认为零
-				// 	  "PickUpInStore": true,//是否店内获取
-				// 	  "PaymentMethodSystemName": "Payments.WeixinPay",//支付方式 当前默认微信 硬编码
-				// 	  "ShippingMethod": "ground", //送货方式 当前默认 硬编码
-				// 	  "ShipAddress": "广西电影制片厂（1栋2单元2104）", //送货地址
-				// 	  "RecivePhone":"15777889458",//收货人电话
-				// 	  "ReciveName":"丰fXS",//
-				// 	  "ReciveFaxNum":"",//邮编
-				// 	  "OrderItems": [
-				// 		{
-				// 		  "ProductId": 4,//产品Id
-				// 		  "Quantity":1,//购买数量
-				// 		  "Attributes": [ //产品属性
-				// 			{
-				// 			  "Id": 16,
-				// 			  "Value": "40"
-				// 			}
-				// 		  ],
-				// 		  "Address": "广西南宁",//分货运输地址
-				// 		  "OrderItemNotes": "测试订单"//订单项描述
-				// 		}
-				// 	  ],
-				// 	  "AppId": "5099f520489646d28ce9df352237c059",
-				// 	  "Session": "5IRWgui7bOjkYGlrvi766K9mKd2tRwIgC4WzmK+7X+CZp7kSGSmJSIqltssQ/OrB9p2lDvRpvUin0yjie7GJ7mZb5PXUZTTlx8w737wzdRzwrePHmYWLj4bUvFUrzWCjB6YaLiWte5+/W7YZrm6CzseU4jAvZ3vckhY+T+qfdrCrtig+LpW4XNwmw3sWuotpQehImOyje4aK2zIQ/8UF6PoM/EgItRoOGfplfX0FuESN4z+Fd6vjxAcxHrhuzJ6RLOCiL+0gTCka+kRdZERzxXl262keOsnn1X6CvwZfFKeFckWkF4NYPw1ES5ELF0q2+aiznxXSXzUzatU5xirc1XcySPMCSzLbjd+8DTaWs4l11GTOXxqxIQTecC857+rCBHOjFB3lI8g=", 
-				// 	  "OrderNote":"测试订单"//订单描述
-				// 	}
 				
 				
 				var jsondata = JSON.stringify(data)
 				
 				console.log(jsondata)
-				var gen = await this.db.orderGen({
+				var res = await this.db.orderGen({
 					jsondata:jsondata
 				})
-				
-				
+				var data = res.data
+				var orderId = data.id
+				uni.redirectTo({
+					url: '/pages/wx/wxpay?orderId=' + orderId,
+				});
 				// uni.showModal({
 				// 	title:"支付成功",
 				// 	content:"请耐心等待",

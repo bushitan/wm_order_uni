@@ -14,6 +14,13 @@ Vue.component('cu-custom',cuCustom)
 // 选择框
 import tabbar from '@/components/tabbar/tabbar.vue'
 Vue.component('tabbar', tabbar)
+import Footer from '@/components/footer.vue'
+Vue.component('footer', Footer)
+
+Vue.prototype.Shop = {
+	Id:0,
+	TakeTypeValue:7,
+}
 
 
 function setData(obj){  
@@ -37,8 +44,6 @@ function setData(obj){
 	});  
 }  
 Vue.prototype.setData = setData
-
-
 
 function GeoDistance (la1, lo1, la2, lo2) {
     var La1 = la1 * Math.PI / 180.0;

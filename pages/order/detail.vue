@@ -6,6 +6,7 @@
                 <text>订单ID：{{order.id}}</text>
             </view>				
             <button class="cu-btn round line-yellow" @click="clickCancle">取消订单</button>
+            <button class="cu-btn round bg-yellow text-white" @click="clickPay">支付订单</button>
 		</view>
 		
 <!-- 		<view class="cu-card padding-lr ">
@@ -32,20 +33,21 @@
 			<view class=" bg-white pg-radius  shadow shadow-warp">
 				<view class="cu-bar  solid-bottom ">
 					<view class="action">
-						<text class="cuIcon-title text-yellow "></text>                
-						<text class="text-black text-sm">{{order.pickup_address}}</text>      
+						<text class="cuIcon-title text-yellow "></text>
+						<text class=" text-black  text-sm">{{order.pick_up_in_store?"堂食":"外卖"}}</text>
 					</view>
-					<view class="action">
-						<text class="text-gray  text-sm">{{order.pick_up_in_store?"堂食":"外卖"}}</text>
-						<!-- <view class="pg-arrow-sm"></view> -->
+					<view class="action">                
+						<text class="text-black text-sm">{{order.ship_address.addr_detail}}</text>      
 					</view>
 				</view>
 				<view class="cu-list menu ">
-					<view class="cu-item margin-tb-sm" v-for="(item,key) in order.order_items">
+					<view class="cu-item margin-tb-sm" style="align-items: flex-start;"
+					v-for="(item,key) in order.order_items" v:bind-key="key">
 						<view class="action">
 							<image :src='item.product.images[0]' 
 								class="cu-avatar radius lg  bg-gray margin-right-sm " 
 								style="width:60px;height:60px"
+								mode="aspectFill"
 								></image>
 						</view>
 						<view class="content">
@@ -55,43 +57,23 @@
 							<view class="text-gray   text-sm">
 								单价：<text class="text-price"></text>{{item.product.price}}
 							</view>
-							<view class="text-gray  text-sm">
-								包装费：<text class="text-price"></text>{{order.wm_cost}} 
-							</view>
 						</view>
-						<view class="action">
+						<view class="action text-red ">
 							<text class="text-price"></text>{{item.product.price}}
 						</view>
-					</view>
-				
-				<!-- 	<view class="cu-item margin-tb-sm">
-						<view class="action">
-							<image src='/static/images/strong/swiper.jpg' 
-								class="cu-avatar radius lg  bg-gray margin-right-sm " 
-								style="width:60px;height:60px"
-								></image>
-						</view>
-						<view class="content">
-							<view class="text-black   text">挂耳包</view>
-							<view class="text-gray   text-sm"> </view>
-							<view class="text-gray   text-sm">x1</view>
-						</view>
-						<view class="action">
-							<text class="text-price"></text>4
-						</view>
-					</view> -->
+					</view>			
 				</view>
 				
-				<view class="cu-list menu ">
-					<!-- <view class="cu-item ">
-						<view class="action">包装费</view>
-						<view class="action">
-							<text class="text-price"></text>4
+				<view class="cu-list menu ">	
+					<view class="cu-item " v-if="order.wm_cost != 0">
+						<view class="action text-gray text-sm">包装费</view>
+						<view class="action text-red">
+							<text class="text-price"></text>{{order.wm_cost}}
 						</view>
-					</view> -->
+					</view>
 					<view class="cu-item ">
-						<view class="action">配送费</view>
-						<view class="action">
+						<view class="action text-gray text-sm">配送费</view>
+						<view class="action text-red">
 							<text class="text-price"></text>{{order.customer_take_ship_fee}}
 						</view>
 					</view>
@@ -99,19 +81,40 @@
 				<view class="cu-bar  solid-bottom ">
 					<view class="action"></view>
 					<view class="action">						
-						<text class="text-gray  text-sm ">已优惠</text>						
+						<!-- <text class="text-gray  text-sm ">已优惠</text>						
 						<text class="text-price text-sm text-yellow "></text>
-						<text class="  text-sm text-yellow margin-right">{{order.order_discount}}</text>
+						<text class="  text-sm text-yellow margin-right">{{order.order_discount}}</text> -->
 						
 						<text class="text-gray  text-sm margin-right-xs">合计</text>						
-						<text class=" text-xl text-black text-bold text-price"></text>
-						<text class=" text-xl text-black text-bold">{{order.order_total}}</text>
+						<text class=" text-xl text-red text-bold text-price "></text>
+						<text class=" text-xl text-red text-bold">{{order.order_total}}</text>
 					</view>
 				</view>					
 			</view>
 		</view>
 		
-		
+		<view class="cu-card padding-lr margin-top">
+			<view class=" bg-white pg-radius  shadow shadow-warp">
+				<view class="cu-bar  solid-bottom ">
+					<view class="action">
+						<text class="cuIcon-title text-yellow "></text>                
+						<text class="text-black text-sm">备注信息</text>      
+					</view>
+					<view class="action">
+					</view>
+				</view>				
+				<view class="cu-list menu ">					
+					<view class="cu-item " v-for="(item,key) in order.order_notes" v:bind-key="key">
+						<view class="content">
+							<text class="text-yellow text-sm">{{key+1}}、{{item.Note}}</text>
+						</view>
+						<view class="action ">
+						</view>
+					</view>
+				</view>
+			</view>
+		</view>
+				
 		<view class="cu-card padding-lr margin-top">
 			<view class=" bg-white pg-radius  shadow shadow-warp">
 				<view class="cu-bar  solid-bottom ">
@@ -167,14 +170,14 @@
 						<view class="action text-right basis-lg">
 							<view class="text-black text-sm ">
 								{{order.ship_address.name }}
-								{{order.ship_address.PhoneNumber}}
+								{{order.ship_address.phonenumber}}
 							</view>
 						</view>
 					</view>
 					<view class="cu-item solid-top">
 						<view class="content text-center text-bold text-black text-lg" >
 							<text class="cuIcon-phone "></text>
-							<text class="">致电骑手</text>
+							<text class="" @click="toRider">致电骑手</text>
 						</view>
 					</view>
 				</view>				
@@ -212,15 +215,7 @@
 							<text class="text-gray text-sm">支付方式</text>
 						</view>
 						<view class="action ">
-							<view class="text-black text-sm">{{order.payment_method_systemName}}</view>
-						</view>
-					</view>
-					<view class="cu-item ">
-						<view class="content">
-							<text class="text-gray text-sm">备注信息</text>
-						</view>
-						<view class="action ">
-							<view class="text-black text-sm">{{order.OrderNote}}</view>
+							<view class="text-black text-sm">微信支付</view>
 						</view>
 					</view>
 				</view>				
@@ -395,7 +390,7 @@
 				CustomBar : this.CustomBar,
 				TabbarBot:this.TabbarBot,
 				
-				orderID:"",
+				orderId:"",
 				order:{
 					ship_address:{},
 				}, // 订单信息
@@ -404,7 +399,7 @@
 		onLoad(options){
 			console.log(this.CustomBar)
 			this.setData({
-				orderID:options.orderID || ""
+				orderId:options.orderId || ""
 			})
 			this.onInit()
 		},
@@ -413,7 +408,7 @@
 			async onInit(){
 				// var order = await this.db.orderGen()
 				var res = await this.db.orderGetDetail({
-					OrderId:this.$data.orderID
+					orderId:this.$data.orderId
 				})
 				this.setData({
 					order:res.data
@@ -425,195 +420,30 @@
 					
 				})
 			},
+			
+			// 取消订单
+			clickPay(){
+				uni.redirectTo({
+					url: '/pages/wx/wxpay?orderId=' + this.$data.orderId,
+				});
+			},
+			
 			// 取消订单
 			clickCancle(){
 				console.log("取消订单")
+			},
+			
+			// 致电骑手
+			toRider(){
+				uni.makePhoneCall({
+					phoneNumber : "3468732874",
+				})
 			},
 		}
 	}
 </script>
 
 <style>
-	page {
-	    /* padding-top: 50px;
-	    padding-bottom:170rpx; */
-	}
-	.cu-custom{
-	    position: absolute;
-	    top: 0px;
-	    width: 100%;
-	}
-	.cu-custom .cu-bar{
-	    padding-right:inherit;
-	    background-image:linear-gradient(90deg, #FA9C05, #F36302);
-	}
-	.box{
-	    position: absolute;
-	    top: 64px;
-	    width: 100%;
-	    padding-bottom: 170rpx;
-	}
-	.canui-order-details-head{
-	    background-image:linear-gradient(90deg, #FA9C05, #F36302);
-	    color:#F1f1f6;
-	    height:230rpx;
-	    padding-top:20rpx;
-	}
-	.canui-order-details-head .cu-list.menu>.cu-item{
-	    background:initial;
-	}
-	.canui-order-details-head .cu-list .cu-item .action{
-	    background-repeat: no-repeat;
-	    background-size: 100%;
-	    width:142rpx;
-	    height:92rpx;
-	}
-	/*待付款*/
-	.canui-order-details-head .cu-list .cu-item .canui-status-1{
-	    background-image: url("https://cdn.nlark.com/yuque/0/2019/png/285274/1553229206281-assets/web-upload/97a88c75-0177-4409-9756-d3d93527391f.png");
-	}
-	/*待发货*/
-	.canui-order-details-head .cu-list .cu-item .canui-status-2{
-	    background-image: url("https://cdn.nlark.com/yuque/0/2019/png/285274/1553229206281-assets/web-upload/12edf711-8c22-44e0-898b-2b7e6a6fc23d.png");
-	}
-	/*待收货*/
-	.canui-order-details-head .cu-list .cu-item .canui-status-3{
-	    background-image: url("https://cdn.nlark.com/yuque/0/2019/png/285274/1553229207224-assets/web-upload/82196039-e8e9-4a6b-b889-e8ca614cd030.png");
-	}
-	/*已完成*/
-	.canui-order-details-head .cu-list .cu-item .canui-status-4{
-	    background-image: url("https://cdn.nlark.com/yuque/0/2019/png/285274/1553229206282-assets/web-upload/1b6678c7-8cf3-4a4b-9cd5-50109e2f724f.png");
-	    width:112rpx;
-	}
-	/*已取消*/
-	.canui-order-details-head .cu-list .cu-item .canui-status-5{
-	    background-image: url("https://cdn.nlark.com/yuque/0/2019/png/285274/1553229207158-assets/web-upload/f6ae0024-dde8-45cc-aaec-70b8a841701f.png");
-	    width:112rpx;
-	}
-	.canui-card-fiex-radius-box{
-	    position:absolute;
-	    top:125rpx;
-	    width:100%;
-	    z-index:9;
-	}
-	.canui-card-fiex-radius-box .cu-list{
-	    border-radius:18rpx;
-	    box-shadow:0 3rpx 6rpx rgba(0, 0, 0, 0.1);
-	}
-	.canui-card-fiex-radius-box .cu-list.menu>.cu-item{
-	    padding:30rpx;
-	}
-	.canui-goods-box{
-	    padding-top:100rpx;
-	    position: relative;
-	    z-index:0;
-	}
-	.canui-card-order{
-	    padding:0 20rpx;
-	}
-	.canui-card-order .canui-order-item{
-	    position: relative;
-	    margin-bottom:30rpx;
-	    padding:20rpx;
-	}
-	.head-title-box .icon-shop{
-	    margin-right:10rpx;
-	}
-	.head-title-box .icon-right{
-	    margin-left:5rpx;
-	}
-	.canui-order-item .cu-list.menu-avatar>.cu-item{
-	    padding:0;
-	    padding-left:110rpx;
-	}
-	.canui-order-item .cu-list.menu-avatar>.cu-item>.cu-avatar{
-	    left:0rpx;
-	}
-	.canui-order-item .cu-list .cu-item .canui-xzwz{
-	    -webkit-line-clamp:2;
-	}
-	.canui-order-item .cu-list.menu>.cu-item .content{
-	    font-size:27rpx;
-	    margin-right:40rpx;
-	}
-	.canui-order-item .cu-list.menu-avatar>.cu-item .action {
-	    text-align:right;
-	    margin-top:-10rpx;
-	}
-	.canui-order-item .cu-list.menu>.cu-item .action .text-price{
-	    font-size:28rpx;
-	}
-	.canui-order-item .order-price-box{
-	    text-align:right;
-	    font-size:26rpx;
-	}
-	.order-price-log{
-	    padding:0 30rpx;
-	    padding-bottom:10rpx;
-	    margin-top:-30rpx;
-	}
-	.order-price-log .log-list{
-	    padding:5rpx 0;
-	}
-	.order-price-log-zj{
-	    padding:20rpx 30rpx;
-	    background:#fafafa;
-	}
-	.order-address-box .cu-list.menu>.cu-item{
-	    padding:30rpx;
-	}
-	.order-address-box .cu-list .cu-item .content view text{
-	    margin-left: 20rpx;
-	}
-	
-	.order-details-log{
-	    padding:0 30rpx;
-	}
-	.order-details-log .order-menu-list{
-	    padding:10rpx 0;
-	}
-	.order-details-log .order-menu-list .log-list{
-	    padding:10rpx 0;
-	}
-	.order-details-log .order-menu-list .log-list text + text{
-	    margin-left:20rpx;
-	}
-	
-	.order-contact-box{
-	    padding:0 30rpx;
-	}
-	.order-contact-box .contact-table{
-	    text-align:center;
-	    padding:20rpx 0;
-	}
-	.order-contact-box .contact-table text{
-	    font-size:34rpx;
-	}
-	.order-contact-box .contact-table + .contact-table{
-	    border-left: 1px solid #f1f1f1;
-	}
-	
-	.box .order-price-log-zj + .order-price-log-zj{
-	    padding-top: 0;
-	}
-	.order-btn-box{
-	    height:100rpx;
-	}
-	.order-btn-box .margin-tb-sm{
-	    margin-bottom:0;
-	}
-	.order-btn-box .margin-tb-sm .cu-btn{
-	    font-size:24rpx;
-	}
-	.order-btn-box .margin-tb-sm .cu-btn[class*="line"]::after {
-	    /*按钮边框大小*/
-	    border: 3rpx solid currentColor;
-	}
-	.order-btn-box .margin-tb-sm .line-gray{
-	    color: #666;
-	}
-	.order-btn-box .margin-tb-sm + .margin-tb-sm{
-	    margin-left: 10rpx;
-	}
+
 
 </style>

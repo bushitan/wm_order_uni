@@ -8,6 +8,9 @@ class dbBase{
 	KEY_UUID = "uuid"
 	KEY_TOKEN = "token"
 	KEY_SESSION = "Session"
+	KEY_SHOP_ID = "shop_id"
+	KEY_SHOP_NAME = "shop_name"
+	KEY_SHOP_TAKE_TYPE= "shop_take_type"
 	
 	PAYMENT_STATUS_PENDING = 10 // 待支付
 	PAYMENT_STATUS_AUTHORIZED = 20 // 待支付
@@ -21,8 +24,14 @@ class dbBase{
 	ORDER_STATUS_CANCEL = 40 // 订单已取消
 	
 	
+	SHOP_TAKE_WM = 1
+	SHOP_TAKE_ZQ = 2
+	SHOP_TAKE_TS = 4
 	
-	APP_ID = "5099f520489646d28ce9df352237c059"
+	
+	
+	APP_ID = "5099f520489646d28ce9df352237c059"  // Strong
+	// APP_ID = "aaa418db45c94cf7863a30b3f97c7e30" // 门店安心卡 
 	
 	// URL = "http://221.7.253.6:9019/Api/Task/TaskHandler.ashx?"
 	HOST_URL = "https://wm.51zfgx.com/"
@@ -95,8 +104,8 @@ class dbBase{
 				if (data[i] == undefined)
 					data[i] = ""
 			}					
-            // data["Session"] = wx.getStorageSync(this.KEY_SESSION)
-			data["Session"] = "5IRWgui7bOjkYGlrvi766K9mKd2tRwIgC4WzmK+7X+CZp7kSGSmJSIqltssQ/OrB9p2lDvRpvUin0yjie7GJ7mZb5PXUZTTlx8w737wzdRzwrePHmYWLj4bUvFUrzWCjB6YaLiWte5+/W7YZrm6CzseU4jAvZ3vckhY+T+qfdrCrtig+LpW4XNwmw3sWuotpQehImOyje4aK2zIQ/8UF6PoM/EgItRoOGfplfX0FuESN4z+Fd6vjxAcxHrhuzJ6RLOCiL+0gTCka+kRdZERzxXl262keOsnn1X6CvwZfFKeFckWkF4NYPw1ES5ELF0q2+aiznxXSXzUzatU5xirc1XcySPMCSzLbjd+8DTaWs4l11GTOXxqxIQTecC857+rCBHOjFB3lI8g="
+            data["Session"] = wx.getStorageSync(this.KEY_SESSION)
+			// data["Session"] = "5IRWgui7bOjkYGlrvi766K9mKd2tRwIgC4WzmK+7X+CZp7kSGSmJSIqltssQ/OrB9p2lDvRpvUin0yjie7GJ7mZb5PXUZTTlx8w737wzdRzwrePHmYWLj4bUvFUrzWCjB6YaLiWte5+/W7YZrm6CzseU4jAvZ3vckhY+T+qfdrCrtig+LpW4XNwmw3sWuotpQehImOyje4aK2zIQ/8UF6PoM/EgItRoOGfplfX0FuESN4z+Fd6vjxAcxHrhuzJ6RLOCiL+0gTCka+kRdZERzxXl262keOsnn1X6CvwZfFKeFckWkF4NYPw1ES5ELF0q2+aiznxXSXzUzatU5xirc1XcySPMCSzLbjd+8DTaWs4l11GTOXxqxIQTecC857+rCBHOjFB3lI8g="
 			data["AppId"] = this.APP_ID
 		
 		
@@ -111,19 +120,25 @@ class dbBase{
 			// debugger
 			// console.log(uni.getStorageSync("token"))
 			
-			var url = options.url + "?sn=" + step
-			step++
+			var url = options.url
+			// var url = options.url + "?sn=" + step
+			// step++
 			
+			var startTime = new Date().getTime();
+			console.log('startTime',startTime)
             uni.request({
                 url: url,
                 method: options.method || "POST",
                 header: {
                     'content-type': 'application/x-www-form-urlencoded' ,// 默认值
 					'Access-Control-Allow-Origin':true,
-					// 'Authorization': 'Bearer ' + uni.getStorageSync("token")
+					'Authorization': 'Bearer ' + uni.getStorageSync("token")
                 },
                 data: data,
                 success(res) {
+					
+					var completeTime = new Date().getTime();
+					console.log("completeTime",completeTime , "cha" , completeTime - startTime)
                     resolve(res)
                 },
                 fail(res) {
@@ -138,6 +153,10 @@ class dbBase{
 					})
                     reject(res)
                 },
+				complete(){
+					
+				},
+				
             })
         })
     }
@@ -147,8 +166,9 @@ class dbBase{
 	// 校验地址设置
 	checkAuthorUserLocation(){
 		return new Promise((resolve, reject) => {
-			if(uni.hasOwnProperty("authorize") == false)
-				resolve(false)
+			// if(uni.hasOwnProperty("authorize") == false)
+			// 	resolve(false)
+				
 			uni.authorize({
 				scope: "scope.userLocation",
 				success(res) {
@@ -160,6 +180,7 @@ class dbBase{
 					console.log(res)
 				},
 			})
+			
 		})
 	}
 	// 获取用户当前的位置

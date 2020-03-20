@@ -1,6 +1,12 @@
 {
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
 		{
+			"path": "pages/route/route",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		},
+		{
 			"path": "pages/menu/menu",
 			"style": {
 				"navigationStyle": "custom"
@@ -49,6 +55,12 @@
 			"path": "pages/order/list",
 			"style": {				
 				"navigationBarTitleText": "订单中心"
+			}
+		},
+		{
+			"path": "pages/wx/wxpay",
+			"style": {				
+				"navigationBarTitleText": "微信支付"
 			}
 		},
 		

@@ -16,7 +16,7 @@
 			<!-- <button class="block bg-blue text-white round" @click="add()">新增</button> -->
 			<view class="pg-flex-center  margin-top">
 		        <button class="cu-btn block round bg-red  text-white lg" @click="addAddress()" v-if="isAuthorLocaiton">增加地址</button>
-		        <button class="cu-btn block  round bg-red  text-white lg" bindtap="openSetting" wx:else>授权打开地址</button> 
+		        <button class="cu-btn block  round bg-red  text-white lg" @clkick="openSetting" v-else>授权打开地址</button> 
 		    </view>
 
 		</view>
@@ -135,10 +135,11 @@
 				// 	{ address:"2idsado",name:"我的", phone:"157778545"},
 				// ]
 				var res = await this.db.customerShipAddrs()
-				console.log(res)
+				var auth = await this.db.checkAuthorUserLocation()
+				console.log(auth)
 				this.setData({
 					list:res.data,
-					isAuthorLocaiton: await this.db.checkAuthorUserLocation()
+					isAuthorLocaiton: auth
 				})
 			},
 			select(index){
@@ -217,7 +218,9 @@
 				this.onInit()
 				this.close()
 			},
-						
+			openSetting(){
+				// if( this.db.checkAuthorUserLocation()) 
+			},
 			// 打开模态框
 			show(){
 				this.setData({

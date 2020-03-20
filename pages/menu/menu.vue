@@ -73,7 +73,7 @@
 										<text class="text-price"></text>{{item.price}}
 									</view>
 									<view style="position:relative">
-										<button class="cu-btn round bg-yellow text-white sm" @click="openDetail(index,itemIndex)">选规格</button>
+										<button class="cu-btn round line-yellow  sm" @click="openDetail(index,itemIndex)">选规格</button>
 										<view class="cu-tag badge" v-if="item.num">{{item.num}}</view>										
 									</view>
 								</view>
@@ -116,15 +116,27 @@
 					 </view> -->
 					 
 					 <view class="text-gray text-sm flex align-center">
-					 	<image src='/static/sf.png'
+					 	<!-- <image src='/static/sf.png'
 					 		class="cu-avatar radius lg  bg-gray margin-right-sm" 
 					 		style="width: 23px;height: 23px;"
-					 		></image>
+					 		></image> -->
 					 	顺丰专送 | 支持自取
 					  </view>
 				</view>
 				<view class="">
 						<button class='cu-btn round bg-yellow text-white shadow margin-right-sm' @click="toPay()">去结算</button>	
+				</view>
+			</view>
+		</view>
+		<view class="bg-white cu-list menu" :style="'position: fixed; bottom:'+ SpaceBottom +'px; left: 0; right: 0;'" v-else>			
+			<view class="cu-item ">
+				<view class="action">					
+					<text class="line-red text-sm">{{shopDiscount}}{{shopDiscount}}{{shopDiscount}}{{shopDiscount}}</text>				
+				</view>
+				<view class="action  text-sm basis-df text-right" @click="selectShop">
+					<text class="line-black ">{{shopName}}</text>
+					<text class="line-gray" >(选择门店)</text>
+					<!-- <view class="pg-arrow"></view> -->
 				</view>
 			</view>
 		</view>
@@ -217,7 +229,10 @@
 						<text class="cuIcon-close text-red"></text>
 				  </view>
 				</view>
-				
+				<view class="padding-lr padding-tb-sm text-left">
+					<text class="line-red text-sm ">{{shopDiscount}}{{shopDiscount}}{{shopDiscount}}{{shopDiscount}}</text>
+					
+				</view>
 				<view class="cu-list menu bg-white">
 					<view class="cu-item margin-tb-sm" v-for="(item , key) in order" v-bind:key="key">
 						<view class="action">
@@ -270,21 +285,8 @@
 							
 				cardCur: 0,
 				swiperList:[
-					{
-					  id: 0,
-					  type: 'image',
-					  url: "/static/images/strong/swiper1.jpg",
-					},
-					{
-					  id: 0,
-					  type: 'image',
-					  url: "/static/images/strong/swiper2.jpg",
-					},
-					{
-					  id: 0,
-					  type: 'image',
-					  url: "/static/images/strong/swiper3.jpg",
-					},
+					"/static/images/strong/swiper1_lg.jpg",
+					"/static/images/strong/swiper2_lg.jpg",
 				],
 				
 				
@@ -324,49 +326,35 @@
 				totalPrice:0,
 				totalQuantity:0,
 				
-				
-				
-				
-				// userInfo: {
-				// 	id: '202232',
-				// 	name: '',
-				// 	logo:"http://192.168.200.103:8083/wm_order_uni/static/images/strong/swiper.jpg",
-				// 	allScoreNum: 1,
-				// 	allPrizeNum: 1,
-				// 	allStoreNum: 1,
-				// },
+				shopId:"",
+				shopName:"南湖店",
+				shopDiscount:"满35，免配送费",
 			};
 		},
-		async onLoad() {
+		async onLoad(options) {
 			uni.showLoading({
 				title: '加载中...',
 				mask: true
 			});
-			// let list = [{}];
-			// for (let i = 0; i < 4; i++) {
-			// 	list[i] = {};
-			// 	list[i].name = String.fromCharCode(65 + i);
-			// 	list[i].id = i;
-			// }
-			this.onInit()
-			
-			
-			// 测试
-			
-			
-			// var productID = 1xt-xs margin-right-sm padding-xs" v-for="(tag , ta
-			// var res = await this.db.productGetDetail({ID : productID})
-			// console.log(res)
-			
-			var that = this 
+			this.setData({				
+				shopId:uni.getStorageSync(this.db.KEY_SHOP_ID) || "",
+				shopName:uni.getStorageSync(this.db.KEY_SHOP_NAME) || "",
+			})			
+			this.onInit()					
+			// var that = this 
 			// setInterval(function(){that.test()},500)
-			
-			
 		},
 		onReady() {
 			uni.hideLoading()
 		},
 		methods: {
+			// 选择门店
+			selectShop(){
+				uni.redirectTo({
+					url: '/pages/index/index'
+				});
+			},
+			
 			async test(){
 				
 				var res = await this.db.productMenu()
@@ -385,8 +373,9 @@
 			async onInit(){
 				// var res = await this.db.productGetList()
 				// var res = await this.db.categoryGetList()
-				var res = await this.db.productMenu()
-				// console.log(res)
+				var res = await this.db.productMenu({
+					shopId:this.$data.shopId
+				})
 				
 				var temp = res.data
 				// debugger
@@ -396,37 +385,8 @@
 				// this.listCur = temp[0];
 				// console.log(temp)
 				this.setData({
-					list:temp
+					list:temp,
 				})
-				 
-				 
-				var res = await this.db.storeBanner()
-				console.log(res)
-				this.setData({
-					swiperList:res.data
-				})
-				// let list = [
-				// 	{
-				// 		name:"热销",id:0,
-				// 		order_items:[1,],
-				// 	},
-				// 	{
-				// 		name:"下午茶",id:1	,						
-				// 		order_items:[1,2],
-				// 	},
-				// 	{name:"拿铁",id:2},
-				// 	{name:"美式",id:3},
-				// ]
-				
-				// this.list = list;
-				// // this.listCur = list[0];
-				// var a 
-				// wx.login({
-				// 	success(res){
-				// 		// console.log(res)
-				// 		a = res
-				// 	},
-				// })
 			},
 			
 			

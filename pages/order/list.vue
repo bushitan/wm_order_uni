@@ -20,28 +20,33 @@
 		        <view class="cu-bar  solid-bottom ">
 		            <view class="action">
 		                <text class="cuIcon-title text-yellow "></text>                
-		                <text class="text-black text-sm">{{order.pickup_address}}</text>      
+		                <text :class="[ order.payment_status=='未付款' ? 'text-red':'text-black' ,'text-bold']" >
+							订单ID:{{order.id}} ( {{order.payment_status}} )
+						</text>      		                 
 		            </view>
 		            <view class="action">
-						<!-- <text class="text-gray  text-sm">全部</text> -->
+						<text class="text-yellow text-bold" v-if="order.payment_status=='未付款'">去支付</text>
 						<view class="pg-arrow-sm"></view>
 		            </view>
 		        </view>
 				<view class="cu-list menu ">
-					<view class="cu-item margin-tb-sm" v-for="(item,j) in order.order_items">
+					<view class="cu-item margin-tb-sm " style="align-items: flex-start;"
+					 v-for="(item,j) in order.order_items">
 						<view class="action">
 							<image :src='item.product.images[0]' 
 								class="cu-avatar radius lg  bg-gray margin-right-sm " 
 								style="width:60px;height:60px"
+								mode="aspectFill"
 								></image>
 						</view>
-						<view class="content">
+						<view class="content ">
 							<view class="text-black   text">{{item.product.name}}</view>
-							<view class="text-gray   text-sm">{{item.product.attr_desc}}</view>
+							<!-- <view class="text-gray   text-sm">{{item.attr_desc}}</view> -->
+							<view class="text-gray   text-sm">数量：{{item.quantity}}</view>
 						</view>
-						<view class="action">
+						<!-- <view class="action">
 							<view class="text-gray   text-sm">x{{item.quantity}}</view>
-						</view>
+						</view> -->
 					</view>
 				</view>
 				<view class="cu-bar  solid-bottom ">
@@ -133,7 +138,7 @@
 			},
 			toDetail(id){
 				uni.navigateTo({
-					url:'/pages/order/detail?orderID=' + id
+					url:'/pages/order/detail?orderId=' + id
 				})
 			}
 		}

@@ -1,5 +1,5 @@
 
-import dbNormal from './db_sf_8.js'
+import dbNormal from './db_payment_9.js'
 class db extends dbNormal{	
 	
 	constructor(){

@@ -25,8 +25,8 @@ class son extends fahter{
                         },
                         method: "POST",
                     }).then(res => {
-                        uni.setStorageSync(that.KEY_SESSION, res.data.session) //session
-                        uni.setStorageSync(that.KEY_SN, "10" + res.data.sn)  //序列号
+                        uni.setStorageSync(that.KEY_SESSION, res.data.data.session) //session
+                        uni.setStorageSync(that.KEY_SN, "10" + res.data.data.sn)  //序列号
                         resolve(true)
                     })
                     .catch(res => reject(false))

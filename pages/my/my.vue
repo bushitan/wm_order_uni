@@ -89,22 +89,26 @@
 						<view class="pg-arrow"></view>
 				   </view>
 				</view> -->
-				<view class="cu-bar  solid-bottom " @click="toOrder()" >
+			<!-- 	<view class="cu-bar  solid-bottom " @click="toOrder()" >
 					<view class="action">
 						<text class="cuIcon-title text-yellow text-sm"></text> 
-						<text class="text-sm">联系客服</text> 	
+						<text class="text-sm">联系客服</text> 
 					</view>
 					<view class="action ">
 						<view class="pg-arrow"></view>
 				   </view>
-				</view>
+				</view> -->
 		    </view>
 		</view>
 		
-		<view class=" padding-xs flex align-center margin-top">
+		<view class=" flex justify-center margin-top">
+		    <button class=" cu-btn round  text-gray text-sm"  type="" open-type="contact">联系Strong客服</button>
+		</view>
+		
+		<view class=" padding-xs flex align-center margin-top-sm">
 		    <view class="flex-sub text-center">
 		        <view class=" text-df ">
-		            <text class="text-gray text-sm">Copyright © 2019 索骏科技提供技术支持</text>
+		            <text class="text-gray text-sm">Copyright © 2020 索骏科技提供技术支持</text>
 		        </view>           
 		    </view>
 		</view>
