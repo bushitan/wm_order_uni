@@ -23,6 +23,14 @@ Vue.prototype.Shop = {
 }
 
 
+var date = new Date()
+const year = date.getFullYear()
+const month = date.getMonth() + 1
+const day = date.getDate() 
+console.log()
+Vue.prototype.today = [year, month, day].join('-') 
+
+
 function setData(obj){  
 	let that = this;  
 	let keys = [];  

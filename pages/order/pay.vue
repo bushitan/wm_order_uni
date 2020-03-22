@@ -9,7 +9,7 @@
 		                <text class="text-black text-sm">下单门店</text>      
 		            </view>
 		            <view class="action">			
-						<text class="text-bold ">{{ShopName}}</text>
+						<text class="text-bold ">{{StoreName}}</text>
 						<view class="pg-arrow"></view>
 		            </view>
 		        </view>
@@ -44,13 +44,12 @@
 				
 					</view>
 					<view class="pg-arrow"></view>
-				</view>	
-				<!-- <view class="cu-form-group" v-else>
-					<view class="text-sm ">配送时间</view>
-					<view class=" text-right basis-xl text-bold">
-						<view class=" ">立即送出 </view>
-					</view>
-				</view> -->			
+				</view>		
+				<view class="cu-form-group  text-right text-sm" v-if="ShopTakeValue != SHOP_TAKE_WM">
+					<view class=" text-sm">取单电话</view>
+					<input placeholder="请输入取单电话" mode="digit" name="OrderNote" placeholder-class="text-sm" class="text-sm " @input="inputOrderPrePhone"></input>
+					<view class="pg-arrow"></view>
+				</view>
 				<view class="cu-form-group"  v-if="ShopTakeValue == SHOP_TAKE_ZQ" >
 					<view class="text-sm">取单时间</view>
 					<picker mode="time" :value="PickTime" :start="PickStartTime" end="21:01" @change="TimeChange">
@@ -60,13 +59,10 @@
 					</picker>
 				</view>
 				
-			
-				
-				
 				
 				<view class="cu-form-group  text-right text-sm">
 					<view class=" text-sm">订单备注</view>
-					<input placeholder="请输入口味等" name="OrderNote" class="text-sm " @input="inputOrderNote"></input>
+					<input placeholder="请输入口味等" name="OrderNote" placeholder-class="text-sm" class="text-sm " @input="inputOrderNote"></input>
 					<view class="pg-arrow"></view>
 				</view>
 		    </view>
@@ -133,9 +129,9 @@
 				<view class="cu-bar  solid-bottom ">
 				    <view class="action"></view>
 				    <view class="action">						
-						<text class="text-gray  text-sm ">已优惠</text>						
+						<!-- <text class="text-gray  text-sm ">已优惠</text>						
 						<text class="text-price text-sm text-red "></text>
-						<text class="  text-sm text-red margin-right">0</text>
+						<text class="  text-sm text-red margin-right">0</text> -->
 						
 						<text class="text-gray  text-sm margin-right-xs">合计</text>						
 						<text class=" text-xl text-red text-bold text-price"></text>
@@ -199,8 +195,8 @@
 				
 				storeList:[], // 店铺列表
 				order:{},					
-				ShopId:"",
-				ShopName:"",
+				StoreId:"",
+				StoreName:"",
 				ShipAddress:'',
 				pickUpInStore:true,
 				
@@ -221,6 +217,7 @@
 				PickTime:currentTime, // 选择时间
 				PickStartTime:currentTime,				
 				
+				OrderPrePhone:"",
 				OrderNote:"",
 				
 				SF:{},
@@ -228,9 +225,9 @@
 				
 				
 				
-				totalPrice:4600, // 总价
-				totalPack:4, // 包装费
-				totalPost:12, // 配送费
+				totalPrice:0, // 总价
+				totalPack:0, // 包装费
+				totalPost:0, // 配送费
 			}
 		},
 		onLoad(options){
@@ -238,20 +235,59 @@
 		},
 		
 		methods:{
-			async onInit(){
-					// console.log(order)
+			// 初始化
+			async onInit(){ 
 				this.getOrder() // 获取已经选择的订单
-				this.getShopList() // 获取门店列表
-				this.getShopTakeType() // 获取门店点单方式
+				
+				// 1 获取配送门店
+				var res = await this.db.storeGetList()
+				var storeList = res.data	
+				if(storeList.length == 0 ) // 没有门店
+					return				
+				// 获取门店列表			
+				var StoreId = storeList[0].Id
+				var StoreName = storeList[0].Name
+				var SyncStoreId = uni.getStorageSync(this.db.KEY_SHOP_ID) || "" 				
+				for(var i =0 ; i<storeList.length ; i++){
+					if(SyncStoreId == storeList[i].Id){						
+						StoreId = storeList[i].Id
+						StoreName = storeList[i].Name 
+					}
+				}					
+				this.setData({
+					storeList:storeList,
+					StoreId : StoreId,
+					StoreName : StoreName,
+				})				
+				// 3 设置默认的取单地址
+				var res = await this.db.customerShipAddrs()
+				if(res.data.length > 0)
+					this.setData({ currentAddress: res.data[0] })
+					
+				// 4 获取门店点单方式
+				this.getShopTakeType() 
+				// 5 设置默认的顺风预取单
+				this.mathTotalPrice() // 预取顺风费用
+				// 6 获取优惠券
 				this.getCoupon() // 获取优惠券
-				this.getSFPreOrder() // 预取顺风费用
-				this.getTotal() //	计算总价
-				this.getDefaultAddress()
+				
+				
+				
+				
+				// this.getShopList() // 获取门店列表
+				// this.getShopTakeType() // 获取门店点单方式
+				// this.getTotal() //	计算总价
+				// this.getDefaultAddress() // 获取默认的地址
+				
+				// 获取本地预留的电话
+				this.setData({
+					OrderPrePhone:uni.getStorageSync(this.db.KEY_ORDER_PRE_PHONE )
+				})
+				
 			},
 			
 			// 1 获取已经选择的订单
-			getOrder(){
-			
+			getOrder(){			
 				// 获取订单信息
 				var orderObj = uni.getStorageSync("order")
 				var order = [] 				
@@ -263,37 +299,12 @@
 					order:order,
 				})			
 			},
-			// 2 获取门店列表
-			async getShopList(){				
-				//获取配送门店
-				var res = await this.db.storeGetList()
-				var storeList = res.data.stores	
-				if(storeList.length == 0 ) // 没有门店
-					return
-				
-				// 获取门店列表			
-				var ShopId = storeList[0].id
-				var ShopName = storeList[0].name
-				var ShopId = uni.getStorageSync(this.db.KEY_SHOP_ID) || "" 				
-				for(var i =0 ; i<storeList.length ; i++){
-					if(ShopId == storeList[i].id){						
-						ShopId = storeList[i].id
-						ShopName = storeList[i].name 
-					}
-				}		
-				this.setData({
-					storeList:storeList,
-					ShopId : ShopId,
-					ShopName : ShopName,
-				})
-							
-			},
 			
 			// 获取门店的点单方式
 			async getShopTakeType(){
 				// 获取配送方式
 				var res = await this.db.storeCurrent({
-					ShopId:this.$data.ShopId
+					ShopId:this.$data.StoreId
 				})
 				var value = 7
 				var ShopTakeList = []
@@ -325,93 +336,39 @@
 					ShopTakeName:ShopTakeName,
 				})					
 			},
-						
-			// 3  设置默认地址
-			async getDefaultAddress(){
-				var res = await this.db.customerShipAddrs()
-				// debugger
-				if(res.data.length > 0){
-					this.setData({
-						currentAddress: res.data[0]
-					})
-				}
-				
-			},
-			
-			
-			
 			
 			// 3 设置用户地址
 			setUserAddress(currentAddress){
-				console.log(currentAddress)
+				console.log(currentAddress)				
 				this.setData({
 					currentAddress:currentAddress
-				})
-				// this.setData({
-				// 	ReciveAddress : currentAddress.address,
-				// 	ReciveName : currentAddress.name,
-				// 	RecivePhone : currentAddress.phoneNumber,
-				// 	ReciveCityName : currentAddress.cityName,
-				// })	
-							
-				// 			Latitude: "22.4577"
-				// 			Longitude: "108.248"
-				// 			address: "广西南宁青秀区 盛天国际"
-				// 			cityCode: ""
-				// 			cityName: "南宁"
-				// 			company: "广西索骏科技有限责任公司"
-				// 			email: "281256755@qq.com"
-				// 			faxNumber: "07713212955"
-			},
-			// 4 订单时间选择
-			TimeChange(e) {
-				console.log(e)
-			    this.setData({
-					PickTime: e.detail.value
-			    })
+				})				
+				this.mathTotalPrice() // 预取配送费				
 			},
 			
 			// 3 获取优惠券
 			async getCoupon(){
 				//  TODO  获取优惠券列表
-			},
-			// 4 预取顺风费用
-			async getSFPreOrder(){
-				// var res = await this.db.sfPreCreateOrder()
-				// this.setData({
-				// 	SF:res.data
-				// })
-				// console.log(res.data)
-			},
-			
-			// 5 计算总价
-			getTotal(){
-				this.setData({					
-					totalPrice:4600, // 总价
-					totalPack:4, // 包装费
-					totalPost:12, // 配送费
-				})
-			},
-			
-			
-			
+			},	
+					
+			/*************选择 门店 | 点单方式 | 优惠券*************/
 			// 选择门店
 			async selectStore(){
 				var storeList = this.$data.storeList
 				var itemList = []
-				for (var i=0; i<5 ; i++){
-				// for (var i=0; i<storeList.length ; i++){
-					itemList.push(storeList[i].name)
+				for (var i=0; i<storeList.length ; i++){
+					itemList.push(storeList[i].Name)
 				}
 				var that = this
 				uni.showActionSheet({
 					itemList:itemList,
 					success(res){
 						that.setData({
-							ShopId : storeList[res.tapIndex].id,
-							ShopName : storeList[res.tapIndex].name,
+							StoreId : storeList[res.tapIndex].Id,
+							StoreName : storeList[res.tapIndex].Name,
 						})
 						that.getShopTakeType() // 更新点单方式
+						that.mathTotalPrice() // 预取配送费						
 					},
 				})
 			},			
@@ -434,72 +391,68 @@
 				})
 			},
 			
-			// 是否堂食
-			changePick(){
-				this.setData({
-					pickUpInStore :  !this.$data.pickUpInStore
-				})
-				console.log(this.$data.pickUpInStore)				
-				if(this.$data.ShipAddress == "" && this.$data.pickUpInStore == false)
-					this.toAddress()
-			},
-			
-			
-			// 去到我的位置
-			toAddress(){
-				uni.navigateTo({
-					url:"/pages/my/address"
-				})
+			// 计算费用
+			async mathTotalPrice(){
+				if(this.$data.StoreId && this.$data.currentAddress.id){
+					var res = await this.db.sfPreCreateOrder({
+						"ShopId":this.$data.StoreId,
+						"AddressId":this.$data.currentAddress.id,
+						"Weight":500,
+					})
+					this.setData({
+						SF:res.data
+					})
+				}
 				
+				// this.getTotal() // 计算总价
+				// TODO 计算其他产品的价格				
+				this.setData({					
+					totalPrice:4600, // 总价
+					totalPack:4, // 包装费
+					totalPost:12, // 配送费
+				})
 			},
-			
-			// 输入备注内容
-			inputOrderNote(e){
-				console.log(e.detail.value)
-				this.setData({OrderNote:e.detail.value})
-			},
-			
-			back(){
-				uni.navigateBack({})
-			},
-			
-			
 			/**
 			 * @method 下单
 			 */
 			async toSuccess(){	
-				// if (this.check() == false)
-				// 	return 
-				
-				console.log(this.$data.currentAddress.id)
+								
 				var data =
 				{
-				  "OrderId": 0,//新建订单 默认为零I"
-				  "PickUpInStore": false,// true堂食 || false到店自取 
-				  "ShippingMethod": 1, // 1顺丰　|| 2到店自取
-				  // "PickUpInStore": this.$data.pickUpInStore,//是否店内获取
-				  "AddressId":this.$data.currentAddress.id,
-				  "ReceiverPhone":'2263648574',
-				  "PaymentMethodSystemName": "Payments.WeixinPay",//支付方式 当前默认微信 硬编码
-				  
-				  // "ShipAddress": this.$data.ShipAddress, //送货地址
-				  "RecivePhone": this.$data.RecivePhone,//收货人电话
-				  "ReciveName": this.$data.ReciveName,//
-				  "OrderItems": this.$data.order,
-				  "OrderNote":this.$data.OrderNote,//订单描述
-				  
-				  "ShopId":1,
-				  // "StoreId":1,
-				  "CustomerTakeType":1,
-				  // "AppId":"5099f520489646d28ce9df352237c059" ,// 门店点Appid，不是小程序ID
-				  
+					"OrderId": 0,//新建订单 默认为零I"
+					// "ShippingMethod": this.$data.ShopTakeValue, // 1 外卖　2到店自取 4堂食				  
+					"PaymentMethodSystemName": "Payments.WeixinPay",//支付方式 当前默认微信 硬编码
+					"OrderItems": this.$data.order,
+					"OrderNote":this.$data.OrderNote,//订单描述				  
+					"ShopId":this.$data.StoreId,
+					"CustomerTakeType":this.$data.ShopTakeValue,
+					"WishDateTime": this.$data.PickTime,
+					// "AppId":"5099f520489646d28ce9df352237c059" ,// 门店点Appid，不是小程序ID
+				}
+				
+				// 取单联系方式判断
+				if(this.$data.ShopTakeValue == this.db.SHOP_TAKE_WM){ //外卖
+					if(this.$data.currentAddress.id)
+						data["AddressId"] = this.$data.currentAddress.id
+					else{
+						uni.showModal({title:"请添加收货地址"})
+						return 
+					}
+				} else{// 到店自取 | 堂食 获取电话
+					var OrderPrePhone = this.$data.OrderPrePhone
+					if(OrderPrePhone.length == 11){ 
+						uni.setStorageSync(this.db.KEY_ORDER_PRE_PHONE ,  OrderPrePhone)
+						data["ReceiverPhone"] = OrderPrePhone
+					} else {
+						uni.showModal({title:"取单电话格式不对"})
+						return 
+					}						
 				}
 				
 				
-				
-				var jsondata = JSON.stringify(data)
-				
-				console.log(jsondata)
+				// 下单数据
+				var jsondata = JSON.stringify(data)				
+				console.log(data)
 				var res = await this.db.orderGen({
 					jsondata:jsondata
 				})
@@ -508,37 +461,20 @@
 				uni.redirectTo({
 					url: '/pages/wx/wxpay?orderId=' + orderId,
 				});
-				// uni.showModal({
-				// 	title:"支付成功",
-				// 	content:"请耐心等待",
-				// 	success(){
-				// 		uni.switchTab({
-				// 			url:"/pages/order/current"
-				// 		})
-				// 	},
-					
-				// })
 			},
 			
-			check(){
-				var msg = "" , status = true
-				if(this.$data.pickUpInStore == false){
-					if( this.$data.ShipAddress == "")
-						msg = "地址未填写";status = false	
-					if( this.$data.RecivePhone == "")
-						msg = "电话未填写";status = false	
-					if( this.$data.ReciveName == "")
-						msg = "收货人未填写";status = false						
-				} else{					
-					if( this.$data.RecivePhone == "")
-						msg = "电话未填写";status = false	
-				}			
-				if(status==false)
-					uni.showModal({
-						title:msg
-					})
-				return status
-			},
+			
+			/**************路由 || 输入*************/
+			// 去到我的位置
+			toAddress(){ uni.navigateTo({ url:"/pages/my/address" }) },			
+			// // 获取本地预留的电话
+			inputOrderPrePhone(e){ this.setData({ OrderPrePhone:e.detail.value, }) },
+			// 输入备注内容
+			inputOrderNote(e){ this.setData({OrderNote:e.detail.value}) },	
+			// 返回
+			back(){	uni.navigateBack({}) },				
+			// 单时间选择
+			TimeChange(e) { this.setData({PickTime: e.detail.value}) },
 		}
 	}
 </script>

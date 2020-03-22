@@ -4,10 +4,42 @@
 		<view class="text-xl text-bold flex justify-between align-center padding">
             <view>
                 <text>订单ID：{{order.id}}</text>
+                <text  v-if="order.customertaketype == SHOP_TAKE_WM">（外卖）</text>
+                <text  v-if="order.customertaketype == SHOP_TAKE_ZQ">（到店自取）</text>
+                <text  v-if="order.customertaketype == SHOP_TAKE_TS">（堂食）</text>
             </view>				
-            <button class="cu-btn round line-yellow" @click="clickCancle">取消订单</button>
-            <button class="cu-btn round bg-yellow text-white" @click="clickPay">支付订单</button>
+			<button v-if="order.payment_status_code == PAYMENT_STATUS_PENDING || order.payment_status_code == PAYMENT_STATUS_AUTHORIZED"
+				class="cu-btn round bg-yellow text-white" 
+				@click="clickPay">支付订单</button>				
+			<button v-if="order.order_status_code == ORDER_STATUS_PROCESSING"
+					class="cu-btn round line-yellow" 
+					@click="clickCancle">退款申请</button>	
+			<!-- <view v-else></view> -->
+				
 		</view>
+		
+			<view class="cu-card padding-lr ">
+				<view class=" bg-white pg-radius  shadow shadow-warp">
+					<view class="cu-bar  solid-bottom ">
+						<view class="action">
+							<text class="cuIcon-title text-yellow "></text>                
+							<text class="text-black text-sm">订单状态</text>      
+						</view>
+						<view class="action">                    
+							<view class=" text-sm">{{order.order_status}} </view>
+						</view>
+					</view>
+					<view class="cu-bar   "  v-if="order.customertaketype == STORE_TAKE_TYPE_WM">
+						<view class="action">
+							<text class="cuIcon-title text-yellow "></text>                
+							<text class="text-black text-sm">配送状态</text>      
+						</view>
+						<view class="action">     
+							<view class=" text-sm">{{order.shipping_status}}</view>
+						</view>
+					</view>
+				</view>
+			</view>
 		
 <!-- 		<view class="cu-card padding-lr ">
 			<view class=" bg-white pg-radius  shadow shadow-warp">
@@ -29,7 +61,7 @@
 			</view>
 		</view> -->
 		
-		<view class="cu-card padding-lr ">
+		<view class="cu-card padding-lr margin-top">
 			<view class=" bg-white pg-radius  shadow shadow-warp">
 				<view class="cu-bar  solid-bottom ">
 					<view class="action">
@@ -57,21 +89,25 @@
 							<view class="text-gray   text-sm">
 								单价：<text class="text-price"></text>{{item.product.price}}
 							</view>
+							<view class="text-gray  text-sm" v-if="item.product.wmCost">
+                                包装费：<text class="text-price"></text>{{item.product.wmCost}} 
+                            </view>
+							
 						</view>
 						<view class="action text-red ">
-							<text class="text-price"></text>{{item.product.price}}
+							<text class="text-price"></text>{{item.price_excl_tax}}
 						</view>
 					</view>			
 				</view>
 				
 				<view class="cu-list menu ">	
-					<view class="cu-item " v-if="order.wm_cost != 0">
+					<view class="cu-item " v-if="order.wm_cost">
 						<view class="action text-gray text-sm">包装费</view>
 						<view class="action text-red">
 							<text class="text-price"></text>{{order.wm_cost}}
 						</view>
 					</view>
-					<view class="cu-item ">
+					<view class="cu-item "  v-if="order.customertaketype == SHOP_TAKE_WM" >
 						<view class="action text-gray text-sm">配送费</view>
 						<view class="action text-red">
 							<text class="text-price"></text>{{order.customer_take_ship_fee}}
@@ -106,7 +142,7 @@
 				<view class="cu-list menu ">					
 					<view class="cu-item " v-for="(item,key) in order.order_notes" v:bind-key="key">
 						<view class="content">
-							<text class="text-yellow text-sm">{{key+1}}、{{item.Note}}</text>
+							<text class="text-gray text-sm">{{key+1}}、{{item.Note}}</text>
 						</view>
 						<view class="action ">
 						</view>
@@ -180,6 +216,7 @@
 							<text class="" @click="toRider">致电骑手</text>
 						</view>
 					</view>
+					
 				</view>				
 			</view>
 		</view>
@@ -390,6 +427,15 @@
 				CustomBar : this.CustomBar,
 				TabbarBot:this.TabbarBot,
 				
+				
+				PAYMENT_STATUS_PENDING : this.db.PAYMENT_STATUS_PENDING, // 待支付
+				PAYMENT_STATUS_AUTHORIZED : this.db.PAYMENT_STATUS_AUTHORIZED ,// 待支付
+				
+				ORDER_STATUS_PROCESSING: this.db.ORDER_STATUS_PROCESSING, //订单处理中
+				SHOP_TAKE_WM : this.db.SHOP_TAKE_WM , // 外卖配送
+				SHOP_TAKE_ZQ : this.db.SHOP_TAKE_ZQ , // 外卖配送
+				SHOP_TAKE_TS : this.db.SHOP_TAKE_TS , // 外卖配送
+				
 				orderId:"",
 				order:{
 					ship_address:{},
@@ -429,8 +475,12 @@
 			},
 			
 			// 取消订单
-			clickCancle(){
-				console.log("取消订单")
+			async clickCancle(){
+				// console.log("取消订单")
+				var res = await this.db.orderRefund({
+					orderId:this.$data.orderId
+				})
+				uni.showModal({	title:res.msg , showCancel:false })
 			},
 			
 			// 致电骑手

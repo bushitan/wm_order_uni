@@ -11,23 +11,33 @@ class dbBase{
 	KEY_SHOP_ID = "shop_id"
 	KEY_SHOP_NAME = "shop_name"
 	KEY_SHOP_TAKE_TYPE= "shop_take_type"
+	KEY_ORDER_PRE_PHONE = "order_pre_phone"
+	
+	
+	
+	SHOP_TAKE_WM = 1 // 外卖
+	SHOP_TAKE_ZQ = 2 // 到店自取
+	SHOP_TAKE_TS = 4 // 堂食
+	
 	
 	PAYMENT_STATUS_PENDING = 10 // 待支付
 	PAYMENT_STATUS_AUTHORIZED = 20 // 待支付
 	PAYMENT_STATUS_PAID = 30 // 已经支付
 	PAYMENT_STATUS_REFUND = 40 // 退款
 	PAYMENT_STATUS_CANCEL = 50 // 取消支付
+    PAYMENT_STATUS_CANCEL = 60 // 申请退款
 	
 	ORDER_STATUS_PENDING = 10 // 订单待处理
 	ORDER_STATUS_PROCESSING = 20 // 订单处理中
 	ORDER_STATUS_COMPLETE = 30 // 订单已完成
-	ORDER_STATUS_CANCEL = 40 // 订单已取消
-	
-	
-	SHOP_TAKE_WM = 1
-	SHOP_TAKE_ZQ = 2
-	SHOP_TAKE_TS = 4
-	
+	ORDER_STATUS_CANCEL = 40 // 订单已取消	
+
+	SHIP_STATUS_NOT_REQUIRED = 10 //不需要配送
+	SHIP_STATUS_NOT_YET = 20 //未配送
+	SHIP_STATUS_PARTIALLY = 25 //部分已配送
+	SHIP_STATUS_ING = 30 //配送中
+	SHIP_STATUS_DELIVER = 40 //已送达
+	SHIP_STATUS_CANCEL = 50 //已取消
 	
 	
 	APP_ID = "5099f520489646d28ce9df352237c059"  // Strong
@@ -125,7 +135,7 @@ class dbBase{
 			// step++
 			
 			var startTime = new Date().getTime();
-			console.log('startTime',startTime)
+			// console.log('startTime',startTime)
             uni.request({
                 url: url,
                 method: options.method || "POST",
@@ -138,7 +148,20 @@ class dbBase{
                 success(res) {
 					
 					var completeTime = new Date().getTime();
-					console.log("completeTime",completeTime , "cha" , completeTime - startTime)
+					var dateTime = completeTime - startTime
+					console.log(options.url , completeTime - startTime)
+					if( dateTime > 2000) {
+						uni.request({
+							url:that.HOST_URL + "api/log/addlog/",
+							method:"POST",
+							data:{
+								logmsg:options.url + ":" + dateTime
+							}
+						})
+						reject(res)
+					}
+					
+					
                     resolve(res)
                 },
                 fail(res) {

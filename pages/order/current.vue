@@ -25,11 +25,13 @@
 		<view class="" v-else>
 				
 			<view class="cu-card padding-lr margin-top"  @click="toDetail(order.id)" v-for="(order,key) in list">
+				
+				<view class="text-yellow  text-sm  padding-bottom-xs"><text class="cuIcon-timefill "></text>{{order.created_on_utc}}</view>
 				<view class=" bg-white pg-radius  shadow shadow-warp">
 					<view class="cu-bar  solid-bottom ">
 						<view class="action">
 							<text class="cuIcon-title text-yellow "></text>                
-							<text class="text-black text-sm">订单ID:{{order.id}}（{{order.created_on_utc}}）</text>      
+							<text class="text-black text-sm">订单ID:{{order.id}}</text>      
 						</view>
 						<view class="action">
 							<view class="text-yellow text-bold">{{order.payment_status}}</view>
@@ -119,23 +121,33 @@
 		},
 		
 		methods:{
-			onInit(){
-				this.getOrderList() //获取订单
-			},
-			
-			
-			async getOrderList(){
-				var data = {
+			async onInit(){
+				// 获取未支付的订单								
+				var res = await this.db.orderGetCustomerOrder({
+					Page:1,
+					Limit:10,
+					Status:this.db.ORDER_STATUS_PENDING,
+					CreatedAtMin: this.today,
+				})		
+				var padding = res.data
+				// 获取未完成订单
+				var res = await this.db.orderGetCustomerOrder({
 					Page:1,
 					Limit:10,
 					Status:this.db.ORDER_STATUS_PROCESSING,
-				}											
-				var res = await this.db.orderGetCustomerOrder(data)			
-				// this.db.listUpdate(this , res)
+					CreatedAtMin: this.today,
+				})			
+				var proccessing = res.data
+				var list = padding.concat(proccessing)
 				this.setData({
-					list:res.data
+					list:list
 				})
 			},
+			
+			
+			// async getOrderList(){
+				
+			// },
 			
 			
 			

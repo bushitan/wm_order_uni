@@ -16,6 +16,8 @@
 		</scroll-view>
 		
 		<view class="cu-card padding-lr margin-top" @click="toDetail(order.id)" v-for="(order,key) in list">
+			<view class="text-yellow  text-sm  padding-bottom-xs"><text class="cuIcon-timefill "></text>{{order.created_on_utc}}</view>
+			
 		    <view class=" bg-white pg-radius  shadow shadow-warp">
 		        <view class="cu-bar  solid-bottom ">
 		            <view class="action">

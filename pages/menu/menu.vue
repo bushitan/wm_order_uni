@@ -134,8 +134,9 @@
 					<text class="line-red text-sm">{{shopDiscount}}{{shopDiscount}}{{shopDiscount}}{{shopDiscount}}</text>				
 				</view>
 				<view class="action  text-sm basis-df text-right" @click="selectShop">
-					<text class="line-black ">{{shopName}}</text>
-					<text class="line-gray" >(选择门店)</text>
+					<!-- <text class="line-black ">{{shopName}}</text>
+					<text class="line-gray" >(选择门店)</text> -->
+					<button class="cu-btn sm line-yellow">{{shopName}}(选择)</button>
 					<!-- <view class="pg-arrow"></view> -->
 				</view>
 			</view>
