@@ -44,7 +44,7 @@
 								<view class="text-gray text-sm">下单门店</view>
 							</view>
 							<view class="action">
-								<view class=" text-sm ">{{order.pickup_address}}</view>
+								<view class=" text-sm ">{{order.store_name}}</view>
 							</view>
 						</view>
 						<view class="cu-item margin-tb-sm">
@@ -117,7 +117,11 @@
 			}
 		},
 		onLoad(){
-			this.onInit()			
+			// this.onInit()			
+		},
+		
+		onShow(){
+			this.onInit()				
 		},
 		
 		methods:{

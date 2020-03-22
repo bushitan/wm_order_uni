@@ -29,6 +29,15 @@
 							<view class=" text-sm">{{order.order_status}} </view>
 						</view>
 					</view>
+					<view class="cu-bar  solid-bottom ">
+						<view class="action">
+							<text class="cuIcon-title text-yellow "></text>                
+							<text class="text-black text-sm">支付状态</text>      
+						</view>
+						<view class="action">                    
+							<view class=" text-sm">{{order.payment_status}} </view>
+						</view>
+					</view>
 					<view class="cu-bar   "  v-if="order.customertaketype == STORE_TAKE_TYPE_WM">
 						<view class="action">
 							<text class="cuIcon-title text-yellow "></text>                
