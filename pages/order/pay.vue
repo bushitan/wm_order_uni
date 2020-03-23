@@ -322,6 +322,8 @@
 				var　ShopTakeValue = ShopTakeList[0].value
 				var　ShopTakeName = ShopTakeList[0].name
 				var ShopTakeTypeValue = uni.getStorageSync(this.db.KEY_SHOP_TAKE_TYPE)
+				// var ShopTakeTypeValue = this.customerTakeType
+				// debugger
 				if(ShopTakeTypeValue != ""){   
 					for(var i =0 ; i<ShopTakeList.length ; i++){
 						if(ShopTakeTypeValue == ShopTakeList[i].value){

@@ -161,9 +161,9 @@
 						"/static/images/strong/swiper2_lg.jpg",
 					],
 				storeList:[
-					{name:"康浦店",id:"1",url:"/static/images/strong/store_1.png"},
-					{name:"盛天地店",id:"2",url:"/static/images/strong/store_2.png"},
-					{name:"南湖店",id:"3",url:"/static/images/strong/store_3.png"},
+					{name:"康浦店",id:1,url:"/static/images/strong/store_1.png"},
+					{name:"盛天地店",id:7,url:"/static/images/strong/store_2.png"},
+					{name:"南湖店",id:6,url:"/static/images/strong/store_3.png"},
 				],
 				store:{},
 				orderList:[], //订单列表

@@ -14,15 +14,33 @@
 				}
 			},
 			onLoad(options){
-				var ShopId = options.ShopId || ""
-				var ShopTakeType = options.ShopTakeType || ""
-				this.setData({
-					ShopId: ShopId,
-					ShopTakeType:ShopTakeType,
-				})
+				console.log(options)
 				
-				uni.setStorageSync(this.db.KEY_SHOP_ID ,ShopId )
-				uni.setStorageSync(this.db.KEY_SHOP_TAKE_TYPE ,ShopTakeType )
+				// var storeId = options.store_id || ""
+				this.setData({
+					ShopId : options.store_id || ""
+				})
+				// var customerTakeType = options.type || ""
+				// this.customerTakeType = options.type || 2
+				uni.setStorageSync(this.db.KEY_SHOP_TAKE_TYPE ,options.type || "")
+				
+				// setTimeout(function(){					
+				// 	uni.redirectTo({
+				// 		url: '/pages/index/index'
+				// 	});				
+				// },1500)
+				
+				
+				// console.log(options)
+				// var ShopId = options.ShopId || ""
+				// var ShopTakeType = options.ShopTakeType || ""
+				// this.setData({
+				// 	ShopId: ShopId,
+				// 	ShopTakeType:ShopTakeType,
+				// })
+				
+				// uni.setStorageSync(this.db.KEY_SHOP_ID ,ShopId )
+				// uni.setStorageSync(this.db.KEY_SHOP_TAKE_TYPE ,ShopTakeType )
 								
 				this.onInit()
 			},
@@ -30,17 +48,26 @@
 				async onInit(){
 					var res = await this.db.customerGetToken()
 					console.log(res)
+					
+					
 					var that = this
 					setTimeout(function(){
+						// debugger
 						if(that.$data.ShopId == "")
 							uni.redirectTo({
 								url: '/pages/index/index'
 							});
-						else
-							uni.switchTab({
-								url:"/pages/menu/menu?ShopId=" + that.$data.ShopId
-							})
-					},2000)
+						else {
+							that.db.storeCurrent({
+								shopId:that.$data.ShopId
+							}).then(res=>{
+								uni.setStorageSync(that.db.KEY_SHOP_NAME , res.data.Hosts)
+								uni.switchTab({
+									url:"/pages/menu/menu?ShopId=" + that.$data.ShopId
+								})
+							})							
+						}							
+					},1000)
 					
 					
 					

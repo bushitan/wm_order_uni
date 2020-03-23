@@ -21,6 +21,7 @@ Vue.prototype.Shop = {
 	Id:0,
 	TakeTypeValue:7,
 }
+Vue.prototype.customerTakeType = ''
 
 
 var date = new Date()
