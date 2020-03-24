@@ -34,7 +34,11 @@
 							<text class="text-black text-sm">订单ID:{{order.id}}</text>      
 						</view>
 						<view class="action">
-							<view class="text-yellow text-bold">{{order.payment_status}}</view>
+							<view class="text-yellow text-bold">
+								{{order.payment_status}}
+								<text v-if="order.payment_status_val == ORDER_STATUS_PENDING">（去支付）</text>
+								
+							</view>
 							<view class="pg-arrow"></view>
 						</view>
 					</view>
@@ -113,6 +117,8 @@
 				// SortMenu: [{id:0,name:"全部订单"},{id:1,name:"待付款"},{id:2,name:"待发货"},{id:3,name:"待收货"},{id:4,name:"已完成"}],
 				
 				list:[],
+				
+				ORDER_STATUS_PENDING:this.db.ORDER_STATUS_PENDING,
 				
 			}
 		},

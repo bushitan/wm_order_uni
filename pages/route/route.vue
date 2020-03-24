@@ -49,25 +49,41 @@
 					var res = await this.db.customerGetToken()
 					console.log(res)
 					
-					
 					var that = this
-					setTimeout(function(){
-						// debugger
-						if(that.$data.ShopId == "")
-							uni.redirectTo({
-								url: '/pages/index/index'
-							});
-						else {
-							that.db.storeCurrent({
-								shopId:that.$data.ShopId
-							}).then(res=>{
-								uni.setStorageSync(that.db.KEY_SHOP_NAME , res.data.Hosts)
-								uni.switchTab({
-									url:"/pages/menu/menu?ShopId=" + that.$data.ShopId
-								})
-							})							
-						}							
-					},1000)
+					if(that.$data.ShopId == "")
+						uni.redirectTo({
+							url: '/pages/index/index'
+						});
+					else {
+						that.db.storeCurrent({
+							shopId:that.$data.ShopId
+						}).then(res=>{
+							uni.setStorageSync(that.db.KEY_SHOP_NAME , res.data.Hosts)
+							uni.switchTab({
+								url:"/pages/menu/menu?ShopId=" + that.$data.ShopId
+							})
+						})							
+					}		
+					
+					
+					// var that = this
+					// setTimeout(function(){
+					// 	// debugger
+					// 	if(that.$data.ShopId == "")
+					// 		uni.redirectTo({
+					// 			url: '/pages/index/index'
+					// 		});
+					// 	else {
+					// 		that.db.storeCurrent({
+					// 			shopId:that.$data.ShopId
+					// 		}).then(res=>{
+					// 			uni.setStorageSync(that.db.KEY_SHOP_NAME , res.data.Hosts)
+					// 			uni.switchTab({
+					// 				url:"/pages/menu/menu?ShopId=" + that.$data.ShopId
+					// 			})
+					// 		})							
+					// 	}							
+					// },1000)
 					
 					
 					

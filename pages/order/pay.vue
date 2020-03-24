@@ -45,9 +45,10 @@
 					</view>
 					<view class="pg-arrow"></view>
 				</view>		
-				<view class="cu-form-group  text-right text-sm" v-if="ShopTakeValue != SHOP_TAKE_WM">
+				<view class="cu-form-group  text-right text-sm" v-if="ShopTakeValue == SHOP_TAKE_ZQ">
 					<view class=" text-sm">取单电话</view>
-					<input placeholder="请输入取单电话" mode="digit" name="OrderNote" placeholder-class="text-sm" class="text-sm " @input="inputOrderPrePhone"></input>
+					<input placeholder="请输入取单电话" mode="digit" 
+					placeholder-class="text-sm" class="text-sm " @input="inputOrderPrePhone"></input>
 					<view class="pg-arrow"></view>
 				</view>
 				<view class="cu-form-group"  v-if="ShopTakeValue == SHOP_TAKE_ZQ" >
@@ -61,7 +62,7 @@
 				
 				
 				<view class="cu-form-group  text-right text-sm">
-					<view class=" text-sm">订单备注</view>
+					<view class=" text-sm">订单备注(选填)</view>
 					<input placeholder="请输入口味等" name="OrderNote" placeholder-class="text-sm" class="text-sm " @input="inputOrderNote"></input>
 					<view class="pg-arrow"></view>
 				</view>
@@ -395,24 +396,56 @@
 			
 			// 计算费用
 			async mathTotalPrice(){
-				if(this.$data.StoreId && this.$data.currentAddress.id){
-					var res = await this.db.sfPreCreateOrder({
-						"ShopId":this.$data.StoreId,
-						"AddressId":this.$data.currentAddress.id,
-						"Weight":500,
-					})
-					this.setData({
-						SF:res.data
-					})
+				var data =
+				{
+					"OrderId": 0,//新建订单 默认为零I"				  
+					"PaymentMethodSystemName": "Payments.WeixinPay",//支付方式 当前默认微信 硬编码
+					"OrderItems": this.$data.order,
+					"OrderNote":this.$data.OrderNote,//订单描述				  
+					"ShopId":this.$data.StoreId,
+					"CustomerTakeType":this.$data.ShopTakeValue,
+					"WishDateTime": this.$data.PickTime,
+					"ReceiverPhone":"123"
+					// data["ReceiverPhone"] =
+					// "AppId":"5099f520489646d28ce9df352237c059" ,// 门店点Appid，不是小程序ID
+				}
+				if(this.$data.ShopTakeValue == this.db.SHOP_TAKE_WM){ 
+					data["AddressId"] = this.$data.currentAddress.id
 				}
 				
-				// this.getTotal() // 计算总价
-				// TODO 计算其他产品的价格				
-				this.setData({					
-					totalPrice:4600, // 总价
-					totalPack:4, // 包装费
-					totalPost:12, // 配送费
+				
+				var jsondata = JSON.stringify(data)		
+				var res = await this.db.orderCaculatePrice({
+					jsondata:jsondata
+				})		
+				console.log(res)
+				var preOrder = res.data 
+				var all = preOrder.order_total + preOrder.wm_cost + preOrder.customer_take_ship_fee
+				this.setData({
+					totalPrice:all, // 总价
+					totalPack:preOrder.wm_cost, // 包装费
+					totalPost:preOrder.customer_take_ship_fee, // 配送费
 				})
+				
+				
+				// if(this.$data.StoreId && this.$data.currentAddress.id){
+				// 	var res = await this.db.sfPreCreateOrder({
+				// 		"ShopId":this.$data.StoreId,
+				// 		"AddressId":this.$data.currentAddress.id,
+				// 		"Weight":500,
+				// 	})
+				// 	this.setData({
+				// 		SF:res.data
+				// 	})
+				// }
+				
+				// // this.getTotal() // 计算总价
+				// // TODO 计算其他产品的价格				
+				// this.setData({					
+				// 	totalPrice:4600, // 总价
+				// 	totalPack:4, // 包装费
+				// 	totalPost:12, // 配送费
+				// })
 			},
 			/**
 			 * @method 下单
@@ -440,7 +473,8 @@
 						uni.showModal({title:"请添加收货地址"})
 						return 
 					}
-				} else{// 到店自取 | 堂食 获取电话
+				} 
+				if(this.$data.ShopTakeValue == this.db.SHOP_TAKE_ZQ){// 到店自取 | 堂食 获取电话
 					var OrderPrePhone = this.$data.OrderPrePhone
 					if(OrderPrePhone.length == 11){ 
 						uni.setStorageSync(this.db.KEY_ORDER_PRE_PHONE ,  OrderPrePhone)

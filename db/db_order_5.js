@@ -106,7 +106,7 @@ class son extends fahter{
 	}
 	
 	/**
-	 * @method 6 直接下单
+	 * @method 6.1 直接下单
 	 * @param 
 			 OrderId
 			 AppId
@@ -115,10 +115,23 @@ class son extends fahter{
 	orderGen(data) {
 		return new Promise((resolve, reject) => {
 			this.base({url: this.HOST_URL +  "api/orders/gen/",data: data,}).then(res => {
-				debugger
 				resolve(res.data)}).catch(res => reject(res))
 		})
 	}
+	
+	
+	/**
+	 * @method 6.2  计算价格
+	 * @param 
+	 */
+	orderCaculatePrice(data) {
+		return new Promise((resolve, reject) => {
+			this.base({url: this.HOST_URL +  "api/caculate/price/",data: data,}).then(res => {
+				resolve(res.data)}).catch(res => reject(res))
+		})
+	}
+	
+	
 	
 	/**
 	 * @method 7 删除订单

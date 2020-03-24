@@ -36,7 +36,7 @@ class son extends fahter{
     }
 	
 	/**
-	 * @method 2 获取指定用户信息
+	 * @method 2.1 获取指定用户信息
 	 * @param 
 	 * 		Id
 			Guid
@@ -49,7 +49,15 @@ class son extends fahter{
 			this.base({url: this.HOST_URL +  "api/getdetail/",data: data,}).then(res => {resolve(res.data)}).catch(res => reject(res))
 		})
 	}
-	
+	/**
+	 * @method 2.2 上传客户信息
+	 * @param 
+	 */
+	customerSetInfo(data) {
+		return new Promise((resolve, reject) => {
+			this.base({url: this.HOST_URL +  "api/customer/updatewxinfo/",data: data,}).then(res => {resolve(res.data)}).catch(res => reject(res))
+		})
+	}
 	
 	/**
 	 * @method 3 添加客户收货地址

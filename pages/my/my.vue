@@ -153,16 +153,29 @@
 		},
 		methods: {
 			async onInit(){
-				
+				var res = await this.db.customerGetDetail()
+				console.log(res)
 			},
 			
 			//登录
-			getuserinfo(e){
+			async getuserinfo(e){
 				console.log(e.detail.userInfo)
 				// var res = await this.db.customerUpdate()
+				var userInfo = e.detail.userInfo
 				this.setData({
-					userInfo:e.detail.userInfo
+					userInfo:userInfo
 				})
+				
+				await this.db.customerSetInfo({
+					WxAvatarUrl:userInfo.avatarUrl ,
+					WxCity:userInfo.city ,
+					WxCountry:userInfo.country ,
+					WxGender:userInfo.gender ,
+					WxLanguage:userInfo.language ,
+					WxNickName:userInfo.nickName ,
+					WxProvince:userInfo.province ,
+				})
+				
 				uni.showToast({
 					title:"更新成功"
 				})
