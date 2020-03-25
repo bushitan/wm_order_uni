@@ -184,7 +184,20 @@ class dbBase{
         })
     }
 	
-	
+	openSettingLocation(){
+		return new Promise((resolve, reject) => {
+			uni.openSetting({
+				success(res) {
+					console.log(res)
+					resolve(res.authSetting['scope.userLocation'])
+				},
+				fail(res) {
+					console.log(res)
+					reject(false)
+				},
+			})
+		})
+	}
 	
 	// 校验地址设置
 	checkAuthorUserLocation(){
@@ -196,11 +209,11 @@ class dbBase{
 				scope: "scope.userLocation",
 				success(res) {
 					resolve(true)
-					console.log(res)
+					// console.log(res)
 				},
 				fail(res) {
-					resolve(false)
-					console.log(res)
+					reject(false)
+					// console.log(res)
 				},
 			})
 			

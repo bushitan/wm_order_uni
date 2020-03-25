@@ -7,10 +7,12 @@
 			<view class="bg-white pg-radius flex justify-center align-center"  style="height: 100%;">
 				<view class="text-center">
 					<view class="">
-						<image src="/static/images/strong/share.jpg"  class="icon_image radius" mode="widthFix"></image>					
+						<image src="/static/images/strong/logo.jpg"  class="icon_image round" mode="widthFix"></image>					
 					</view>
-					<view class=" margin-top-xl text-black text-bold text-lg">你好，丰丰</view>
-					<view class="text-gray text">现在您还没有下单</view>
+					<view class=" margin-top-xl text-black text-bold text-lg">
+						你好，<open-data  type="userNickName"></open-data>
+					</view>
+					<view class="text-gray text margin-top-xs">现在您还没有下单</view>
 					<!-- <view class="text-gray text">快选择一杯喜欢的茶吧</view> -->
 					<view class="margin-top" @click="toMenu()">
 						<button class="cu-btn bg-yellow lg round  text-white padding-lr" style="width: 150px;">去点单</button>					
@@ -42,29 +44,21 @@
 							<view class="pg-arrow"></view>
 						</view>
 					</view>
-					<view class="cu-list menu ">
-						<view class="cu-item margin-tb-sm">
-							<view class="action">
-								<view class="text-gray text-sm">下单门店</view>
-							</view>
-							<view class="action">
-								<view class=" text-sm ">{{order.store_name}}</view>
-							</view>
-						</view>
-						<view class="cu-item margin-tb-sm">
-							<view class="action">
-								<view class="text-gray text-sm">取单方式</view>
-							</view>
-							<view class="action">
-								<view class=" text-sm ">{{order.ship_method_desc}}</view>
-							</view>
-						</view>				
+					<view class="cu-list menu ">					
+						<view class="cu-item " >
+							<view class="action text-gray text-sm">下单门店</view>
+							<view class="action text-sm">{{order.store_name}}</view>
+						</view>					
+						<view class="cu-item ">
+							<view class="action text-gray text-sm">	取单方式</view>
+							<view class="action text-sm">{{order.ship_method_desc}}</view>
+						</view>	
 						<view class="cu-item ">
 							<view class="action">
 								<view class="text-gray text-sm">订单产品</view>
 							</view>
 						</view>
-						<view class="cu-item margin-tb-sm" v-for="(item,key) in order.order_items" style="align-items: flex-start;">
+						<view class="cu-item margin-bottom-sm" v-for="(item,key) in order.order_items" style="align-items: flex-start;">
 							<view class="action">
 								<image :src='item.product.images[0]' 
 									class="cu-avatar radius lg  bg-gray margin-right-sm " 

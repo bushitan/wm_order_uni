@@ -32,6 +32,14 @@
 		            </view>
 		        </view>
 				<view class="cu-list menu ">
+					<view class="cu-item " >
+						<view class="action text-gray text-sm">下单门店</view>
+						<view class="action text-sm">{{order.store_name}}</view>
+					</view>					
+					<view class="cu-item ">
+						<view class="action text-gray text-sm">	取单方式</view>
+						<view class="action text-sm">{{order.ship_method_desc}}</view>
+					</view>	
 					<view class="cu-item margin-tb-sm " style="align-items: flex-start;"
 					 v-for="(item,j) in order.order_items">
 						<view class="action">
@@ -54,7 +62,7 @@
 				<view class="cu-bar  solid-bottom ">
 				    <view class="action"></view>
 				    <view class="action">						
-						<text class="text-gray  text-sm margin-right">共3件商品</text>		
+						<!-- <text class="text-gray  text-sm margin-right">共3件商品</text>		 -->
 						
 						<text class="text-gray  text-sm margin-right-xs">合计</text>						
 						<text class=" text-xl text-black text-bold text-price"></text>
@@ -114,7 +122,7 @@
 				if(this.$data.isRefund) 
 					data.Status = this.db.PAYMENT_STATUS_REFUND
 											
-				var res = await this.db.orderGetList(data)			
+				var res = await this.db.orderGetCustomerOrder(data)			
 				this.db.listUpdate(this , res)
 			},
 			

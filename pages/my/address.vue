@@ -13,10 +13,9 @@
 			<view class="title padding-lr padding-bottom  text-gray sm bg-white">{{item.cityName}}{{item.address}}</view>
 		</view>
 		<view class="padding">
-			<!-- <button class="block bg-blue text-white round" @click="add()">新增</button> -->
 			<view class="pg-flex-center  margin-top">
 		        <button class="cu-btn block round bg-red  text-white lg" @click="addAddress()" v-if="isAuthorLocaiton">增加地址</button>
-		        <button class="cu-btn block  round bg-red  text-white lg" @clkick="openSetting" v-else>授权打开地址</button> 
+		        <button class="cu-btn block  round bg-red  text-white lg" @click="openSetting" v-else>授权打开地址</button> 
 		    </view>
 
 		</view>
@@ -218,8 +217,15 @@
 				this.onInit()
 				this.close()
 			},
-			openSetting(){
-				// if( this.db.checkAuthorUserLocation()) 
+			async openSetting(){
+				// debugger
+				// if( await this.db.checkAuthorUserLocation()) {
+					var res = await this.db.openSettingLocation()
+					console.log(res)
+					this.setData({
+						isAuthorLocaiton: res
+					})
+				// }
 			},
 			// 打开模态框
 			show(){

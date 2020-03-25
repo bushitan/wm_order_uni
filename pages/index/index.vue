@@ -181,7 +181,13 @@
 		onLoad() {
 			this.onInit()
 		},
+		onShareAppMessage() {
+			
+		},
 		methods: {
+		onShareAppMessage() {
+			
+		},
 			async onInit(){			
 				var res = await this.db.orderGetList({
 					Page:1,

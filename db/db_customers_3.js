@@ -58,6 +58,16 @@ class son extends fahter{
 			this.base({url: this.HOST_URL +  "api/customer/updatewxinfo/",data: data,}).then(res => {resolve(res.data)}).catch(res => reject(res))
 		})
 	}
+	/**
+	 * @method 2.3 获取客户信息
+	 * @param 
+	 */
+	customerGetInfo(data) {
+		return new Promise((resolve, reject) => {
+			this.base({url: this.HOST_URL +  "api/customer/selfinfo/",data: data,}).then(res => {resolve(res.data)}).catch(res => reject(res))
+		})
+	}
+	
 	
 	/**
 	 * @method 3 添加客户收货地址

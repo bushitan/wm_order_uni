@@ -77,11 +77,15 @@
 						<text class="cuIcon-title text-yellow "></text>
 						<text class=" text-black  text-sm">{{order.pick_up_in_store?"堂食":"外卖"}}</text>
 					</view>
-					<view class="action">                
+					<!-- <view class="action">                
 						<text class="text-black text-sm">{{order.ship_address.addr_detail}}</text>      
-					</view>
+					</view> -->
 				</view>
 				<view class="cu-list menu ">
+					<view class="cu-item " >
+						<view class="action text-gray text-sm">下单门店</view>
+						<view class="action text-sm">{{order.store_name}}</view>
+					</view>
 					<view class="cu-item margin-tb-sm" style="align-items: flex-start;"
 					v-for="(item,key) in order.order_items" v:bind-key="key">
 						<view class="action">

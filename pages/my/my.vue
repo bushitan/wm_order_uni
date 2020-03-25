@@ -7,12 +7,12 @@
 		<view class="cu-list menu padding-tb ">
 			<view class="cu-item " style="background-color: transparent;">
 				<view class="action">
-					<image :src='userInfo.avatarUrl' 
+					<image :src='userInfo.WxAvatarUrl' 
 						class="cu-avatar round  bg-gray margin-right" 
 						style="width: 72px;height: 72px;"></image>
 					<!-- <text class="text-black bg-yellow text-bold text-df" v-if="userInfo.name">{{userInfo.name}}</text> -->
 					<button class="cu-btn round text-white bg-yellow text-bold text-df"  open-type="getUserInfo" @getuserinfo="getuserinfo" >
-						{{userInfo ?　userInfo.nickName ? userInfo.nickName:'没有名字' :'登陆'}}
+						{{userInfo ?　userInfo.WxNickName ? userInfo.WxNickName:'' :'登陆'}}
 					</button>
 				</view>
 				<!-- <view class="action">
@@ -153,8 +153,11 @@
 		},
 		methods: {
 			async onInit(){
-				var res = await this.db.customerGetDetail()
+				var res = await this.db.customerGetInfo()
 				console.log(res)
+				this.setData({
+					userInfo:res.data
+				})
 			},
 			
 			//登录
@@ -162,11 +165,7 @@
 				console.log(e.detail.userInfo)
 				// var res = await this.db.customerUpdate()
 				var userInfo = e.detail.userInfo
-				this.setData({
-					userInfo:userInfo
-				})
-				
-				await this.db.customerSetInfo({
+				var wxUserInfo = {
 					WxAvatarUrl:userInfo.avatarUrl ,
 					WxCity:userInfo.city ,
 					WxCountry:userInfo.country ,
@@ -174,7 +173,11 @@
 					WxLanguage:userInfo.language ,
 					WxNickName:userInfo.nickName ,
 					WxProvince:userInfo.province ,
-				})
+				}
+				this.setData({
+					userInfo:wxUserInfo
+				})				
+				await this.db.customerSetInfo(wxUserInfo)
 				
 				uni.showToast({
 					title:"更新成功"
