@@ -33,7 +33,7 @@
 				<view class="cu-form-group" @click="toAddress" v-if="ShopTakeValue == SHOP_TAKE_WM" >
 					<view class="text-sm">{{pickUpInStore?"预留电话":"联系方式"}}</view>
 					<view class=" text-right basis-xl text-bold">						
-						<view class=" ">{{currentAddress.name}} {{currentAddress.phoneNumber}} </view>
+						<view class=" ">{{currentAddress.name || ""}} {{currentAddress.phoneNumber|| ""}} </view>
 					</view>
 					<view class="pg-arrow"></view>
 				</view>		

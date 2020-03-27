@@ -11,7 +11,7 @@
 			<button v-if="order.payment_status_code == PAYMENT_STATUS_PENDING || order.payment_status_code == PAYMENT_STATUS_AUTHORIZED"
 				class="cu-btn round bg-yellow text-white" 
 				@click="clickPay">支付订单</button>				
-			<button v-if="order.order_status_code == ORDER_STATUS_PROCESSING"
+			<button v-if="order.order_status_code == ORDER_STATUS_PROCESSING || order.order_status_code == ORDER_STATUS_PROCESSING "
 					class="cu-btn round line-yellow" 
 					@click="clickCancle">退款申请</button>	
 			<!-- <view v-else></view> -->
@@ -445,6 +445,7 @@
 				PAYMENT_STATUS_AUTHORIZED : this.db.PAYMENT_STATUS_AUTHORIZED ,// 待支付
 				
 				ORDER_STATUS_PROCESSING: this.db.ORDER_STATUS_PROCESSING, //订单处理中
+				ORDER_STATUS_COMPLETE:this.db.ORDER_STATUS_COMPLETE,
 				SHOP_TAKE_WM : this.db.SHOP_TAKE_WM , // 外卖配送
 				SHOP_TAKE_ZQ : this.db.SHOP_TAKE_ZQ , // 外卖配送
 				SHOP_TAKE_TS : this.db.SHOP_TAKE_TS , // 外卖配送

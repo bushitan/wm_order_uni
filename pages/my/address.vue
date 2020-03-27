@@ -67,8 +67,8 @@
 					</view>
 					<view class="cu-form-group  text-left">
 						<view class="title">纬度：</view>
-						<input name="lantitude" :value="currentLantitude" disabled="true"></input>
-						<!-- <text class="" :value="currentLantitude" name="longitude">{{currentLantitude}}</text> -->
+						<input name="latitude" :value="currentLatitude" disabled="true"></input>
+						<!-- <text class="" :value="currentLatitude" name="longitude">{{currentLatitude}}</text> -->
 					</view>
 					
 					<view class="cu-form-group  text-left">
@@ -121,7 +121,7 @@
 				isAuthorLocaiton:false,
 				address:"",
 				currentLongitude:0,
-				currentLantitude:0,
+				currentLatitude:0,
 			}
 		},
 		onLoad(){
@@ -178,7 +178,7 @@
 						that.setData({
 							address:res.address,
 							currentLongitude:res.longitude,
-							currentLantitude:res.latitude,
+							currentLatitude:res.latitude,
 						})	
 						that.show()
 						// var addressList = that.data.addressList
@@ -210,7 +210,7 @@
 					PhoneNumber:formData.phoneNumber,
 					CityName:"南宁",
 					Longitude:formData.longitude,
-					Lantitude:formData.lantitude,
+					Latitude:formData.latitude,
 				}
 				// TODO  上传地址
 				var res = await this.db.customerAddShipAddr(info)

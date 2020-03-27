@@ -89,8 +89,13 @@
 				
 				TabCur: 0,
 				scrollLeft:0,
-				SortMenu: [{id:0,name:"全部订单"},{id:1,name:"退款"}],
+				SortMenu: [
+					{id:0,name:"未完成"},
+					{id:1,name:"已完成"},
+					{id:2,name:"退款"},
+				],
 				
+				Status:'',
 				isRefund:false, // 加载全部订单
 				page : 1,
 				limit : 10,
@@ -118,6 +123,7 @@
 				var data = {
 					Page:this.$data.page,
 					Limit:this.$data.limit,
+					Status : this.$data.Status
 				}
 				if(this.$data.isRefund) 
 					data.Status = this.db.PAYMENT_STATUS_REFUND
@@ -132,10 +138,21 @@
 			tabSelect(id) {
 				console.log(id)
 				var isRefund = false
-				if( id == 1 ) isRefund = true
+				var Status 
+				// 未完成
+				if(id == 0) {
+					Status = ""
+				} 
+				// 已完成
+				if(id == 1) {
+					Status = this.db.ORDER_STATUS_COMPLETE
+				}					
+				// 退款
+				if( id == 2 ) isRefund = true
 				this.setData({
 					TabCur:id,
 					scrollLeft: (id-1)*60,
+					Status:Status,
 					isRefund:isRefund,
 				})
 				this.onInit() // 重新请求				

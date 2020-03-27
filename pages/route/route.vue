@@ -47,22 +47,30 @@
 			methods:{
 				async onInit(){
 					var res = await this.db.customerGetToken()
-					console.log(res)
+					console.log('get token',res)
 					
 					var that = this
-					if(that.$data.ShopId == "")
+					if(that.$data.ShopId == ""){
+						console.log('ShopId is null')
 						uni.redirectTo({
 							url: '/pages/index/index'
 						});
+						
+					}
+					
 					else {
 						that.db.storeCurrent({
 							shopId:that.$data.ShopId
 						}).then(res=>{
+							console.log('storeCurrent' , res)
 							uni.setStorageSync(that.db.KEY_SHOP_NAME , res.data.Hosts)
 							uni.switchTab({
 								url:"/pages/menu/menu?ShopId=" + that.$data.ShopId
 							})
-						})							
+						}).catch(res =>{
+							
+							console.log('catch' , res)
+						})					
 					}		
 					
 					
