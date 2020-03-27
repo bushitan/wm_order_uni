@@ -22,12 +22,16 @@
 		        <view class="cu-bar  solid-bottom ">
 		            <view class="action">
 		                <text class="cuIcon-title text-yellow "></text>                
-		                <text :class="[ order.payment_status=='未付款' ? 'text-red':'text-black' ,'text-bold']" >
-							订单ID:{{order.id}} ( {{order.payment_status}} )
+		                <text :class="[ order.order_status_code==ORDER_STATUS_PENDING ? 'text-red':'text-black' ,'text-bold']" >
+							订单ID:{{order.id}} 
+							<!-- ( {{order.payment_status}} ) -->
 						</text>      		                 
 		            </view>
 		            <view class="action">
-						<text class="text-yellow text-bold" v-if="order.payment_status=='未付款'">去支付</text>
+						<text class="text-yellow text-bold" v-if="order.order_status_code==ORDER_STATUS_PENDING">去支付</text>
+						<text class="text-yellow text-bold" v-if="order.order_status_code==ORDER_STATUS_PROCESSING">{{order.order_status}}</text>
+						<text class="text-yellow text-bold" v-if="order.order_status_code==ORDER_STATUS_COMPLETE">{{order.order_status}}</text>
+						<text class="text-yellow text-bold" v-if="order.order_status_code==ORDER_STATUS_CANCEL">{{order.payment_status}}</text>
 						<view class="pg-arrow-sm"></view>
 		            </view>
 		        </view>
@@ -89,13 +93,21 @@
 				
 				TabCur: 0,
 				scrollLeft:0,
+				
+				
+				ORDER_STATUS_PENDING : this.db.ORDER_STATUS_PENDING,// 订单待处理
+				ORDER_STATUS_PROCESSING : this.db.ORDER_STATUS_PROCESSING ,// 订单处理中
+				ORDER_STATUS_COMPLETE : this.db.ORDER_STATUS_COMPLETE , // 订单已完成
+				ORDER_STATUS_CANCEL : this.db.ORDER_STATUS_CANCEL , // 订单已取消	
+				
 				SortMenu: [
-					{id:0,name:"未完成"},
-					{id:1,name:"已完成"},
-					{id:2,name:"退款"},
+					{id:0,name:"未支付"},
+					{id:1,name:"进行中"},
+					{id:2,name:"已完成"},
+					{id:3,name:"退款"},
 				],
 				
-				Status:'',
+				Status:this.db.ORDER_STATUS_PENDING,
 				isRefund:false, // 加载全部订单
 				page : 1,
 				limit : 10,
@@ -139,16 +151,20 @@
 				console.log(id)
 				var isRefund = false
 				var Status 
-				// 未完成
+				// 未支付
 				if(id == 0) {
-					Status = ""
+					Status = this.db.ORDER_STATUS_PENDING
 				} 
 				// 已完成
 				if(id == 1) {
+					Status = this.db.ORDER_STATUS_PROCESSING
+				}
+				// 已完成
+				if(id == 2) {
 					Status = this.db.ORDER_STATUS_COMPLETE
 				}					
 				// 退款
-				if( id == 2 ) isRefund = true
+				if( id == 3 ) isRefund = true
 				this.setData({
 					TabCur:id,
 					scrollLeft: (id-1)*60,
