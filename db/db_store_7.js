@@ -15,7 +15,9 @@ class son extends fahter{
 	 */
 	storeCurrent(data) {
 		return new Promise((resolve, reject) => {
-			this.base({url: this.HOST_URL +  "api/current_store/",data: data,}).then(res => {resolve(res.data)}).catch(res => reject(res))
+			this.base({url: this.HOST_URL +  "api/current_store/",data: data,})
+			.then(res => {resolve(res.data)})
+			.catch(res => reject(res))
 		})
 	}
 	

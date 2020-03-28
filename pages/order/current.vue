@@ -12,7 +12,7 @@
 					<view class=" margin-top-xl text-black text-bold text-lg">
 						你好，<open-data  type="userNickName"></open-data>
 					</view>
-					<view class="text-gray text margin-top-xs">现在您还没有下单</view>
+					<view class="text margin-top-xs">现在您还没有下单</view>
 					<!-- <view class="text-gray text">快选择一杯喜欢的茶吧</view> -->
 					<view class="margin-top" @click="toMenu()">
 						<button class="cu-btn bg-yellow lg round  text-white padding-lr" style="width: 150px;">去点单</button>					
@@ -37,9 +37,13 @@
 						</view>
 						<view class="action">
 							<view class="text-yellow text-bold">
-								{{order.payment_status}}
-								<text v-if="order.payment_status_val == ORDER_STATUS_PENDING">（去支付）</text>
-								
+								<text v-if="order.order_status_code == ORDER_STATUS_PROCESSING">{{order.order_status}}</text>
+								<text v-if="order.order_status_code == ORDER_STATUS_COMPLETE">{{order.order_status}}</text>
+								<text v-if="order.order_status_code == ORDER_STATUS_CANCEL">{{order.order_status}}</text>
+								<text v-if="order.payment_status_val == ORDER_STATUS_PENDING">{{order.payment_status}}（去支付）</text>
+								<text v-if="order.payment_status_val == PAYMENT_STATUS_REFUND_APPLY">({{order.payment_status}})</text>
+							
+							
 							</view>
 							<view class="pg-arrow"></view>
 						</view>
@@ -111,9 +115,11 @@
 				// SortMenu: [{id:0,name:"全部订单"},{id:1,name:"待付款"},{id:2,name:"待发货"},{id:3,name:"待收货"},{id:4,name:"已完成"}],
 				
 				list:[],
-				
+				PAYMENT_STATUS_REFUND_APPLY :this.db.PAYMENT_STATUS_REFUND_APPLY,
 				ORDER_STATUS_PENDING:this.db.ORDER_STATUS_PENDING,
-				
+				ORDER_STATUS_PROCESSING :this.db.ORDER_STATUS_PROCESSING , // 订单处理中
+				ORDER_STATUS_COMPLETE :this.db.ORDER_STATUS_COMPLETE , // 订单已完成
+				ORDER_STATUS_CANCEL  :this.db.ORDER_STATUS_CANCEL , // 订单已取消 ==  退款
 			}
 		},
 		onLoad(){
@@ -130,22 +136,35 @@
 				var res = await this.db.orderGetCustomerOrder({
 					Page:1,
 					Limit:10,
-					Status:this.db.ORDER_STATUS_PENDING,
+					// Status:this.db.ORDER_STATUS_PENDING,
 					CreatedAtMin: this.today,
 				})		
-				var padding = res.data
-				// 获取未完成订单
-				var res = await this.db.orderGetCustomerOrder({
-					Page:1,
-					Limit:10,
-					Status:this.db.ORDER_STATUS_PROCESSING,
-					CreatedAtMin: this.today,
-				})			
-				var proccessing = res.data
-				var list = padding.concat(proccessing)
+				var list = res.data
+				
 				this.setData({
 					list:list
 				})
+				// // 获取未完成订单
+				// var res = await this.db.orderGetCustomerOrder({
+				// 	Page:1,
+				// 	Limit:10,
+				// 	Status:this.db.ORDER_STATUS_PROCESSING,
+				// 	CreatedAtMin: this.today,
+				// })			
+				// var proccessing = res.data
+				// var res = await this.db.orderGetCustomerOrder({
+				// 	Page:1,
+				// 	Limit:10,
+				// 	Status:this.db.ORDER_STATUS_COMPLETE,
+				// 	CreatedAtMin: this.today,
+				// })			
+				// var complete = res.data
+				
+				// var list = padding.concat(proccessing)
+				// var _list = list.concat(proccessing)
+				// this.setData({
+				// 	list:list
+				// })
 			},
 			
 			

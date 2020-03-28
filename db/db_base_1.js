@@ -158,11 +158,8 @@ class dbBase{
 								logmsg:options.url + ":" + dateTime
 							}
 						})
-						reject(res)
 					}
-					
-					
-                    resolve(res)
+					resolve(res)
                 },
                 fail(res) {
                     console.log(url)

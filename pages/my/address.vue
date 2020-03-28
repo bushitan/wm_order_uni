@@ -6,7 +6,7 @@
 					<text class="cuIcon-title text-yellow"></text>{{item.name}} ，{{item.phoneNumber}}
 				</view>
 				<view class="action">
-					<text class="cu-btn bg-red text-white round shadow margin-right-sm" @click="deleteAddress(key)">删除</text>
+					<text class="cu-btn bg-red text-white round shadow margin-right-sm" @click="deleteAddress(item.id)">删除</text>
 					<text class="cu-btn bg-yellow text-white round shadow " @click="select(key)">选择</text>
 				</view>
 			</view>
@@ -170,9 +170,10 @@
 				
 				var location = this.db.getLocation()
 				var that = this
-				wx.chooseLocation({
+				uni.chooseLocation({
 					latitude: location.latitude,
 					longitude: location.longitude,
+					
 					success(res){
 						console.log(res)
 						that.setData({
@@ -193,9 +194,16 @@
 			},
 			
 			// 删除地址
-			deleteAddress(){
+			deleteAddress(addressId){
+				var that = this
+				console.log(addressId)
 				uni.showModal({
-					title:"是否删除该地址？"
+					title:"是否删除该地址？",
+					success(){
+						that.db.customerDelShipAddre({
+							addressid:addressId
+						})
+					},
 				})
 			},
 			

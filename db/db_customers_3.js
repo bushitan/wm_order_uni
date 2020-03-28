@@ -27,10 +27,18 @@ class son extends fahter{
                     }).then(res => {
                         uni.setStorageSync(that.KEY_SESSION, res.data.data.session) //session
                         uni.setStorageSync(that.KEY_SN, "10" + res.data.data.sn)  //序列号
+						console.log("get customerGetToken success")
                         resolve(true)
                     })
-                    .catch(res => reject(false))
-                },
+                    .catch(res =>{
+						console.log("get customerGetToken catch")
+						reject(false)
+					} )
+                }, 
+				fail(res){
+					console.log("login fail")
+					reject(false)
+				},
             })
         })
     }
@@ -78,6 +86,16 @@ class son extends fahter{
 			this.base({url: this.HOST_URL +  "api/customer/addshipaddr/",data: data,}).then(res => {resolve(res.data)}).catch(res => reject(res))
 		})
 	}
+	/**
+	 * @method 3.2 删除客户收货地址
+	 * @param 
+	 */
+	customerDelShipAddre(data) {
+		return new Promise((resolve, reject) => {
+			this.base({url: this.HOST_URL +  "api/customer/delshipaddr/",data: data,}).then(res => {resolve(res.data)}).catch(res => reject(res))
+		})
+	}
+
 	
 	/**
 	 * @method 4 更新客户收货地址
@@ -118,6 +136,8 @@ class son extends fahter{
 			this.base({url: this.HOST_URL +  "api/customer/update/",data: data,}).then(res => {resolve(res.data)}).catch(res => reject(res))
 		})
 	}
+	
+
 
 }
 module.exports = son

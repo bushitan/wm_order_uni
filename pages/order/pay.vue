@@ -240,9 +240,12 @@
 			async onInit(){ 
 				this.getOrder() // 获取已经选择的订单
 				
+				// debugger
 				// 1 获取配送门店
 				var res = await this.db.storeGetList()
 				var storeList = res.data	
+				
+				// debugger
 				if(storeList.length == 0 ) // 没有门店
 					return				
 				// 获取门店列表			
@@ -260,13 +263,19 @@
 					StoreId : StoreId,
 					StoreName : StoreName,
 				})				
+				
+				// debugger
 				// 3 设置默认的取单地址
 				var res = await this.db.customerShipAddrs()
+				
+				// debugger
 				if(res.data.length > 0)
 					this.setData({ currentAddress: res.data[0] })
 					
 				// 4 获取门店点单方式
 				this.getShopTakeType() 
+				
+				// debugger
 				// 5 设置默认的顺风预取单
 				this.mathTotalPrice() // 预取顺风费用
 				// 6 获取优惠券
@@ -282,7 +291,7 @@
 				
 				// 获取本地预留的电话
 				this.setData({
-					OrderPrePhone:uni.getStorageSync(this.db.KEY_ORDER_PRE_PHONE )
+					OrderPrePhone:uni.getStorageSync(this.db.KEY_ORDER_PRE_PHONE ) || ""
 				})
 				
 			},
@@ -396,6 +405,7 @@
 			
 			// 计算费用
 			async mathTotalPrice(){
+				return
 				var data =
 				{
 					"OrderId": 0,//新建订单 默认为零I"				  
@@ -422,7 +432,8 @@
 				var preOrder = res.data 
 				var all = preOrder.order_total + preOrder.wm_cost + preOrder.customer_take_ship_fee
 				this.setData({
-					totalPrice:all, // 总价
+					// totalPrice:all, // 总价
+					totalPrice:preOrder.order_total, // 总价
 					totalPack:preOrder.wm_cost, // 包装费
 					totalPost:preOrder.customer_take_ship_fee, // 配送费
 				})

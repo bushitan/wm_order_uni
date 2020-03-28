@@ -68,8 +68,10 @@
 								url:"/pages/menu/menu?ShopId=" + that.$data.ShopId
 							})
 						}).catch(res =>{
-							
 							console.log('catch' , res)
+							uni.redirectTo({
+								url: '/pages/index/index'
+							});
 						})					
 					}		
 					
