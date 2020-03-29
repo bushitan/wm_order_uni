@@ -405,7 +405,6 @@
 			
 			// 计算费用
 			async mathTotalPrice(){
-				return
 				var data =
 				{
 					"OrderId": 0,//新建订单 默认为零I"				  

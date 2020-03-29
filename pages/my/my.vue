@@ -12,7 +12,7 @@
 						style="width: 72px;height: 72px;"></image>
 					<!-- <text class="text-black bg-yellow text-bold text-df" v-if="userInfo.name">{{userInfo.name}}</text> -->
 					<button class="cu-btn round text-white bg-yellow text-bold text-df"  open-type="getUserInfo" @getuserinfo="getuserinfo" >
-						{{userInfo ?　userInfo.WxNickName ? userInfo.WxNickName:'' :'登陆'}}
+						{{userInfo ?　userInfo.WxNickName ? userInfo.WxNickName:'登陆' :'登陆'}}
 					</button>
 				</view>
 				<!-- <view class="action">
