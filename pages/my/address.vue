@@ -10,7 +10,7 @@
 					<text class="cu-btn bg-yellow text-white round shadow " @click="select(key)">选择</text>
 				</view>
 			</view>
-			<view class="title padding-lr padding-bottom  text-gray sm bg-white">{{item.cityName}}{{item.address}}</view>
+			<view class="title padding-lr padding-bottom  text-gray sm bg-white">{{item.cityName}}--{{item.address}}</view>
 		</view>
 		<view class="padding">
 			<view class="pg-flex-center  margin-top">
@@ -51,10 +51,10 @@
 					<button class="cu-btn round ">识别</button>
 				</view> -->
 				<form  @submit="formSubmit">
-					<!-- <view class="cu-form-group  text-left">
+					<view class="cu-form-group  text-left">
 						<view class="title">城市：</view>
-						<input placeholder="请输入城市名称" name="cityName" ></input>
-					</view> -->
+						<input placeholder="请输入城市名称(如:南宁市)" name="cityName" ></input>
+					</view>
 					<view class="cu-form-group  text-left">
 						<view class="title">地址：</view>
 						<input placeholder="请输入地址" name="address" :value="address" disabled="true"></input>
@@ -83,8 +83,8 @@
 					
 					<view class="cu-bar bg-white justify-end">
 						<view class="action">
-							<button class="cu-btn line-green text-green" @click="close()">取消</button>
-							<button class="cu-btn bg-green margin-left"  form-type="submit" >确定</button>
+							<button class="cu-btn round line-yellow" @click="close()">取消</button>
+							<button class="cu-btn round bg-yellow margin-left"  form-type="submit" >确定</button>
 						</view>
 					</view>
 				</form>		
@@ -142,10 +142,10 @@
 				})
 			},
 			select(index){
+				uni.setStorageSync( this.db.KEY_ORDER_PRE_ADDRESS  , index)
 				var currentAdd = this.$data.list[index]
 				var prePage = getCurrentPages()[ getCurrentPages().length - 2] 
 				
-				prePage.$vm.setUserAddress(currentAdd)
 				// // debugger
 				// var order = prePage.data.order
 				// // debugger
@@ -158,6 +158,7 @@
 				// if(prePage.hasOwnProperty("getSFPreOrder"))
 				// prePage.getSFPreOrder()
 				uni.navigateBack({})
+				prePage.$vm.setUserAddress(currentAdd)
 			},
 			
 			
@@ -203,6 +204,8 @@
 						that.db.customerDelShipAddre({
 							addressid:addressId
 						})
+						
+						that.onInit()
 					},
 				})
 			},
@@ -211,12 +214,26 @@
 			async formSubmit(e){
 				var formData = e.detail.value
 				// console.log(e)
+				if(formData.name == "") {
+					uni.showModal({title:"请输入姓名" , showCancel:false})
+					return 
+				}
+				if(formData.phoneNumber == "") {
+					uni.showModal({title:"请输入电话" , showCancel:false})
+					return 
+				}
+				
+				var cityName = formData.cityName 				
+				if ( cityName == "北京" || cityName == "北京市"  ) 
+					cityName =  "北京市"
+				else
+					cityName =  "南宁市"
 				
 				var  info = {
 					Address:formData.address,
 					Name:formData.name,
 					PhoneNumber:formData.phoneNumber,
-					CityName:"南宁",
+					CityName:formData.cityName,
 					Longitude:formData.longitude,
 					Latitude:formData.latitude,
 				}

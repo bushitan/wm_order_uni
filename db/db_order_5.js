@@ -114,8 +114,14 @@ class son extends fahter{
 	 */
 	orderGen(data) {
 		return new Promise((resolve, reject) => {
+			uni.showLoading({title: '下单中',  icon:"loading"})
 			this.base({url: this.HOST_URL +  "api/orders/gen/",data: data,}).then(res => {
-				resolve(res.data)}).catch(res => reject(res))
+				uni.hideLoading()
+				resolve(res.data)
+			}).catch(res => {
+				uni.hideLoading()
+				reject(res)
+			} )
 		})
 	}
 	
@@ -125,9 +131,20 @@ class son extends fahter{
 	 * @param 
 	 */
 	orderCaculatePrice(data) {
-		return new Promise((resolve, reject) => {
+		return new Promise((resolve, reject) => {			
+			uni.showLoading({title: '计算价格中', icon:"loading",mask:true })
 			this.base({url: this.HOST_URL +  "api/caculate/price/",data: data,}).then(res => {
-				resolve(res.data)}).catch(res => reject(res))
+				uni.hideLoading()
+				if(res.data.code == -1){  //门店打烊
+					uni.showModal({
+						title:res.data.msg
+					})
+				}
+				resolve(res.data)
+			}).catch(res => {
+				uni.hideLoading()
+				reject(res)
+			} )
 		})
 	}
 	

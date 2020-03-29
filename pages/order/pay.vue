@@ -47,7 +47,7 @@
 				</view>		
 				<view class="cu-form-group  text-right text-sm" v-if="ShopTakeValue == SHOP_TAKE_ZQ">
 					<view class=" text-sm">取单电话</view>
-					<input placeholder="请输入取单电话" mode="digit" 
+					<input placeholder="请输入取单电话" mode="digit" :value="OrderPrePhone"
 					placeholder-class="text-sm" class="text-sm " @input="inputOrderPrePhone"></input>
 					<view class="pg-arrow"></view>
 				</view>
@@ -112,14 +112,14 @@
 				</view>
 				
 				<view class="cu-list menu ">
-					<view class="cu-item ">
+					<view class="cu-item " v-if="ShopTakeValue != SHOP_TAKE_TS">
 						<view class="action">包装费</view>
 						<view class="action text-red ">
 							<text class="text-price"></text>
 							<text class="text-red">{{totalPack}}</text>			
 						</view>
 					</view>
-					<view class="cu-item ">
+					<view class="cu-item " v-if="ShopTakeValue == SHOP_TAKE_WM">
 						<view class="action">配送费</view>
 						<view class="action text-red ">
 							<text class="text-price"></text>
@@ -127,7 +127,7 @@
 						</view>
 					</view>
 				</view>
-				<view class="cu-bar  solid-bottom ">
+				<view class="cu-bar   ">
 				    <view class="action"></view>
 				    <view class="action">						
 						<!-- <text class="text-gray  text-sm ">已优惠</text>						
@@ -159,17 +159,18 @@
 							<text class="text-price text-red"></text>{{totalPrice}}
 						</view>
 					</view>
-					<view class="text-gray text-sm flex align-center">
-						<image src='/static/sf.png'
-							class="cu-avatar radius lg  bg-gray margin-right-sm" 
-							style="width: 23px;height: 23px;"
+					<view class="text-gray text-sm flex align-center" v-if="ShopTakeValue == SHOP_TAKE_WM">
+						<image src='/static/images/icon/sf_logo.png'
+							class="cu-avatar radius lg  bg-white margin-right-sm" 
+							style="width: 100px;" 
+							mode="widthFix"
 							></image>
-						顺风专送 
 					 </view>
 				</view>
-				<view class="action">
-						<button class='cu-btn round bg-yellow text-white shadow margin-right-sm' @click="toSuccess()">微信支付</button>	
-				</view>
+				<form class="action" report-submit="true"  @submit="toSuccess">
+						<button class='cu-btn round bg-yellow text-white shadow margin-right-sm'  form-type="submit"
+							:disabled="noPowerPay">微信支付</button>	
+				</form>
 			</view>
 		</view>
 			
@@ -229,6 +230,8 @@
 				totalPrice:0, // 总价
 				totalPack:0, // 包装费
 				totalPost:0, // 配送费
+				
+				noPowerPay:true,
 			}
 		},
 		onLoad(options){
@@ -240,12 +243,10 @@
 			async onInit(){ 
 				this.getOrder() // 获取已经选择的订单
 				
-				// debugger
 				// 1 获取配送门店
 				var res = await this.db.storeGetList()
 				var storeList = res.data	
 				
-				// debugger
 				if(storeList.length == 0 ) // 没有门店
 					return				
 				// 获取门店列表			
@@ -264,13 +265,13 @@
 					StoreName : StoreName,
 				})				
 				
-				// debugger
 				// 3 设置默认的取单地址
 				var res = await this.db.customerShipAddrs()
 				
-				// debugger
-				if(res.data.length > 0)
-					this.setData({ currentAddress: res.data[0] })
+				if(res.data.length > 0){
+					var index = uni.getStorageSync( this.db.KEY_ORDER_PRE_ADDRESS) || 0
+					this.setData({ currentAddress: res.data[index] })
+				}
 					
 				// 4 获取门店点单方式
 				this.getShopTakeType() 
@@ -316,8 +317,9 @@
 				var res = await this.db.storeCurrent({
 					ShopId:this.$data.StoreId
 				})
-				var value = 7
+				var value = res.data.ShopTakeTypeMode
 				var ShopTakeList = []
+				// debugger
 				switch(value){
 					case 1 : ShopTakeList = [{"name":"外卖",value:1}] ;break;
 					case 2 : ShopTakeList = [{"name":"到店自取",value:2}] ;break;
@@ -351,7 +353,8 @@
 			
 			// 3 设置用户地址
 			setUserAddress(currentAddress){
-				console.log(currentAddress)				
+				console.log(currentAddress)		
+				
 				this.setData({
 					currentAddress:currentAddress
 				})				
@@ -399,12 +402,19 @@
 							ShopTakeValue : ShopTakeList[res.tapIndex].value,
 							ShopTakeName : ShopTakeList[res.tapIndex].name,
 						})
+						
+						that.mathTotalPrice() // 到店自取 | 堂食 预下单	
 					},
 				})
 			},
 			
 			// 计算费用
 			async mathTotalPrice(){
+				var addressId =  this.$data.currentAddress.id || ""
+				if( this.$data.ShopTakeValue == this.$data.SHOP_TAKE_WM &&  addressId == ""  ){
+					return 
+				}
+				
 				var data =
 				{
 					"OrderId": 0,//新建订单 默认为零I"				  
@@ -419,7 +429,7 @@
 					// "AppId":"5099f520489646d28ce9df352237c059" ,// 门店点Appid，不是小程序ID
 				}
 				if(this.$data.ShopTakeValue == this.db.SHOP_TAKE_WM){ 
-					data["AddressId"] = this.$data.currentAddress.id
+					data["AddressId"] = addressId
 				}
 				
 				
@@ -428,39 +438,29 @@
 					jsondata:jsondata
 				})		
 				console.log(res)
+				if(res.code == -1){
+					this.setData({noPowerPay:true,})
+					return
+				}
+					
+				
 				var preOrder = res.data 
 				var all = preOrder.order_total + preOrder.wm_cost + preOrder.customer_take_ship_fee
 				this.setData({
 					// totalPrice:all, // 总价
-					totalPrice:preOrder.order_total, // 总价
+					totalPrice:preOrder.order_total , // 总价
 					totalPack:preOrder.wm_cost, // 包装费
 					totalPost:preOrder.customer_take_ship_fee, // 配送费
+					noPowerPay:false,
 				})
 				
-				
-				// if(this.$data.StoreId && this.$data.currentAddress.id){
-				// 	var res = await this.db.sfPreCreateOrder({
-				// 		"ShopId":this.$data.StoreId,
-				// 		"AddressId":this.$data.currentAddress.id,
-				// 		"Weight":500,
-				// 	})
-				// 	this.setData({
-				// 		SF:res.data
-				// 	})
-				// }
-				
-				// // this.getTotal() // 计算总价
-				// // TODO 计算其他产品的价格				
-				// this.setData({					
-				// 	totalPrice:4600, // 总价
-				// 	totalPack:4, // 包装费
-				// 	totalPost:12, // 配送费
-				// })
 			},
 			/**
 			 * @method 下单
 			 */
-			async toSuccess(){	
+			async toSuccess(e){	
+				console.log(e)
+				var formId = e.detail.formId
 								
 				var data =
 				{
@@ -472,6 +472,7 @@
 					"ShopId":this.$data.StoreId,
 					"CustomerTakeType":this.$data.ShopTakeValue,
 					"WishDateTime": this.$data.PickTime,
+					"formId":formId
 					// "AppId":"5099f520489646d28ce9df352237c059" ,// 门店点Appid，不是小程序ID
 				}
 				
@@ -496,17 +497,23 @@
 				}
 				
 				
+				this.setData({ noPowerPay :true})
 				// 下单数据
 				var jsondata = JSON.stringify(data)				
 				console.log(data)
 				var res = await this.db.orderGen({
 					jsondata:jsondata
 				})
-				var data = res.data
-				var orderId = data.id
-				uni.redirectTo({
-					url: '/pages/wx/wxpay?orderId=' + orderId,
-				});
+				if(res.code == 0){
+					var data = res.data
+					var orderId = data.id
+					uni.redirectTo({
+						url: '/pages/wx/wxpay?orderId=' + orderId,
+					});
+				} else {
+					this.setData({ noPowerPay :false})
+				}
+				
 			},
 			
 			

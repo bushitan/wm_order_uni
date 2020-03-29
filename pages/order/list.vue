@@ -110,7 +110,7 @@
 				Status:this.db.ORDER_STATUS_PENDING,
 				isRefund:false, // 加载全部订单
 				page : 1,
-				limit : 10,
+				limit : 15,
 				lock : false,
 				isMore:true,
 				list:[],
@@ -135,10 +135,10 @@
 				var data = {
 					Page:this.$data.page,
 					Limit:this.$data.limit,
-					Status : this.$data.Status
+					Status : this.$data.Status,
 				}
-				if(this.$data.isRefund) 
-					data.Status = this.db.PAYMENT_STATUS_REFUND
+				// if(this.$data.isRefund) 
+				// 	data.Status = this.db.PAYMENT_STATUS_REFUND
 											
 				var res = await this.db.orderGetCustomerOrder(data)			
 				this.db.listUpdate(this , res)
@@ -164,12 +164,15 @@
 					Status = this.db.ORDER_STATUS_COMPLETE
 				}					
 				// 退款
-				if( id == 3 ) isRefund = true
+				if( id == 3 ){
+					Status = this.db.ORDER_STATUS_CANCEL 
+				}
+				 // isRefund = true
 				this.setData({
 					TabCur:id,
 					scrollLeft: (id-1)*60,
 					Status:Status,
-					isRefund:isRefund,
+					// isRefund:isRefund,
 				})
 				this.onInit() // 重新请求				
 			},

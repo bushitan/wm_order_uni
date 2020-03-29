@@ -14,47 +14,6 @@
 							<button  class="cu-btn bg-red  text-white round sm">{{item.name}}</button>							
 						</view>
 				   </view>
-				<!--   <view class="flex flex-sub flex-direction ">
-						<view class="text-xxl page-font-blue flex justify-center" >						   
-							<image class="shop-icon " src="/static/images/strong/store_2.png" mode="aspectFit"></image>
-						</view>
-						<view class=" page-flex-center text-sm">
-							<button  class="cu-btn bg-red text-white round sm" @click="toMenu(true)">盛天地店</button>							
-						</view>
-				   </view>
-				   <view class="flex flex-sub flex-direction ">
-						<view class="text-xxl page-font-blue flex justify-center" @click="toMenu(true)">						   
-							<image class="shop-icon " src="/static/images/strong/store_3.png" mode="aspectFit" ></image>
-						</view>
-						<view class=" page-flex-center text-sm">
-							<button  class="cu-btn bg-red text-white round sm" @click="toMenu(true)">BPCALL</button>							
-						</view>
-				   </view> -->
-				   
-				   <!-- <view class="flex flex-sub flex-direction " @click="toMenu(false)">
-				   					   <view class="text-xxl page-font-yellow flex justify-center">
-				   						  <image class="pg-icon " src="/static/images/icon/self.png" ></image>
-				   					   </view>
-				   					   <view class="margin-top-sm page-flex-center text-sm">
-				   						   自提
-				   					   </view>
-				   </view>
-				   <view class="flex flex-sub flex-direction ">
-				   					   <view class="text-xxl page-font-blue flex justify-center" @click="toMenu(true)">						   
-				   							<image class="pg-icon " src="/static/images/icon/wm.png" ></image>
-				   					   </view>
-				   					   <view class="margin-top-sm page-flex-center  text-sm">            
-				   						   外送
-				   					   </view>
-				   </view> -->
-				   <!-- <view class="flex flex-sub flex-direction ">
-					   <view class="text-xxl page-font-blue flex justify-center">						   
-							<image class="pg-icon " src="/static/images/icon/shop.png" ></image>
-					   </view>
-					   <view class="margin-top-sm page-flex-center  text-sm">            
-						   周边
-					   </view>
-				   </view> -->
 				</view> 		
 				<view class="padding-lr padding-bottom" v-if="orderList.length > 0">
 					<view class="cu-bar  " style="background-color: #f1f1f1;">
@@ -65,7 +24,7 @@
 							</view>
 					    </view>
 					    <view class="action ">
-					      <button class="cu-btn line-yellow round  sm" @click="toDetail()" data-target="menuModal">查看详情</button>
+					      <button class="cu-btn bg-yellow text-white round  " @click="toDetail()" data-target="menuModal">查看详情</button>
 					    </view>
 					</view>
 				</view>
@@ -73,9 +32,6 @@
 		</view>
 		
 		<view class="cu-card padding-lr margin-top ">
-		    <!-- <view class=" pg-radius  shadow shadow-warp">
-				<image  src="../../static/images/strong/swiper2.jpg" mode="widthFix" class="pg-image-block"></image>
-		    </view> square-dot-->
 			<swiper class="screen-swiper  " :indicator-dots="false" :circular="false" :autoplay="true" interval="5000"
 			 duration="500">
 				<swiper-item class="swiper-height block" v-for="(item,index) in swiperList" :key="index">
@@ -83,8 +39,7 @@
 				</swiper-item>
 			</swiper>
 		</view>
-		
-		
+				
 		<view class="cu-card padding-lr margin-top">
 		    <view class=" pg-radius  shadow shadow-warp bg-white">
 				<view class="cu-bar  solid-bottom " @click="toOrder()" >
@@ -100,38 +55,6 @@
 		    </view>
 		</view>
 		
-	<!-- 	<view class="cu-card padding bg-white">
-		    <view class=" pg-radius  shadow shadow-warp">
-		        <view class="cu-bar  solid-bottom ">
-		            <view class="action">
-		                <text class="cuIcon-title text-red "></text>                
-		                <text class="text-black text-sm">我的优惠券</text>         		               
-		            </view>
-		            <view class="action">
-						<text class="text-grey  text-sm">全部</text>
-						<view class="pg-arrow"></view>
-		            </view>
-		        </view>
-				<view class="cu-list menu ">
-					<view class="cu-item ">
-						<view class="action">
-							<text class="text-black  text-df">5元外送券</text>
-						</view>
-						<view class="action">
-							<text class="text-grey   text-sm">剩余10天</text>
-						</view>
-					</view>
-					<view class="cu-item ">
-						<view class="action">
-							<text class="text-black  text-df">3元全场减免券</text>
-						</view>
-						<view class="action">
-							<text class="text-grey  text-sm">剩余2天</text>
-						</view>
-					</view>
-				</view>
-		    </view>
-		</view> -->
 		
 		<view class=" flex justify-center margin-top">
 		    <button class=" cu-btn round bg-darkGray text-gray text-sm"  type="" open-type="contact">联系Strong客服</button>
@@ -167,15 +90,6 @@
 				],
 				store:{},
 				orderList:[], //订单列表
-				
-				// userInfo: {
-				// 	id: '202232',
-				// 	name: 'fengef',
-				// 	allScoreNum: 1,
-				// 	allPrizeNum: 1,
-				// 	allStoreNum: 1,
-				// },
-
 			}
 		},
 		onLoad() {
@@ -188,33 +102,24 @@
 		onShareAppMessage() {
 			
 		},
-			async onInit(){			
+			async onInit(){		
 				var res = await this.db.orderGetList({
 					Page:1,
-					Limit:10,
-					Status:this.db.ORDER_STATUS_PROCESSING,
+					Limit:15,				
+					CreatedAtMin: this.today,
+					
 				})	
 				this.setData({
 					orderList:res.data
 				})
-				
 			},
 			toMenu(id,name){
-				// uni.navigateTo({
-				// 	url:"/pages/order/menu"
-				// })
 				uni.setStorageSync(this.db.KEY_SHOP_ID,id)
 				uni.setStorageSync(this.db.KEY_SHOP_NAME,name)
 				uni.switchTab({
 					url:"/pages/menu/menu"
-				})
-				
-				// ({
-				// 	url:"/pages/order/menu"
-				// })
-				
-			},
-			
+				})				
+			},			
 			toOrder(){
 				uni.navigateTo({
 					url:"/pages/order/list"

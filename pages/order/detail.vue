@@ -1,21 +1,16 @@
 <template>
 	<view class="">	
-		<!--状态栏区域-->			
 		<view class="text-xl text-bold flex justify-between align-center padding">
             <view>
-                <text>订单ID：{{order.id}}</text>
+                <text v-if="order.customertaketype == SHOP_TAKE_WM">订单ID：{{order.id}}</text>
+                <text v-else>取单码：{{order.id}}</text>
                 <text  v-if="order.customertaketype == SHOP_TAKE_WM">（外卖）</text>
                 <text  v-if="order.customertaketype == SHOP_TAKE_ZQ">（到店自取）</text>
                 <text  v-if="order.customertaketype == SHOP_TAKE_TS">（堂食）</text>
             </view>				
 			<button v-if="order.payment_status_code == PAYMENT_STATUS_PENDING || order.payment_status_code == PAYMENT_STATUS_AUTHORIZED"
 				class="cu-btn round bg-yellow text-white" 
-				@click="clickPay">支付订单</button>				
-			<button v-if="order.order_status_code == ORDER_STATUS_PROCESSING && order.payment_status_code != PAYMENT_STATUS_REFUND_APPLY  "
-					class="cu-btn round line-yellow" 
-					@click="clickCancle">退款申请</button>	
-			<!-- <view v-else></view> -->
-				
+				@click="clickPay">支付订单</button>
 		</view>
 		
 			<view class="cu-card padding-lr ">
@@ -153,9 +148,9 @@
 					</view>
 				</view>				
 				<view class="cu-list menu ">					
-					<view class="cu-item " v-for="(item,key) in order.order_notes" v:bind-key="key">
+					<view class="cu-item " v-for="(item,key) in order.order_notes" v:bind-key="key" v-if="item.display_to_customer == true">
 						<view class="content">
-							<text class="text-gray text-sm">{{key+1}}、{{item.Note}}</text>
+							<text class="text-gray text-sm">{{item.Note}}</text>
 						</view>
 						<view class="action ">
 						</view>
@@ -246,7 +241,7 @@
 				<view class="cu-list menu ">
 					<view class="cu-item ">
 						<view class="content">
-							<text class="text-gray text-sm">订单号码</text>
+							<text class="text-gray text-sm">取单码</text>
 						</view>
 						<view class="action">
 							<view class="text-black text-sm">{{order.id}}</view>
@@ -270,6 +265,13 @@
 					</view>
 				</view>				
 			</view>
+		</view>
+		
+		<view class=" flex  justify-center margin-top">
+						
+			<button v-if="order.order_status_code == ORDER_STATUS_PROCESSING && order.payment_status_code != PAYMENT_STATUS_REFUND_APPLY  "
+					class="cu-btn round line-red" 
+					@click="clickCancle">退款申请</button>	
 		</view>
 		
 		
@@ -445,6 +447,7 @@
 				PAYMENT_STATUS_AUTHORIZED : this.db.PAYMENT_STATUS_AUTHORIZED ,// 待支付
 				PAYMENT_STATUS_REFUND_APPLY :this.db.PAYMENT_STATUS_REFUND_APPLY , // 申请退款中
 				
+				ORDER_STATUS_PENDING:this.db.ORDER_STATUS_PENDING,
 				ORDER_STATUS_PROCESSING: this.db.ORDER_STATUS_PROCESSING, //订单处理中
 				ORDER_STATUS_COMPLETE:this.db.ORDER_STATUS_COMPLETE,
 				SHOP_TAKE_WM : this.db.SHOP_TAKE_WM , // 外卖配送
@@ -482,7 +485,7 @@
 				})
 			},
 			
-			// 取消订单
+			// 去支付
 			clickPay(){
 				uni.redirectTo({
 					url: '/pages/wx/wxpay?orderId=' + this.$data.orderId,
@@ -491,11 +494,21 @@
 			
 			// 取消订单
 			async clickCancle(){
-				// console.log("取消订单")
-				var res = await this.db.orderRefund({
-					orderId:this.$data.orderId
+				var that = this
+				uni.showModal({
+					title:"是否取消订单",
+					success(res){
+						if(res.confirm){
+							that.db.orderRefund({
+								orderId:that.$data.orderId
+							}).then(res=>{
+								uni.showModal({	title:res.msg , showCancel:false })
+								uni.navigateBack({})
+							})							
+						}
+					}
 				})
-				uni.showModal({	title:res.msg , showCancel:false })
+				
 			},
 			
 			// 致电骑手

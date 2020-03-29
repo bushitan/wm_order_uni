@@ -131,7 +131,7 @@
 		<view class="bg-white cu-list menu" :style="'position: fixed; bottom:'+ SpaceBottom +'px; left: 0; right: 0;'" v-else>			
 			<view class="cu-item ">
 				<view class="action">					
-					<text class="line-red text-sm">{{shopDiscount}}{{shopDiscount}}{{shopDiscount}}{{shopDiscount}}</text>				
+					<text class="line-red text-sm">{{shopDiscount}}</text>				
 				</view>
 				<view class="action  text-sm basis-df text-right" @click="selectShop">
 					<!-- <text class="line-black ">{{shopName}}</text>
@@ -231,7 +231,7 @@
 				  </view>
 				</view>
 				<view class="padding-lr padding-tb-sm text-left">
-					<text class="line-red text-sm ">{{shopDiscount}}{{shopDiscount}}{{shopDiscount}}{{shopDiscount}}</text>
+					<text class="line-red text-sm ">{{shopDiscount}}</text>
 					
 				</view>
 				<view class="cu-list menu bg-white">
@@ -329,7 +329,7 @@
 				
 				shopId:"",
 				shopName:"南湖店",
-				shopDiscount:"满35，免配送费",
+				shopDiscount:"",
 			};
 		},
 		async onLoad(options) {

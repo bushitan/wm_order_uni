@@ -12,6 +12,7 @@ class dbBase{
 	KEY_SHOP_NAME = "shop_name"
 	KEY_SHOP_TAKE_TYPE= "shop_take_type"
 	KEY_ORDER_PRE_PHONE = "order_pre_phone"
+	KEY_ORDER_PRE_ADDRESS = "order_pre_address"
 	
 	
 	
@@ -136,6 +137,8 @@ class dbBase{
 			
 			var startTime = new Date().getTime();
 			// console.log('startTime',startTime)
+			
+            wx.showLoading({ title: "" ,mask:true})
             uni.request({
                 url: url,
                 method: options.method || "POST",
@@ -146,6 +149,7 @@ class dbBase{
                 },
                 data: data,
                 success(res) {
+                    wx.hideLoading()
 					
 					var completeTime = new Date().getTime();
 					var dateTime = completeTime - startTime
@@ -163,6 +167,7 @@ class dbBase{
                 },
                 fail(res) {
                     console.log(url)
+                    wx.hideLoading()
 					
 					uni.request({
 						url:that.HOST_URL + "api/log/addlog/",

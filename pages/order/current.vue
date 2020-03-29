@@ -54,8 +54,16 @@
 							<view class="action text-sm">{{order.store_name}}</view>
 						</view>					
 						<view class="cu-item ">
-							<view class="action text-gray text-sm">	取单方式</view>
+							<view class="action text-gray text-sm">取单方式</view>
 							<view class="action text-sm">{{order.ship_method_desc}}</view>
+						</view>		
+						<view class="cu-item " v-if="order.customertaketype == SHOP_TAKE_ZQ && order.order_status_code != ORDER_STATUS_PENDING " >
+							<view class="action text-gray text-sm">取单码</view>
+							<view class="action text-bold text-red text-xl">{{order.id}}</view>
+						</view>	
+						<view class="cu-item " v-if="order.customertaketype == SHOP_TAKE_TS && order.order_status_code != ORDER_STATUS_PENDING " >
+							<view class="action text-gray text-sm">取单码</view>
+							<view class="action text-bold text-red text-xl">{{order.id}}</view>
 						</view>	
 						<view class="cu-item ">
 							<view class="action">
@@ -115,6 +123,11 @@
 				// SortMenu: [{id:0,name:"全部订单"},{id:1,name:"待付款"},{id:2,name:"待发货"},{id:3,name:"待收货"},{id:4,name:"已完成"}],
 				
 				list:[],
+				
+				SHOP_TAKE_WM :this.db.SHOP_TAKE_WM, //1
+				SHOP_TAKE_ZQ :this.db.SHOP_TAKE_ZQ, //2
+				SHOP_TAKE_TS :this.db.SHOP_TAKE_TS, //4
+				
 				PAYMENT_STATUS_REFUND_APPLY :this.db.PAYMENT_STATUS_REFUND_APPLY,
 				ORDER_STATUS_PENDING:this.db.ORDER_STATUS_PENDING,
 				ORDER_STATUS_PROCESSING :this.db.ORDER_STATUS_PROCESSING , // 订单处理中
@@ -135,7 +148,7 @@
 				// 获取未支付的订单								
 				var res = await this.db.orderGetCustomerOrder({
 					Page:1,
-					Limit:10,
+					Limit:15,
 					// Status:this.db.ORDER_STATUS_PENDING,
 					CreatedAtMin: this.today,
 				})		
