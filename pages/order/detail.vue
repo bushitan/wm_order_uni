@@ -97,9 +97,9 @@
 							<view class="text-gray   text-sm">
 								单价：<text class="text-price"></text>{{item.product.price}}
 							</view>
-							<view class="text-gray  text-sm" v-if="item.product.wmCost">
+							<!-- <view class="text-gray  text-sm" v-if="item.product.wmCost">
                                 包装费：<text class="text-price"></text>{{item.product.wmCost}} 
-                            </view>
+                            </view> -->
 							
 						</view>
 						<view class="action text-red ">
@@ -109,16 +109,34 @@
 				</view>
 				
 				<view class="cu-list menu ">	
-					<view class="cu-item " v-if="order.wm_cost">
+				
+					<view class="cu-item " >
+						<view class="action text-gray text-sm">商品费用</view>
+						<view class="action text-red">
+							<template v-if="order.order_discount > 0">
+								<text class="text-gray  text-sm ">已优惠</text>						
+								<text class="text-price text-sm text-red "></text>
+								<text class="  text-sm text-red margin-right">{{order.order_discount}}</text>
+							</template>
+							
+							<text class="text-price"></text>{{order.order_with_discount || ""}}
+						</view>
+					</view>
+					<view class="cu-item "  v-if="order.customertaketype != SHOP_TAKE_TS">
 						<view class="action text-gray text-sm">包装费</view>
 						<view class="action text-red">
-							<text class="text-price"></text>{{order.wm_cost}}
+							<text class="text-price"></text>{{order.wm_cost || 0 }}
 						</view>
 					</view>
 					<view class="cu-item "  v-if="order.customertaketype == SHOP_TAKE_WM" >
 						<view class="action text-gray text-sm">配送费</view>
 						<view class="action text-red">
-							<text class="text-price"></text>{{order.customer_take_ship_fee}}
+							<template v-if="order.ship_discount > 0">
+								<text class="text-gray  text-sm ">已优惠</text>						
+								<text class="text-price text-sm text-red "></text>
+								<text class="  text-sm text-red margin-right">{{order.ship_discount }}</text>
+							</template>
+							<text class="text-price"></text>{{order.customer_take_ship_fee }}
 						</view>
 					</view>
 				</view>
@@ -128,10 +146,16 @@
 						<!-- <text class="text-gray  text-sm ">已优惠</text>						
 						<text class="text-price text-sm text-yellow "></text>
 						<text class="  text-sm text-yellow margin-right">{{order.order_discount}}</text> -->
+					
+						<template v-if="order.order_discount_total > 0">
+							<text class="text-gray  text-sm ">已优惠</text>
+							<text class="text-price text-sm text-red "></text>
+							<text class="  text-sm text-red margin-right">{{order.order_discount_total  || ""}}</text>
+						</template>
 						
 						<text class="text-gray  text-sm margin-right-xs">合计</text>						
 						<text class=" text-xl text-red text-bold text-price "></text>
-						<text class=" text-xl text-red text-bold">{{order.order_total}}</text>
+						<text class=" text-xl text-red text-bold">{{order.order_total  || ""}}</text>
 					</view>
 				</view>					
 			</view>

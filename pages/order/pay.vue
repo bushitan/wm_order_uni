@@ -97,7 +97,8 @@
 							
 							<view class=" flex justify-between">
 								<view class="">
-									<view class=" text-sm">数量：{{item.Quantity}}</view>									
+									<view class=" text-sm">数量：{{item.Quantity}}</view>		
+									<!-- <view class=" text-sm">包装费：{{item.wm_cost}}</view>									 -->
 								</view>
 								<view class="action">
 									<text class="text-price text-red"></text>
@@ -112,31 +113,52 @@
 				</view>
 				
 				<view class="cu-list menu ">
+					
+					<view class="cu-item " >
+						<view class="action">商品费用</view>
+						<view class="action text-red ">							
+							<template v-if="preOrder.order_discount > 0">
+								<text class="text-gray  text-sm ">已优惠</text>						
+								<text class="text-price text-sm text-red "></text>
+								<text class="  text-sm text-red margin-right">{{preOrder.order_discount}}</text>
+							</template>
+							<text class="text-price"></text>
+							<text class="text-red">{{preOrder.order_with_discount || ""}}</text>	
+						</view>
+					</view>
 					<view class="cu-item " v-if="ShopTakeValue != SHOP_TAKE_TS">
 						<view class="action">包装费</view>
 						<view class="action text-red ">
 							<text class="text-price"></text>
-							<text class="text-red">{{totalPack}}</text>			
+							<text class="text-red">{{preOrder.wm_cost}}</text>			
 						</view>
 					</view>
 					<view class="cu-item " v-if="ShopTakeValue == SHOP_TAKE_WM">
 						<view class="action">配送费</view>
 						<view class="action text-red ">
+							<template v-if="preOrder.ship_discount > 0">
+								<text class="text-gray  text-sm ">已优惠</text>						
+								<text class="text-price text-sm text-red "></text>
+								<text class="  text-sm text-red margin-right">{{preOrder.ship_discount}}</text>
+							</template>
 							<text class="text-price"></text>
-							<text class="text-red">{{totalPost}}</text>	
+							<text class="text-red">{{preOrder.customer_take_ship_fee}}</text>	
 						</view>
 					</view>
 				</view>
 				<view class="cu-bar   ">
 				    <view class="action"></view>
-				    <view class="action">						
-						<!-- <text class="text-gray  text-sm ">已优惠</text>						
-						<text class="text-price text-sm text-red "></text>
-						<text class="  text-sm text-red margin-right">0</text> -->
+				    <view class="action">				
+						<template v-if="preOrder.order_discount_total > 0">
+							<text class="text-gray  text-sm ">已优惠</text>
+							<text class="text-price text-sm text-red "></text>
+							<text class="  text-sm text-red margin-right">{{preOrder.order_discount_total  || ""}}</text>
+						</template>
+						
 						
 						<text class="text-gray  text-sm margin-right-xs">合计</text>						
 						<text class=" text-xl text-red text-bold text-price"></text>
-						<text class=" text-xl text-red text-bold">{{totalPrice}}</text>
+						<text class=" text-xl text-red text-bold">{{preOrder.order_total || ""}}</text>
 				    </view>
 				</view>					
 		    </view>
@@ -156,7 +178,7 @@
 				<view class="content">
 					<view class="text-grey">
 						<view class="text-red text-bold text-xl">
-							<text class="text-price text-red"></text>{{totalPrice}}
+							<text class="text-price text-red"></text>{{preOrder.order_total || ""}}
 						</view>
 					</view>
 					<view class="text-gray text-sm flex align-center" v-if="ShopTakeValue == SHOP_TAKE_WM">
@@ -196,7 +218,8 @@
 				
 				
 				storeList:[], // 店铺列表
-				order:{},					
+				order:{},	//当前订单			
+				preOrder:{},//预订单
 				StoreId:"",
 				StoreName:"",
 				ShipAddress:'',
@@ -448,6 +471,7 @@
 				var all = preOrder.order_total + preOrder.wm_cost + preOrder.customer_take_ship_fee
 				this.setData({
 					// totalPrice:all, // 总价
+					preOrder:preOrder,
 					totalPrice:preOrder.order_total , // 总价
 					totalPack:preOrder.wm_cost, // 包装费
 					totalPost:preOrder.customer_take_ship_fee, // 配送费

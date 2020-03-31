@@ -42,7 +42,7 @@
 					</view>
 					
 					<view class="cu-list menu ">
-						<view class="cu-item " style=" align-items: flex-start"  v-for="(item,itemIndex) in category.products"  v-bind:key="itemIndex">
+						<view class="cu-item " style=" align-items: flex-start"  v-for="(item,itemIndex) in category.products"  v-bind:key="itemIndex" @click="openDetail(index,itemIndex)">
 							<view class="">
 								<image :src='item.imgs? item.imgs[0] ? item.imgs[0].src : "" :"" '
 									class="cu-avatar radius lg  bg-gray margin-right-sm " 
@@ -73,7 +73,7 @@
 										<text class="text-price"></text>{{item.price}}
 									</view>
 									<view style="position:relative">
-										<button class="cu-btn round line-yellow  sm" @click="openDetail(index,itemIndex)">选规格</button>
+										<button class="cu-btn round line-yellow  sm" >选规格</button>
 										<view class="cu-tag badge" v-if="item.num">{{item.num}}</view>										
 									</view>
 								</view>
@@ -168,8 +168,11 @@
 								v-for="(tag , tagIndex ) in currentItem.tags" v-bind:key="tagIndex">{{tag}}</text>						
 						</view>
 						<view class="flex flex-start margin-top-sm">
-							<text class="text-gray radius  text-sm  text-left" >{{currentItem.shortDescription}}</text>					
+							<text class="text-gray radius  text-sm  text-left" >{{currentItem.shortDescription || ""}}</text>					
 						</view>
+						<!-- <view class="flex flex-start margin-top-sm">
+							<text class="text-gray radius  text-sm  text-left" >{{currentItem.fullDescription || ""}}</text>					
+						</view> -->
 					</view>
 					<view class="padding-lr margin-top " v-for="(att , attIndex) in currentItem.attributes" v-bind:key="attIndex">
 						<view class="flex flex-start margin-top-sm">
@@ -187,14 +190,14 @@
 					</view>
 					<view class="pg-space-xxl"></view>
 				</scroll-view>
-				<view class="bg-white" style="position: absolute ;bottom: 0; left: 0;right: 0;">
-					<view class="padding-lr padding-tb-sm  bg-white solid-bottom" :hidden="order[key]?order[key].attDes == ''? true:false : true">
+				<view class="" style="position: absolute ;bottom: 0; left: 0;right: 0; ">
+					<view class="padding-lr padding-tb-sm   solid-bottom" :hidden="order[key]?order[key].attDes == ''? true:false : true" style="background-color: rgba(255,255,255,0.8);">
 						<view class="flex flex-start text-sm align-center">		
 							<text class="text-gray ">已选规格：</text>{{order[key]?  order[key].attDes:""}}						
 						</view>					
 					</view>
 					
-					<view class="padding ">
+					<view class="padding " style="background-color: rgba(255,255,255,0.8);">
 						<view class="flex justify-between align-center text-xxl">						
 							<view class="text-red ">
 								<text class="text-price"></text>{{currentItem.price}}

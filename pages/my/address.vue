@@ -53,7 +53,7 @@
 				<form  @submit="formSubmit">
 					<view class="cu-form-group  text-left">
 						<view class="title">城市：</view>
-						<input placeholder="请输入城市名称(如:南宁市)" name="cityName" ></input>
+						<input placeholder="请输入城市名称(如:南宁市)" value="南宁市" name="cityName" ></input>
 					</view>
 					<view class="cu-form-group  text-left">
 						<view class="title">地址：</view>
