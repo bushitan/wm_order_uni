@@ -233,7 +233,7 @@
 					Address:formData.address,
 					Name:formData.name,
 					PhoneNumber:formData.phoneNumber,
-					CityName:formData.cityName,
+					CityName:cityName,
 					Longitude:formData.longitude,
 					Latitude:formData.latitude,
 				}

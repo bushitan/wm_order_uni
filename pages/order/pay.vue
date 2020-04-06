@@ -301,7 +301,7 @@
 				
 				// debugger
 				// 5 设置默认的顺风预取单
-				this.mathTotalPrice() // 预取顺风费用
+				// this.mathTotalPrice() // 预取顺风费用
 				// 6 获取优惠券
 				this.getCoupon() // 获取优惠券
 				
@@ -367,11 +367,15 @@
 						}
 					}
 				}				
+				console.log(ShopTakeValue)
+				this.$data.ShopTakeValue = ShopTakeValue
 				this.setData({	
 					ShopTakeList:ShopTakeList,
 					ShopTakeValue:ShopTakeValue,
 					ShopTakeName:ShopTakeName,
-				})					
+				})				
+					
+				this.mathTotalPrice() // 预取顺风费用
 			},
 			
 			// 3 设置用户地址
@@ -484,7 +488,7 @@
 			 */
 			async toSuccess(e){	
 				console.log(e)
-				var formId = e.detail.formId
+				var formId = e.detail.formId || ""
 								
 				var data =
 				{

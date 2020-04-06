@@ -1,6 +1,12 @@
 <template>
 	<view class="flex align-center  box" :style="'background-color:' + bgColor">
 		<image class="cover" src="../../static/images/strong/loading.jpg" mode="widthFix"></image>
+		<view class="flex justify-center " style="position: fixed; bottom: 20px;left: 0;right: 0;" >
+			<button class="cu-btn line-gray round" @click="clickTo">
+				点击进入
+			</button>
+		</view>
+		
 	</view>
 </template>
 
@@ -45,7 +51,13 @@
 				this.onInit()
 			},
 			methods:{
+				clickTo(){
+					uni.redirectTo({
+						url: '/pages/index/index'
+					});
+				},
 				async onInit(){
+					// return
 					var res = await this.db.customerGetToken()
 					console.log('get token',res)
 					
