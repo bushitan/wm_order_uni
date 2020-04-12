@@ -48,7 +48,57 @@ class son extends fahter{
 	 */
 	productMenu(data) {
 		return new Promise((resolve, reject) => {
-			this.base({url: this.HOST_URL +  "api/category/products",data: data,}).then(res => {resolve(res.data)}).catch(res => reject(res))
+			wx.showLoading()
+			
+			var startTime = new Date().getTime();
+			this.base({url: this.HOST_URL +  "api/category/products",data: data,}).then(res => {
+				
+				wx.hideLoading()
+				
+				var completeTime = new Date().getTime();
+				var dateTime = completeTime - startTime
+				// console.log(options.url , completeTime - startTime)
+				
+				
+				if (!res ){
+					uni.request({
+						url:"https://wm.51zfgx.com/api/log/addlog/",
+						method:"POST",
+						data:{
+							logmsg:"menu,res is null," + res + ":" + dateTime
+						}
+					})
+				}
+				if (res.data.code != 0 ){
+					uni.request({
+						url:"https://wm.51zfgx.com/api/log/addlog/",
+						method:"POST",
+						data:{
+							logmsg:"menu,code is not 0," + res + ":" + dateTime
+						}
+					})
+				}
+				if( dateTime > 4000 ) {
+					uni.request({
+						url:"https://wm.51zfgx.com/api/log/addlog/",
+						method:"POST",
+						data:{
+							logmsg:"menu,timeout," + res  + ":" + dateTime
+						}
+					})
+				}
+				
+				resolve(res.data)
+			}).catch(res => {
+				uni.request({
+						url:"https://wm.51zfgx.com/api/log/addlog/",
+					method:"POST",
+					data:{
+						logmsg:"menu,fail" + res 
+					}
+				})
+				reject(res)
+			})
 		})
 	}
 }

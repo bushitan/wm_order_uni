@@ -222,6 +222,11 @@
 					uni.showModal({title:"请输入电话" , showCancel:false})
 					return 
 				}
+				if(formData.phoneNumber.length < 11 ) {
+					uni.showModal({title:"请输入正确的电话号码" , showCancel:false})
+					return 
+				}
+				
 				
 				var cityName = formData.cityName 				
 				if ( cityName == "北京" || cityName == "北京市"  ) 

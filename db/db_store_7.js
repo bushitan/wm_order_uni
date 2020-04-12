@@ -45,5 +45,19 @@ class son extends fahter{
 			this.base({url: this.HOST_URL +  "api/store/banner/",data: data,}).then(res => {resolve(res.data)}).catch(res => reject(res))
 		})
 	}
+	
+	
+	/**
+	 * @method 4 获取门店 折扣
+	 * @param 
+		AppId
+		Session
+		shopId
+	 */
+	storeDiscount(data) {
+		return new Promise((resolve, reject) => {
+			this.base({url: this.HOST_URL +  "api/online/discount/",data: data,}).then(res => {resolve(res.data)}).catch(res => reject(res))
+		})
+	}
 }
 module.exports = son

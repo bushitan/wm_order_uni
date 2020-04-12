@@ -22,6 +22,7 @@
 		</swiper> -->
 		
 		
+		
 		<view class="VerticalBox">
 			<scroll-view class="VerticalNav nav" scroll-y scroll-with-animation :scroll-top="verticalNavTop" :style="'height:calc(100vh - 375upx - '+ SpaceBottom +'px)'">
 				<view class="cu-item" 
@@ -131,12 +132,14 @@
 		<view class="bg-white cu-list menu" :style="'position: fixed; bottom:'+ SpaceBottom +'px; left: 0; right: 0;'" v-else>			
 			<view class="cu-item ">
 				<view class="action">					
-					<text class="line-red text-sm">{{shopDiscount}}</text>				
+					<text class="line-red text-bold">{{shopDiscount}}</text>	
+					<!-- <view class="line-red text-sm " v-for="(item,key) in shopDiscount" v-bind:key="key">{{item.name}}</view> -->
+								
 				</view>
 				<view class="action  text-sm basis-df text-right" @click="selectShop">
 					<!-- <text class="line-black ">{{shopName}}</text>
 					<text class="line-gray" >(选择门店)</text> -->
-					<button class="cu-btn sm line-yellow">{{shopName}}(选择)</button>
+					<button class="cu-btn sm line-yellow">{{shopName}}(切换门店)</button>
 					<!-- <view class="pg-arrow"></view> -->
 				</view>
 			</view>
@@ -234,8 +237,9 @@
 				  </view>
 				</view>
 				<view class="padding-lr padding-tb-sm text-left">
-					<text class="line-red text-sm ">{{shopDiscount}}</text>
-					
+					<!-- <view class="line-red text-sm " v-for="(item,key) in shopDiscount" v-bind:key="key">{{item.name}}</view> -->
+				
+					<text class="line-red text-bold">{{shopDiscount}}</text>
 				</view>
 				<view class="cu-list menu bg-white">
 					<view class="cu-item margin-tb-sm" v-for="(item , key) in order" v-bind:key="key">
@@ -277,6 +281,10 @@
 			</view>
 		</view>
 
+
+		<view v-if="showReLoad" class="flex justify-center" style="position: fixed; width: 750rpx; top: 50%;">
+			<button @click="onInit"> 重新加载</button>
+		</view>
 	</view>
 </template>
 
@@ -286,7 +294,9 @@
 			return {
 				CustomBar:this.CustomBar,
 				SpaceBottom:0,
-							
+				
+				showReLoad:false,
+				
 				cardCur: 0,
 				swiperList:[
 					"/static/images/strong/swiper1_lg.jpg",
@@ -332,14 +342,14 @@
 				
 				shopId:"",
 				shopName:"南湖店",
-				shopDiscount:"",
+				shopDiscount:"消费满40元减免顺丰配送费",
 			};
 		},
 		async onLoad(options) {
-			uni.showLoading({
-				title: '加载中...',
-				mask: true
-			});
+			// uni.showLoading({
+			// 	title: '加载中...',
+			// 	mask: true
+			// });
 			this.setData({				
 				shopId:uni.getStorageSync(this.db.KEY_SHOP_ID) || "",
 				shopName:uni.getStorageSync(this.db.KEY_SHOP_NAME) || "",
@@ -349,7 +359,7 @@
 			// setInterval(function(){that.test()},500)
 		},
 		onReady() {
-			uni.hideLoading()
+			// uni.hideLoading()
 		},
 		methods: {
 			// 选择门店
@@ -359,38 +369,55 @@
 				});
 			},
 			
-			async test(){
+			test(){
 				
-				var res = await this.db.productMenu()
-				if(res.hasOwnProperty("msg") == false){
-					console.log(  new Date() )
-					uni.request({
-						url:this.db.HOST_URL + "api/log/addlog/",
-						method:"POST",
-						data:{
-							logmsg:'error:'
-						}
-					})
-				}
+				this.db.productMenu({
+					shopId:this.$data.shopId
+				}).then(res=>{
+					// if(res.hasOwnProperty("msg") == false){
+					// 	console.log(  new Date() )
+					// 	uni.request({
+					// 		url:this.db.HOST_URL + "api/log/addlog/",
+					// 		method:"POST",
+					// 		data:{
+					// 			logmsg:'menu , error ' +res
+					// 		}
+					// 	})
+					// }
+				})
+				
 				// console.log(res)
 			},
 			async onInit(){
-				// var res = await this.db.productGetList()
-				// var res = await this.db.categoryGetList()
-				var res = await this.db.productMenu({
+				
+				// var res = await this.db.productMenu({
+				// 	shopId:this.$data.shopId
+				// })
+				// var temp = res.data
+				// for(var i=0; i<temp.length ;i++)
+				// 	temp[i].id = i
+				// this.setData({
+				// 	list:temp,
+				// })
+				this.db.productMenu({
 					shopId:this.$data.shopId
+				}).then(res=>{
+					if(res.code == 0){
+						var temp = res.data
+						for(var i=0; i<temp.length ;i++)
+							temp[i].id = i
+						this.setData({
+							list:temp,
+							showReLoad:false
+						})						
+					} else {
+						this.setData({ showReLoad:true })
+					}					
+				}).catch(res=>{
+					this.setData({ showReLoad:true})
 				})
 				
-				var temp = res.data
-				// debugger
-				for(var i=0; i<temp.length ;i++)
-					temp[i].id = i
-				// this.list = temp
-				// this.listCur = temp[0];
-				// console.log(temp)
-				this.setData({
-					list:temp,
-				})
+				
 			},
 			
 			

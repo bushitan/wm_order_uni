@@ -154,15 +154,15 @@ class dbBase{
 					var completeTime = new Date().getTime();
 					var dateTime = completeTime - startTime
 					console.log(options.url , completeTime - startTime)
-					if( dateTime > 2000) {
-						uni.request({
-							url:that.HOST_URL + "api/log/addlog/",
-							method:"POST",
-							data:{
-								logmsg:options.url + ":" + dateTime
-							}
-						})
-					}
+					// if( dateTime > 4000) {
+					// 	uni.request({
+					// 		url:that.HOST_URL + "api/log/addlog/",
+					// 		method:"POST",
+					// 		data:{
+					// 			logmsg:options.url + ":" + dateTime
+					// 		}
+					// 	})
+					// }
 					resolve(res)
                 },
                 fail(res) {

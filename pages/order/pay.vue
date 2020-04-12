@@ -3,14 +3,23 @@
 		<!--状态栏区域-->
 		<view class="cu-card padding-lr margin-top" >
 		    <view class=" bg-white pg-radius  shadow shadow-warp">
-		        <view class="cu-bar  solid-bottom " @click="selectStore()">
+		        <view class="cu-bar  solid-bottom " >
 		            <view class="action">
 		                <text class="cuIcon-title text-yellow "></text>                
 		                <text class="text-black text-sm">下单门店</text>      
 		            </view>
 		            <view class="action">			
-						<text class="text-bold ">{{StoreName}}</text>
-						<view class="pg-arrow"></view>
+						<text class="text-bold ">{{store.Name}}</text>
+						<!-- <view class="pg-arrow"></view> -->
+		            </view>
+		        </view>
+		        <view class="cu-bar  solid-bottom " >
+		            <view class="action">                
+		                <text class="text-black text-sm">营业时间</text>      
+		            </view>
+		            <view class="action">			
+						<text class="text-bold ">{{store.StartTimeBusinessHours || ""}} 至 {{store.EndTimeBusinessHours || ""}}</text>
+						<!-- <view class="pg-arrow"></view> -->
 		            </view>
 		        </view>
 				<view class=" cu-form-group"  @click="selectShopTake()">
@@ -134,26 +143,29 @@
 						</view>
 					</view>
 					<view class="cu-item " v-if="ShopTakeValue == SHOP_TAKE_WM">
-						<view class="action">配送费</view>
+						<view class="action">顺丰配送费</view>
 						<view class="action text-red ">
-							<template v-if="preOrder.ship_discount > 0">
+							<!-- <template v-if="preOrder.ship_discount > 0">
 								<text class="text-gray  text-sm ">已优惠</text>						
 								<text class="text-price text-sm text-red "></text>
 								<text class="  text-sm text-red margin-right">{{preOrder.ship_discount}}</text>
-							</template>
+							</template> -->
 							<text class="text-price"></text>
 							<text class="text-red">{{preOrder.customer_take_ship_fee}}</text>	
 						</view>
+					</view>
+					<view class="text-xs  padding-left text-red">消费满40元减免顺丰配送费（减免范围3KM，超出部分2元/公里）
+						
 					</view>
 				</view>
 				<view class="cu-bar   ">
 				    <view class="action"></view>
 				    <view class="action">				
-						<template v-if="preOrder.order_discount_total > 0">
+						<!-- <template v-if="preOrder.order_discount_total > 0">
 							<text class="text-gray  text-sm ">已优惠</text>
 							<text class="text-price text-sm text-red "></text>
 							<text class="  text-sm text-red margin-right">{{preOrder.order_discount_total  || ""}}</text>
-						</template>
+						</template> -->
 						
 						
 						<text class="text-gray  text-sm margin-right-xs">合计</text>						
@@ -163,6 +175,7 @@
 				</view>					
 		    </view>
 		</view>
+		
 		<!-- <button type="primary" @click="pay">付款</button> -->
 		
 		<!-- 
@@ -220,6 +233,7 @@
 				storeList:[], // 店铺列表
 				order:{},	//当前订单			
 				preOrder:{},//预订单
+				store:{},
 				StoreId:"",
 				StoreName:"",
 				ShipAddress:'',
@@ -273,17 +287,20 @@
 				if(storeList.length == 0 ) // 没有门店
 					return				
 				// 获取门店列表			
+				var store = storeList[0]
 				var StoreId = storeList[0].Id
 				var StoreName = storeList[0].Name
 				var SyncStoreId = uni.getStorageSync(this.db.KEY_SHOP_ID) || "" 				
 				for(var i =0 ; i<storeList.length ; i++){
-					if(SyncStoreId == storeList[i].Id){						
+					if(SyncStoreId == storeList[i].Id){		
+						store = storeList[i]
 						StoreId = storeList[i].Id
 						StoreName = storeList[i].Name 
 					}
 				}					
 				this.setData({
 					storeList:storeList,
+					store:store,
 					StoreId : StoreId,
 					StoreName : StoreName,
 				})				
@@ -396,6 +413,7 @@
 			/*************选择 门店 | 点单方式 | 优惠券*************/
 			// 选择门店
 			async selectStore(){
+				return
 				var storeList = this.$data.storeList
 				var itemList = []
 				for (var i=0; i<storeList.length ; i++){
@@ -439,6 +457,10 @@
 			async mathTotalPrice(){
 				var addressId =  this.$data.currentAddress.id || ""
 				if( this.$data.ShopTakeValue == this.$data.SHOP_TAKE_WM &&  addressId == ""  ){
+					uni.showToast({
+						title:"请添加收货地址",
+						icon:"loading",
+					})
 					return 
 				}
 				
