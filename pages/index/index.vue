@@ -63,7 +63,7 @@
 		<view class=" padding-xs flex align-center  margin-top-sm">
 		    <view class="flex-sub text-center">
 		        <view class=" text-df ">
-		            <text class="text-gray text-sm">Copyright © 2012 索骏科技提供技术支持</text>
+		            <text class="text-gray text-sm">Copyright © 2020 索骏科技提供技术支持</text>
 		        </view>           
 		    </view>
 		</view>
