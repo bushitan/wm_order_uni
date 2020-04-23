@@ -1,7 +1,19 @@
 <template>
 	<view class="">
 		<!--状态栏区域-->
-		<view class="cu-card padding-lr margin-top" >
+		<view class="text-gray text-sm flex justify-center align-center bg-white" >
+			外卖下单可享受
+			<image src='/static/images/icon/sf_logo.png'
+				class="cu-avatar radius lg  bg-white margin-right-sm" 
+				style="width: 100px;" 
+				mode="widthFix"
+				></image>
+		 </view>
+		 <view class="text-gray text-sm flex  align-center margin-top padding-left " >
+		 	营业时间：{{store.StartTimeBusinessHours || ""}} 至 {{store.EndTimeBusinessHours || ""}}
+		  </view>
+		 
+		<view class="cu-card padding-lr margin-top-sm" >
 		    <view class=" bg-white pg-radius  shadow shadow-warp">
 		        <view class="cu-bar  solid-bottom " >
 		            <view class="action">
@@ -13,17 +25,16 @@
 						<!-- <view class="pg-arrow"></view> -->
 		            </view>
 		        </view>
-		        <view class="cu-bar  solid-bottom " >
+		        <!-- <view class="cu-bar  solid-bottom " >
 		            <view class="action">                
 		                <text class="text-black text-sm">营业时间</text>      
 		            </view>
 		            <view class="action">			
 						<text class="text-bold ">{{store.StartTimeBusinessHours || ""}} 至 {{store.EndTimeBusinessHours || ""}}</text>
-						<!-- <view class="pg-arrow"></view> -->
 		            </view>
-		        </view>
+		        </view> -->
 				<view class=" cu-form-group"  @click="selectShopTake()">
-					<view class="text-sm">配送方式</view>
+					<view class="text-sm">下单方式</view>
 					
 					<view class="text-right basis-xl">			
 						<text class="text-bold ">{{ShopTakeName}}</text>
@@ -154,8 +165,8 @@
 							<text class="text-red">{{preOrder.customer_take_ship_fee}}</text>	
 						</view>
 					</view>
-					<view class="text-xs  padding-left text-red">消费满40元减免顺丰配送费（减免范围3KM，超出部分2元/公里）
-						
+					<view class="text-xs  padding-left text-red" v-if="ShopTakeValue == SHOP_TAKE_WM">
+						消费满40元减免顺丰配送费（减免范围3KM，超出部分2元/公里）
 					</view>
 				</view>
 				<view class="cu-bar   ">
@@ -218,7 +229,9 @@
 	export default {
 		data(){
 			
-			var date = new Date();
+			var curDate = new Date();
+			var date = new Date(curDate.getTime() + 6 * 60 * 1000);
+			
 			var hour = date.getHours();
 			hour = hour < 10? "0" + hour : hour;
 			var minute = date.getMinutes();
@@ -364,10 +377,10 @@
 					case 1 : ShopTakeList = [{"name":"外卖",value:1}] ;break;
 					case 2 : ShopTakeList = [{"name":"到店自取",value:2}] ;break;
 					case 4 : ShopTakeList = [{"name":"堂食",value:4}] ;break;
-					case 3 : ShopTakeList = [{"name":"外卖",value:1},{"name":"到店自取",value:2}] ;break;
-					case 5 : ShopTakeList = [{"name":"外卖",value:1},{"name":"堂食",value:4}] ;break;
-					case 6 : ShopTakeList = [{"name":"到店自取",value:2},{"name":"堂食",value:4}] ;break;
-					case 7 : ShopTakeList = [{"name":"外卖",value:1},{"name":"到店自取",value:2},{"name":"堂食",value:4}] ;break;
+					case 3 : ShopTakeList = [{"name":"到店自取",value:2},{"name":"外卖",value:1}] ;break;
+					case 5 : ShopTakeList = [{"name":"堂食",value:4},{"name":"外卖",value:1}] ;break;
+					case 6 : ShopTakeList = [{"name":"堂食",value:4},{"name":"到店自取",value:2}] ;break;
+					case 7 : ShopTakeList = [{"name":"堂食",value:4},{"name":"到店自取",value:2},{"name":"外卖",value:1}] ;break;
 				}
 				
 				//如果桌面点单方式扫码已经确定
